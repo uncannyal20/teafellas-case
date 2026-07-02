@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Discovery Simulation</title>
+<style>
+  :root {
+    --tea-bg: #F5F0E8;
+    --tea-card: #FDFAF4;
+    --tea-green: #2D5A27;
+    --tea-green-light: #4A7C42;
+    --tea-amber: #C17A2A;
+    --tea-amber-light: #E8A94A;
+    --tea-cream: #EDE4D0;
+    --tea-border: #D4C4A0;
+    --tea-text: #2C2416;
+    --tea-muted: #6B5A3E;
+    --tea-danger: #C0392B;
+    --tea-warn: #E67E22;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--tea-bg); color: var(--tea-text); }
+
+  /* ── Instruction overlay ── */
+  #overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center; z-index: 100;
+  }
+  #overlay.hidden { display: none; }
+  .ov-box {
+    background: var(--tea-card); border-radius: 14px; padding: 28px 32px;
+    max-width: 520px; width: 90%; border: 1px solid var(--tea-border);
+  }
+  .ov-logo { font-size: 32px; margin-bottom: 6px; }
+  .ov-title { font-size: 20px; font-weight: 600; color: var(--tea-green); margin-bottom: 4px; }
+  .ov-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 20px; }
+  .ov-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .ov-step { display: flex; gap: 12px; align-items: flex-start; }
+  .ov-num { width: 24px; height: 24px; border-radius: 50%; background: var(--tea-green); color: #fff;
+    font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .ov-step-text { font-size: 13px; color: var(--tea-text); line-height: 1.55; }
+  .ov-step-text strong { color: var(--tea-green); font-weight: 600; }
+  .ov-personas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
+  .ov-persona { background: var(--tea-cream); border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; }
+  .ov-p-emoji { font-size: 22px; }
+  .ov-p-info { }
+  .ov-p-name { font-size: 13px; font-weight: 600; color: var(--tea-text); }
+  .ov-p-role { font-size: 11px; color: var(--tea-muted); }
+  .ov-start { width: 100%; background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
+    padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .ov-start:hover { background: var(--tea-green-light); }
+
+  /* ── Layout ── */
+  #app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  #sidebar { width: 210px; min-width: 210px; background: var(--tea-green); display: flex; flex-direction: column; }
+  #sidebar-header { padding: 16px 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  #sidebar-logo { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
+  #sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; letter-spacing: 0.8px; text-transform: uppercase; }
+  #persona-list { flex: 1; padding: 8px 0; overflow-y: auto; }
+  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 10px 14px;
+    text-align: left; display: flex; flex-direction: column; gap: 3px;
+    border-left: 3px solid transparent; transition: background 0.15s; }
+  .persona-btn:hover { background: rgba(255,255,255,0.1); }
+  .persona-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); }
+  .pb-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .pb-role { font-size: 10px; color: rgba(255,255,255,0.6); }
+  .pb-timer { font-size: 11px; font-weight: 500; margin-top: 2px; }
+  .pb-timer.running { color: var(--tea-amber-light); }
+  .pb-timer.warn { color: #F39C12; }
+  .pb-timer.expired { color: #E74C3C; }
+  .pb-timer.done { color: rgba(255,255,255,0.4); }
+  #sidebar-footer { border-top: 1px solid rgba(255,255,255,0.15); padding: 6px 0; }
+  .sidebar-nav-btn { width: 100%; background: none; border: none; cursor: pointer;
+    padding: 9px 14px; text-align: left; display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.75); font-size: 13px; border-left: 3px solid transparent; transition: background 0.15s; }
+  .sidebar-nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .sidebar-nav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
+  .sidebar-nav-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* ── Main area ── */
+  #main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+  /* ── Landing ── */
+  #landing { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; }
+  #landing h2 { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 8px; }
+  #landing p { font-size: 14px; color: var(--tea-muted); max-width: 380px; line-height: 1.65; }
+  .landing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 28px; max-width: 400px; }
+  .lp-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 12px;
+    padding: 16px; cursor: pointer; text-align: center; transition: border-color 0.15s, transform 0.12s; }
+  .lp-card:hover { border-color: var(--tea-green); transform: translateY(-2px); }
+  .lp-card.done { border-color: var(--tea-green); background: #EAF2E8; }
+  .lp-emoji { font-size: 30px; margin-bottom: 6px; }
+  .lp-name { font-size: 14px; font-weight: 600; color: var(--tea-text); }
+  .lp-role { font-size: 11px; color: var(--tea-muted); margin-top: 2px; }
+  .lp-badge { font-size: 10px; color: var(--tea-green); font-weight: 600; margin-top: 4px; }
+
+  /* ── Chat ── */
+  #chat-area { display: none; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; }
+  #chat-area.visible { display: flex; }
+  #chat-header { background: var(--tea-card); border-bottom: 1px solid var(--tea-border);
+    padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  #ch-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0; }
+  #ch-info { flex: 1; min-width: 0; }
+  #ch-name { font-size: 15px; font-weight: 600; color: var(--tea-text); }
+  #ch-desc { font-size: 11px; color: var(--tea-muted); margin-top: 1px; }
+  #ch-timer-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  #ch-timer { font-size: 18px; font-weight: 700; font-family: 'Courier New', monospace;
+    padding: 4px 10px; border-radius: 6px; background: var(--tea-cream); color: var(--tea-green); min-width: 70px; text-align: center; }
+  #ch-timer.warn { background: #FEF3CD; color: #9A6500; }
+  #ch-timer.expired { background: #FEE; color: var(--tea-danger); }
+  #timer-start-btn { font-size: 12px; padding: 5px 12px; background: var(--tea-green);
+    color: #fff; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  #timer-start-btn:hover { background: var(--tea-green-light); }
+  #messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .msg { display: flex; gap: 8px; align-items: flex-start; max-width: 88%; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .msg-av.user-av { background: var(--tea-green); color: #fff; font-size: 10px; font-weight: 700; }
+  .msg-bubble { padding: 9px 13px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
+  .msg.persona .msg-bubble { background: var(--tea-card); border: 1px solid var(--tea-border);
+    color: var(--tea-text); border-top-left-radius: 3px; }
+  .msg.user .msg-bubble { background: var(--tea-green); color: #fff; border-top-right-radius: 3px; }
+  .typing-dots { display: flex; gap: 4px; padding: 4px 2px; align-items: center; }
+  .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--tea-muted); animation: tdot 1.2s infinite; }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes tdot { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+  .sys-msg { align-self: center; font-size: 11px; color: var(--tea-muted);
+    background: var(--tea-cream); border-radius: 20px; padding: 3px 12px; }
+  .ot-msg { align-self: center; font-size: 11px; color: var(--tea-warn);
+    background: #FEF3CD; border-radius: 20px; padding: 3px 12px; border: 1px solid #F5D76E; }
+
+  #input-area { padding: 12px 16px; background: var(--tea-card); border-top: 1px solid var(--tea-border);
+    display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+  #msg-input { flex: 1; border: 1px solid var(--tea-border); border-radius: 8px; padding: 9px 12px;
+    font-size: 14px; font-family: inherit; resize: none; background: #fff; color: var(--tea-text);
+    outline: none; max-height: 120px; line-height: 1.5; }
+  #msg-input:focus { border-color: var(--tea-green-light); }
+  #msg-input:disabled { background: var(--tea-cream); color: var(--tea-muted); }
+  #send-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
+    width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+  #send-btn:hover { background: var(--tea-green-light); }
+  #send-btn:disabled { background: var(--tea-border); cursor: not-allowed; }
+  #summarise-btn { background: var(--tea-amber); color: #fff; border: none; border-radius: 8px;
+    padding: 0 14px; height: 38px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+  #summarise-btn:hover { background: var(--tea-amber-light); }
+  #summarise-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── Summary panel ── */
+  #summary-panel { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 20px 24px; }
+  #summary-panel.visible { display: flex; }
+  .sp-title { font-size: 18px; font-weight: 700; color: var(--tea-green); margin-bottom: 3px; }
+  .sp-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 20px; }
+  .sp-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .sp-card-title { font-size: 12px; font-weight: 700; color: var(--tea-green); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px; }
+  .sp-card textarea { width: 100%; border: 1px solid var(--tea-border); border-radius: 6px;
+    padding: 9px 11px; font-size: 13px; font-family: inherit; line-height: 1.65;
+    color: var(--tea-text); background: #fff; resize: vertical; min-height: 80px; outline: none; }
+  .sp-card textarea:focus { border-color: var(--tea-green-light); }
+  .sp-loading { font-size: 13px; color: var(--tea-muted); font-style: italic; padding: 6px 0; }
+  .sp-actions { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+  .sp-btn { border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .sp-btn-back { background: var(--tea-cream); color: var(--tea-text); border: 1px solid var(--tea-border); }
+  .sp-btn-back:hover { border-color: var(--tea-green); color: var(--tea-green); }
+  .sp-btn-confirm { background: var(--tea-amber); color: #fff; }
+  .sp-btn-confirm:hover { background: var(--tea-amber-light); }
+
+  /* ── Synthesis ── */
+  #synthesis-area { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 20px 24px; }
+  #synthesis-area.visible { display: flex; }
+  .syn-title { font-size: 18px; font-weight: 700; color: var(--tea-green); margin-bottom: 3px; }
+  .syn-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 16px; }
+  .syn-progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .syn-prog-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px;
+    padding: 10px 12px; text-align: center; }
+  .syn-prog-card.done { border-color: var(--tea-green); background: #EAF2E8; }
+  .syn-prog-emoji { font-size: 20px; }
+  .syn-prog-name { font-size: 11px; font-weight: 600; color: var(--tea-text); margin-top: 3px; }
+  .syn-prog-status { font-size: 10px; color: var(--tea-muted); margin-top: 2px; }
+  .syn-prog-card.done .syn-prog-status { color: var(--tea-green); }
+  .syn-note { font-size: 12px; color: var(--tea-muted); background: var(--tea-cream); border-radius: 6px;
+    padding: 8px 12px; border-left: 3px solid var(--tea-amber); margin-bottom: 16px; line-height: 1.5; }
+  .syn-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 12px; }
+  .syn-card-title { font-size: 12px; font-weight: 700; color: var(--tea-green); margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+  .syn-card textarea { width: 100%; border: 1px solid var(--tea-border); border-radius: 6px;
+    padding: 9px 11px; font-size: 13px; font-family: inherit; line-height: 1.65;
+    color: var(--tea-text); background: #fff; resize: vertical; min-height: 90px; outline: none; }
+  .syn-card textarea:focus { border-color: var(--tea-green-light); }
+  .syn-actions { display: flex; gap: 10px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+  .syn-gen-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 14px; cursor: pointer; font-weight: 600; }
+  .syn-gen-btn:hover { background: var(--tea-green-light); }
+  .syn-gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .syn-copy-btn { background: var(--tea-card); color: var(--tea-text); border: 1px solid var(--tea-border);
+    border-radius: 8px; padding: 10px 18px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .syn-copy-btn:hover { border-color: var(--tea-green); color: var(--tea-green); }
+  .copy-toast { font-size: 12px; color: var(--tea-green); font-weight: 600; display: none; }
+  .copy-toast.show { display: inline; }
+</style>
+</head>
+<body>
+
+<!-- Instruction overlay -->
+<div id="overlay">
+  <div class="ov-box">
+    <div class="ov-logo">🍵</div>
+    <div class="ov-title">Tea Fellas — Discovery Simulation</div>
+    <div class="ov-sub">A product discovery exercise for HDB TPO Workshop</div>
+    <div class="ov-steps">
+      <div class="ov-step">
+        <div class="ov-num">1</div>
+        <div class="ov-step-text"><strong>Interview the personas.</strong> Select a person from the sidebar and ask them questions about their experience at Tea Fellas. You have <strong>15 minutes per interview</strong> — the timer starts on your first question.</div>
+      </div>
+      <div class="ov-step">
+        <div class="ov-num">2</div>
+        <div class="ov-step-text"><strong>Summarise each interview.</strong> After each session, click "Summarise →" to auto-generate key pain points and aspirations. Review and edit as a group, then confirm.</div>
+      </div>
+      <div class="ov-step">
+        <div class="ov-num">3</div>
+        <div class="ov-step-text"><strong>Synthesise your findings.</strong> Go to "Overall synthesis" to generate consolidated pain points, a problem statement, and a vision for Tea Fellas. Use this as the foundation for your product strategy.</div>
+      </div>
+    </div>
+    <div class="ov-personas">
+      <div class="ov-persona"><div class="ov-p-emoji">👵</div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">🧑‍🦳</div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👨‍💼</div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
+    </div>
+    <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
+  </div>
+</div>
+
+<div id="app">
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div id="sidebar-logo">teafellas</div>
+      <div id="sidebar-tagline">Discovery Sim</div>
+    </div>
+    <div id="persona-list"></div>
+    <div id="sidebar-footer">
+      <button class="sidebar-nav-btn" id="nav-synthesis" onclick="showSynthesis()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 4-4"/></svg>
+        Overall synthesis
+      </button>
+      <button class="sidebar-nav-btn" id="nav-reset" onclick="confirmReset()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset session
+      </button>
+      <button class="sidebar-nav-btn" id="nav-help" onclick="showOverlay()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        How to use
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="main">
+    <!-- Landing -->
+    <div id="landing">
+      <div style="font-size:40px;margin-bottom:14px;">🍵</div>
+      <h2>Tea Fellas — Discovery Interviews</h2>
+      <p>Select a persona below to begin your interview. Ask about their experience, pain points, and hopes for Tea Fellas.</p>
+      <div class="landing-grid" id="landing-cards"></div>
+    </div>
+
+    <!-- Chat -->
+    <div id="chat-area">
+      <div id="chat-header">
+        <div id="ch-avatar"></div>
+        <div id="ch-info">
+          <div id="ch-name"></div>
+          <div id="ch-desc"></div>
+        </div>
+        <div id="ch-timer-wrap">
+          <div id="ch-timer">15:00</div>
+          <button id="timer-start-btn" onclick="startTimer()">Start timer</button>
+        </div>
+      </div>
+      <div id="messages"></div>
+      <div id="input-area">
+        <textarea id="msg-input" rows="1" placeholder="Ask a question…" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button id="send-btn" onclick="sendMsg()">↑</button>
+        <button id="summarise-btn" onclick="summarisePersona()" disabled>Summarise →</button>
+      </div>
+    </div>
+
+    <!-- Per-persona summary -->
+    <div id="summary-panel"></div>
+
+    <!-- Overall synthesis -->
+    <div id="synthesis-area"></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIGURATION ──────────────────────────────────────────────
+// Replace this URL with your Cloudflare Worker URL after deployment
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+// ──────────────────────────────────────────────────────────────
+
+const PERSONAS = [
+  {
+    id: 'aunty-mary',
+    name: 'Aunty Mary',
+    role: 'Cashier',
+    emoji: '👵',
+    bg: '#FEF0E6',
+    system: `You are Aunty Mary, the cashier at Tea Fellas, a beloved bubble tea and tea shop in Toa Payoh, Singapore. You are a warm, hardworking woman in your 60s who has been running the cashier counter for years.
+
+ABOUT TEA FELLAS:
+- Small family-run tea shop (mom-and-pop style), owned by Uncle John's family
+- Located in a HDB estate in Toa Payoh, popular with residents and nearby office workers
+- Sells bubble teas, traditional teas, and light snacks
+- Known for quality tea leaves, handcrafted drinks, loyal customer base
+- Very busy during morning rush (7–9am) and lunch (12–2pm)
+- No app, no online ordering — all manual paper-based processes
+- Big dream to expand and possibly open a second outlet
+
+YOUR PERSONA:
+- You handle cash and card payments, handwrite orders on chits, and pass them to baristas
+- Warm and chatty but always busy; you feel pressure during peak hours
+- Your handwriting is sometimes unclear, causing occasional errors with the baristas
+- You manually manage a loyalty stamp card system — hard to track, customers forget cards
+- You often memorise regular customers' names and preferences manually
+- Pain: long queues at your counter, customers impatient while you write orders
+- Pain: no way for customers to pre-order — everyone queues even for simple drinks
+- Pain: you sometimes make order mistakes when stressed
+- Pain: loyalty stamp cards go missing or get forgotten
+- Aspiration: a tablet or digital system to take orders at the counter
+- Aspiration: customers pre-ordering so queues are shorter
+- Aspiration: faster service with fewer errors
+- You are not very tech-savvy but willing to learn if it's simple
+- You speak in warm Singaporean English, occasionally using "lah", "ah", "can one"
+- You care deeply about the shop and the customers you serve daily
+
+Share specific details when asked about operations. Be warm, authentic, and candid. If asked about things outside your knowledge (finances, tech details), say so honestly. Tell little stories about what happens during a busy day.`
+  },
+  {
+    id: 'uncle-john',
+    name: 'Uncle John',
+    role: 'Server / Collection',
+    emoji: '👴',
+    bg: '#EAF2E8',
+    system: `You are Uncle John, one of the founding family members of Tea Fellas, a bubble tea shop in Toa Payoh, Singapore. You manage the drink collection counter. You are in your late 50s, hardworking, proud, and direct.
+
+ABOUT TEA FELLAS:
+- Small family-run shop in a HDB estate, Toa Payoh
+- Known for quality tea, handcrafted drinks, loyal regulars
+- No app, no online ordering — all manual processes
+- You dream of expanding, maybe a second outlet, but know the current ops need to improve first
+
+YOUR PERSONA:
+- You stand at the collection counter and hand completed drinks to customers
+- You rely entirely on memory to match drinks to customers — no ticket or number system
+- Pain: customers leave the queue temporarily (buy breakfast nearby), drinks pile up when they're gone
+- Pain: during busy periods you sometimes hand the wrong drink to the wrong person
+- Pain: customers who ordered 15+ minutes ago sometimes forget what they ordered
+- Pain: you have to shout order names across a noisy shop — no notification system
+- Pain: no feedback mechanism — you only hear from unhappy customers, rarely happy ones
+- Pain: the manual process makes it very hard to imagine running a second outlet
+- Aspiration: a simple ticket/number system so customers know when their order is ready
+- Aspiration: a digital display showing order status — no more shouting
+- Aspiration: SMS or app notification when order is ready
+- Aspiration: proper systems that would allow expansion to a second outlet
+- You are proud of the shop and its reputation for good tea
+- You speak honestly and sometimes with a hint of frustration, but always pride
+- Singaporean English, occasionally "lah", "ah"
+
+Be authentic. Tell stories about specific incidents during your day — the customer who walked off and came back an hour later, the mix-ups. Don't just list problems; make them vivid.`
+  },
+  {
+    id: 'mrs-selva',
+    name: 'Mrs Selva',
+    role: 'Loyal Customer',
+    emoji: '🧑‍🦳',
+    bg: '#F0E8F8',
+    system: `You are Mrs Selva, a loyal Tea Fellas customer. You are in your early 50s, Indian-Singaporean, live in the Toa Payoh HDB estate, and absolutely love bubble tea — especially milk teas and taro. You are warm, enthusiastic, and very opinionated about the shops you love.
+
+ABOUT TEA FELLAS:
+- Your favourite neighbourhood tea shop — you've been going for years
+- Aunty Mary knows your name and your usual order (taro milk tea, less sweet, pearl)
+- You love the quality — more authentic and less sweet than the big chains
+- You actively recommend Tea Fellas to friends on social media and at your community group
+
+YOUR PERSONA:
+- You visit 3–4 times a week, sometimes daily during school holidays
+- You have a loyalty stamp card but keep forgetting to bring it — you've missed many free drinks
+- Pain: queues are too long — you've been late to work because of the morning queue
+- Pain: no way to order ahead — you wish you could order on your phone while walking there
+- Pain: customer service is inconsistent — staff can be curt and stressed during peak hours
+- Pain: you once waited 20 minutes for a drink only to receive the wrong sweetness level
+- Pain: once your order was lost entirely and you had to repeat it
+- Positive: you love the personal touch — Aunty Mary remembering your order makes you feel special
+- Aspiration: a mobile app to pre-order and skip the queue
+- Aspiration: a digital loyalty programme — you already use the Kopitiam app and would use one for Tea Fellas immediately
+- Aspiration: you hope they expand — you'd love a Tea Fellas near your office in Bishan
+- You are NOT shy about saying what's good AND what needs to improve
+- You feel like part of the Tea Fellas community and want it to succeed
+- Warm, natural Singaporean English
+
+Share personal anecdotes. You are enthusiastic and want this shop to thrive. You have opinions about what good service looks like.`
+  },
+  {
+    id: 'jacky',
+    name: 'Jacky',
+    role: 'HDB Staff / Regular',
+    emoji: '👨‍💼',
+    bg: '#E6F0FA',
+    system: `You are Jacky, a Senior Manager in HDB's Corporate Development Group (CDG), based near Toa Payoh. You are 35, efficient, professional, and a regular Tea Fellas patron — you pick up drinks for yourself and your team of 5 almost every morning.
+
+ABOUT TEA FELLAS:
+- A colleague recommended it — the quality is noticeably better than chain shops
+- You sometimes place bulk orders for your team (5–7 drinks at once)
+- You appreciate the family-run charm but your professional mind sees the operational gaps clearly
+
+YOUR PERSONA:
+- Pain: bulk orders are a challenge — you queue, recite 5 different orders verbally, Aunty Mary writes them (sometimes misses one), you wait 20+ minutes
+- Pain: when collecting for others, you cannot tell which drink is which — labelling is unclear
+- Pain: no order receipt or summary you can show your team ("who ordered the taro again?")
+- Pain: you've started arriving at 7:15am just to beat the queue — it affects your schedule
+- Pain: you once tried to call ahead to place an order — they don't take phone orders
+- Aspiration: a simple web or QR-based ordering system — scan, fill order, pay, collect at your time
+- Aspiration: a team/bulk ordering feature — one order with multiple items, clearly labelled
+- Aspiration: you want Tea Fellas to scale without losing its quality and character
+- Professional insight: you know from your HDB work that many hawkers resist digitalisation due to fear of cost and complexity — you empathise but believe simple tools exist that would help enormously
+- You speak professionally but warmly — you respect the family-run charm and don't want it lost
+- Occasional light Singlish, mostly professional English
+
+Think in terms of user experience and process efficiency, but without jargon. Share specific anecdotes about ordering for your team. You are a constructive, helpful voice — not just a complainer.`
+  }
+];
+
+// ── State ──────────────────────────────────────────────────────
+const state = {
+  currentPersona: null,
+  view: 'landing',
+  histories: {},
+  timers: {},
+  timerIntervals: {},
+  summaries: {},
+  synPain: '', synProblem: '', synVision: ''
+};
+
+PERSONAS.forEach(p => {
+  state.histories[p.id] = [];
+  state.timers[p.id] = { seconds: 15 * 60, running: false };
+  state.summaries[p.id] = null;
+});
+
+// ── Overlay ────────────────────────────────────────────────────
+function closeOverlay() { document.getElementById('overlay').classList.add('hidden'); }
+function showOverlay() { document.getElementById('overlay').classList.remove('hidden'); }
+
+// ── Reset ──────────────────────────────────────────────────────
+function confirmReset() {
+  if (!confirm('Reset the entire session? All interview history and summaries will be cleared.')) return;
+  PERSONAS.forEach(p => {
+    state.histories[p.id] = [];
+    if (state.timerIntervals[p.id]) clearInterval(state.timerIntervals[p.id]);
+    state.timers[p.id] = { seconds: 15 * 60, running: false };
+    state.summaries[p.id] = null;
+  });
+  state.synPain = ''; state.synProblem = ''; state.synVision = '';
+  state.currentPersona = null;
+  state.view = 'landing';
+  showView('landing');
+  renderSidebar();
+  renderLandingCards();
+}
+
+// ── Views ──────────────────────────────────────────────────────
+function showView(name) {
+  document.getElementById('landing').style.display = name === 'landing' ? 'flex' : 'none';
+  const ca = document.getElementById('chat-area');
+  ca.classList.toggle('visible', name === 'chat');
+  ca.style.display = name === 'chat' ? 'flex' : 'none';
+  document.getElementById('summary-panel').style.display = name === 'summary' ? 'flex' : 'none';
+  document.getElementById('summary-panel').className = name === 'summary' ? 'visible' : '';
+  document.getElementById('synthesis-area').style.display = name === 'synthesis' ? 'flex' : 'none';
+  document.getElementById('synthesis-area').className = name === 'synthesis' ? 'visible' : '';
+}
+
+// ── Sidebar ────────────────────────────────────────────────────
+function renderSidebar() {
+  const list = document.getElementById('persona-list');
+  list.innerHTML = '';
+  PERSONAS.forEach(p => {
+    const t = state.timers[p.id];
+    const isActive = state.currentPersona === p.id && (state.view === 'chat' || state.view === 'summary');
+    const btn = document.createElement('button');
+    btn.className = 'persona-btn' + (isActive ? ' active' : '');
+    let timerHtml = '';
+    if (state.summaries[p.id]) {
+      timerHtml = '<span class="pb-timer done">✓ Done</span>';
+    } else if (t.running || t.seconds < 15 * 60) {
+      const cls = t.seconds <= 0 ? 'expired' : t.seconds <= 120 ? 'warn' : 'running';
+      const label = t.seconds < 0 ? `+${formatTime(Math.abs(t.seconds))} OT` : formatTime(t.seconds);
+      timerHtml = `<span class="pb-timer ${cls}">${label}</span>`;
+    }
+    btn.innerHTML = `<span class="pb-name">${p.emoji} ${p.name}</span><span class="pb-role">${p.role}</span>${timerHtml}`;
+    btn.onclick = () => switchToPersona(p.id);
+    list.appendChild(btn);
+  });
+  document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
+}
+
+// ── Landing cards ──────────────────────────────────────────────
+function renderLandingCards() {
+  const cont = document.getElementById('landing-cards');
+  cont.innerHTML = '';
+  PERSONAS.forEach(p => {
+    const done = !!state.summaries[p.id];
+    const c = document.createElement('div');
+    c.className = 'lp-card' + (done ? ' done' : '');
+    c.innerHTML = `<div class="lp-emoji">${p.emoji}</div><div class="lp-name">${p.name}</div><div class="lp-role">${p.role}</div>${done ? '<div class="lp-badge">✓ Summarised</div>' : ''}`;
+    c.onclick = () => switchToPersona(p.id);
+    cont.appendChild(c);
+  });
+}
+
+// ── Persona chat ───────────────────────────────────────────────
+function switchToPersona(id) {
+  state.currentPersona = id;
+  state.view = 'chat';
+  showView('chat');
+  renderChatHeader();
+  renderMessages();
+  updateInputState();
+  renderSidebar();
+  if (state.histories[id].length === 0) addGreeting(id);
+}
+
+function renderChatHeader() {
+  const p = PERSONAS.find(x => x.id === state.currentPersona);
+  const av = document.getElementById('ch-avatar');
+  av.textContent = p.emoji;
+  av.style.background = p.bg;
+  document.getElementById('ch-name').textContent = p.name;
+  document.getElementById('ch-desc').textContent = `${p.role} · Tea Fellas, Toa Payoh`;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  if (!state.currentPersona) return;
+  const t = state.timers[state.currentPersona];
+  const el = document.getElementById('ch-timer');
+  const startBtn = document.getElementById('timer-start-btn');
+  const s = t.seconds;
+  el.textContent = s < 0 ? `+${formatTime(Math.abs(s))}` : formatTime(s);
+  el.className = s <= 0 ? 'expired' : s <= 120 ? 'warn' : '';
+  startBtn.style.display = (!t.running && s === 15 * 60) ? 'inline-block' : 'none';
+}
+
+function formatTime(s) {
+  const abs = Math.abs(s);
+  return `${String(Math.floor(abs / 60)).padStart(2, '0')}:${String(abs % 60).padStart(2, '0')}`;
+}
+
+function startTimer() {
+  const id = state.currentPersona;
+  if (!id) return;
+  const t = state.timers[id];
+  if (t.running) return;
+  t.running = true;
+  document.getElementById('timer-start-btn').style.display = 'none';
+  state.timerIntervals[id] = setInterval(() => {
+    t.seconds--;
+    if (t.seconds === 120) addSysMsg('⚠️ 2 minutes remaining', false);
+    if (t.seconds === 0) addSysMsg('⏱ Time is up — interview continues in overtime', true);
+    if (state.currentPersona === id) updateTimerDisplay();
+    renderSidebar();
+  }, 1000);
+}
+
+function addGreeting(id) {
+  const greetings = {
+    'aunty-mary': "Aiyah, so many customers today ah! Come, come, sit down. What you want to know? I got a bit of time before the lunch crowd comes.",
+    'uncle-john': "Oh, hello! You want to talk to me ah? Okay lah, I can spare a few minutes. What you want to know about us here?",
+    'mrs-selva': "Oh hi! You're doing research on Tea Fellas? Wah, I'm so happy someone is finally looking at this! I have SO many thoughts — where do I even start?",
+    'jacky': "Hi, good timing. I've got about 15 minutes before my next meeting. I'm here almost every morning so I can tell you quite a bit about my experience."
+  };
+  state.histories[id].push({ role: 'assistant', content: greetings[id] });
+  renderMessages();
+}
+
+function addSysMsg(text, isOT) {
+  const msgs = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = isOT ? 'ot-msg' : 'sys-msg';
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function renderMessages() {
+  const id = state.currentPersona;
+  if (!id) return;
+  const p = PERSONAS.find(x => x.id === id);
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  state.histories[id].forEach(m => {
+    const d = document.createElement('div');
+    d.className = 'msg ' + (m.role === 'user' ? 'user' : 'persona');
+    const av = document.createElement('div');
+    av.className = 'msg-av ' + (m.role === 'user' ? 'user-av' : '');
+    av.style.background = m.role === 'user' ? 'var(--tea-green)' : p.bg;
+    av.textContent = m.role === 'user' ? 'PO' : p.emoji;
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = m.content;
+    d.appendChild(av);
+    d.appendChild(bubble);
+    msgs.appendChild(d);
+  });
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function updateInputState() {
+  const id = state.currentPersona;
+  const hasHistory = id && state.histories[id].length > 1;
+  document.getElementById('msg-input').disabled = !id;
+  document.getElementById('send-btn').disabled = !id;
+  document.getElementById('summarise-btn').disabled = !hasHistory;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function sendMsg() {
+  const id = state.currentPersona;
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || !id) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  state.histories[id].push({ role: 'user', content: text });
+  renderMessages();
+  document.getElementById('summarise-btn').disabled = false;
+
+  const t = state.timers[id];
+  if (!t.running && t.seconds === 15 * 60) startTimer();
+
+  const p = PERSONAS.find(x => x.id === id);
+  const msgs = document.getElementById('messages');
+  const typing = document.createElement('div');
+  typing.className = 'msg persona';
+  typing.innerHTML = `<div class="msg-av" style="background:${p.bg}">${p.emoji}</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: p.system,
+        messages: state.histories[id]
+      })
+    });
+    if (!resp.ok) throw new Error(resp.status);
+    const data = await resp.json();
+    typing.remove();
+    const reply = data.content?.[0]?.text || "Sorry ah, I got a bit distracted. What were you asking?";
+    state.histories[id].push({ role: 'assistant', content: reply });
+    renderMessages();
+  } catch (e) {
+    typing.remove();
+    const err = document.createElement('div');
+    err.className = 'msg persona';
+    err.innerHTML = `<div class="msg-av" style="background:${p.bg}">${p.emoji}</div><div class="msg-bubble" style="color:var(--tea-danger);font-size:13px">Connection error — please check your setup and try again.</div>`;
+    msgs.appendChild(err);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+// ── Per-persona summary ────────────────────────────────────────
+async function summarisePersona() {
+  const id = state.currentPersona;
+  const p = PERSONAS.find(x => x.id === id);
+  const hist = state.histories[id];
+  if (hist.length < 2) return;
+
+  state.view = 'summary';
+  showView('summary');
+
+  const panel = document.getElementById('summary-panel');
+  panel.innerHTML = `
+    <div class="sp-title">${p.emoji} ${p.name} — Interview Summary</div>
+    <div class="sp-sub">Auto-generated from your conversation. Review and edit as a group before confirming.</div>
+    <div class="sp-card"><div class="sp-card-title">Key pain points</div><div id="sp-pain" class="sp-loading">Analysing conversation…</div></div>
+    <div class="sp-card"><div class="sp-card-title">Aspirations & wishes</div><div id="sp-asp" class="sp-loading">Analysing conversation…</div></div>
+    <div class="sp-card"><div class="sp-card-title">Key quotes / moments</div><div id="sp-quotes" class="sp-loading">Analysing conversation…</div></div>
+    <div class="sp-actions">
+      <button class="sp-btn sp-btn-back" onclick="backToChat()">← Back to interview</button>
+      <button class="sp-btn sp-btn-confirm" onclick="confirmSummary('${id}')">Confirm & save →</button>
+    </div>`;
+
+  renderSidebar();
+
+  const transcript = hist.map(m => `${m.role === 'user' ? 'Interviewer' : p.name}: ${m.content}`).join('\n\n');
+  const prompt = `Analyse this stakeholder interview transcript for Tea Fellas, a small bubble tea shop in Toa Payoh, Singapore.\n\nTranscript:\n${transcript}\n\nReturn ONLY valid JSON, no markdown:\n{"painPoints":["3-5 specific pain points as short bullet phrases"],"aspirations":["2-4 aspirations or wishes"],"quotes":["2-3 memorable quotes or moments from the interview, paraphrased if needed"]}`;
+
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await resp.json();
+    const clean = (data.content?.[0]?.text || '{}').replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    const fmt = arr => (arr || []).map(x => `• ${x}`).join('\n');
+    setTextarea('sp-pain', fmt(parsed.painPoints));
+    setTextarea('sp-asp', fmt(parsed.aspirations));
+    setTextarea('sp-quotes', fmt(parsed.quotes));
+    state.summaries[id] = { raw: parsed };
+  } catch (e) {
+    ['sp-pain', 'sp-asp', 'sp-quotes'].forEach(sid => setTextarea(sid, ''));
+  }
+  renderSidebar();
+}
+
+function setTextarea(parentId, val) {
+  const el = document.getElementById(parentId);
+  if (!el) return;
+  el.innerHTML = '';
+  const ta = document.createElement('textarea');
+  ta.value = val;
+  ta.rows = Math.max(3, (val.match(/\n/g) || []).length + 2);
+  ta.placeholder = 'Type your notes here…';
+  el.appendChild(ta);
+}
+
+function backToChat() {
+  state.view = 'chat';
+  showView('chat');
+  renderSidebar();
+}
+
+function confirmSummary(id) {
+  const pain = document.querySelector('#sp-pain textarea')?.value || '';
+  const asp = document.querySelector('#sp-asp textarea')?.value || '';
+  const quotes = document.querySelector('#sp-quotes textarea')?.value || '';
+  state.summaries[id] = { pain, asp, quotes, confirmed: true };
+  state.view = 'landing';
+  state.currentPersona = null;
+  showView('landing');
+  renderSidebar();
+  renderLandingCards();
+}
+
+// ── Overall synthesis ──────────────────────────────────────────
+function showSynthesis() {
+  state.view = 'synthesis';
+  state.currentPersona = null;
+  showView('synthesis');
+  renderSynthesis();
+  renderSidebar();
+}
+
+function renderSynthesis() {
+  const syn = document.getElementById('synthesis-area');
+  const completed = PERSONAS.filter(p => state.summaries[p.id]);
+
+  const progress = PERSONAS.map(p => {
+    const done = !!state.summaries[p.id];
+    return `<div class="syn-prog-card ${done ? 'done' : ''}">
+      <div class="syn-prog-emoji">${p.emoji}</div>
+      <div class="syn-prog-name">${p.name}</div>
+      <div class="syn-prog-status">${done ? '✓ Summarised' : 'Not yet done'}</div>
+    </div>`;
+  }).join('');
+
+  const note = completed.length === 0
+    ? '<div class="syn-note">Complete and summarise at least one interview to generate synthesis.</div>'
+    : completed.length < 4
+    ? `<div class="syn-note">${completed.length} of 4 interviews summarised. You can generate now or complete more interviews first for richer insights.</div>`
+    : '';
+
+  syn.innerHTML = `
+    <div class="syn-title">Overall synthesis</div>
+    <div class="syn-sub">Aggregated insights across all interviews. Use this as the foundation for your product strategy discussion.</div>
+    <div class="syn-progress">${progress}</div>
+    ${note}
+    <div class="syn-card">
+      <div class="syn-card-title">Consolidated pain points</div>
+      <textarea id="syn-pain" placeholder="Click 'Generate synthesis' to populate, or type your team's notes here…">${state.synPain}</textarea>
+    </div>
+    <div class="syn-card">
+      <div class="syn-card-title">Problem statement</div>
+      <textarea id="syn-problem" placeholder="A &lt;user with a role&gt; feels &lt;emotion&gt; about &lt;current method&gt; needs to &lt;reach the goal&gt; but cannot do so because &lt;of the friction&gt; that has &lt;impact on life&gt;.">${state.synProblem}</textarea>
+    </div>
+    <div class="syn-card">
+      <div class="syn-card-title">Vision for Tea Fellas</div>
+      <textarea id="syn-vision" placeholder="What is the compelling future state Tea Fellas is moving towards?">${state.synVision}</textarea>
+    </div>
+    <div class="syn-actions">
+      <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Generate synthesis ↗</button>
+      <button class="syn-copy-btn" onclick="copySynthesis()">Copy to clipboard</button>
+      <span class="copy-toast" id="copy-toast">✓ Copied!</span>
+    </div>
+    <div style="height:24px"></div>`;
+}
+
+async function generateSynthesis() {
+  const btn = document.querySelector('.syn-gen-btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  const allContext = PERSONAS.map(p => {
+    const s = state.summaries[p.id];
+    if (!s) return null;
+    const hist = state.histories[p.id].map(m => `${m.role === 'user' ? 'Interviewer' : p.name}: ${m.content}`).join('\n');
+    return `=== ${p.name} (${p.role}) ===\n${hist}`;
+  }).filter(Boolean).join('\n\n');
+
+  const prompt = `You are helping a product team synthesise discovery interviews about Tea Fellas, a small family-run bubble tea shop in Toa Payoh, Singapore, that wants to modernise its operations and potentially expand.
+
+Interview transcripts:
+${allContext}
+
+Return ONLY valid JSON, no markdown:
+{
+  "painPoints": "3-5 consolidated cross-cutting pain points written as clear bullet points (use • as bullet character), grouped by theme where possible",
+  "problemStatement": "A single problem statement in exactly this format: A <user with a role> feels <emotion> about <current method>, needs to <reach the goal> but cannot do so because <of the friction> that has <impact>. Make it specific and grounded in the Tea Fellas context.",
+  "vision": "A compelling 2-3 sentence vision statement for what Tea Fellas could become if the key problems are solved. Should feel aspirational but grounded."
+}`;
+
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await resp.json();
+    const clean = (data.content?.[0]?.text || '{}').replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    state.synPain = parsed.painPoints || '';
+    state.synProblem = parsed.problemStatement || '';
+    state.synVision = parsed.vision || '';
+    document.getElementById('syn-pain').value = state.synPain;
+    document.getElementById('syn-problem').value = state.synProblem;
+    document.getElementById('syn-vision').value = state.synVision;
+  } catch (e) {
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Regenerate synthesis ↗';
+}
+
+function copySynthesis() {
+  const pain = document.getElementById('syn-pain')?.value || '';
+  const prob = document.getElementById('syn-problem')?.value || '';
+  const vis = document.getElementById('syn-vision')?.value || '';
+  const text = `TEA FELLAS — DISCOVERY SYNTHESIS\n${'='.repeat(40)}\n\nCONSOLIDATED PAIN POINTS\n${pain}\n\nPROBLEM STATEMENT\n${prob}\n\nVISION\n${vis}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById('copy-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  });
+}
+
+// ── Init ───────────────────────────────────────────────────────
+renderLandingCards();
+renderSidebar();
+</script>
+</body>
+</html>
