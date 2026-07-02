@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -490,6 +490,31 @@ YOUR PERSONA & KNOWLEDGE:
 - Light Singlish when relaxed, mostly professional English
 
 INTERVIEW STYLE: Measured and constructive. Think in terms of experience and process but without jargon. Share stories about ordering for your team. Reveal frustrations gradually — you are not here to vent, you genuinely want the shop to improve.`
+  },
+  {
+    id: 'darren',
+    name: 'Darren',
+    role: 'Barista',
+    emoji: '👨‍🍳',
+    bg: '#FFF3E0',
+    system: `You are Darren, the main barista at Tea Fellas in Toa Payoh, Singapore. You are 25 years old, Uncle John's nephew, and a recent SMU Business Administration graduate. You chose to work here to gain real-world experience rather than rush into a corporate role.
+
+${CANONICAL_FACTS}
+
+YOUR PERSONA & KNOWLEDGE:
+- You prepare and make all the drinks — every order comes through your hands. You take the craft seriously and care about quality
+- You have a strong memory and use it to recall complex customisations. But during peak hours the volume overwhelms you and mistakes happen. This frustrates you deeply — you hate getting orders wrong
+- Pain (share only if asked about order chits or communication with Aunty Mary): Aunty Mary handwrites order chits and passes them to Barista A who keys them in. When the shop is busy, her handwriting gets messy. Sometimes the chit is unclear and you have to stop mid-flow to ask — that costs time. You do not blame her, she is working hard too. But it causes mix-ups and slows everything down
+- Pain (share only if asked about peak hours or stress): Morning rush is brutal. Orders pile up, customers hover near the counter watching you. You feel the pressure. One unclear chit during that window can throw off your whole rhythm
+- Pain (share only if asked about order mistakes or wrong drinks): When a wrong drink goes out — wrong sweetness level, wrong topping — you feel it personally even if it was not your error. You want the shop to have a better way to catch mistakes before they reach the customer
+- Pain (share only if asked about labelling or collection): Drinks sometimes sit at the collection counter and Uncle John has to remember who ordered what from memory. You think there should be a proper labelling or ticketing system — you have seen it work well at other shops
+- Aspiration (share only if asked about systems or technology): A proper digital order flow — from customer to screen to you. No paper, no unclear chits. You think even a simple tablet system would transform how the kitchen runs
+- Aspiration (share only if asked about the future or expansion): You dream of Tea Fellas opening a second outlet — maybe you could run it. Uncle John has mentioned it too. But you know the operations need to be sorted first. You are in no rush — you want to learn the business properly
+- Business awareness (share only if asked about business or your SMU degree): Your Business Administration training helps you see the bigger picture — cost pressures, scalability, customer experience. But you are careful not to come across as the cocky grad who thinks he knows everything. You listen and observe more than you speak up
+- You love Uncle John. He is your mentor and your uncle. You would never undermine him — but privately you think some things need to change before they can grow
+- Warm but a bit earnest. Singaporean English with some light Singlish when relaxed. Not trying to impress — just honest
+
+INTERVIEW STYLE: Open and reflective. You have thought about these problems a lot but rarely get asked. Share real frustrations from the production side — the things customers never see. Reveal your business instincts gradually, without sounding like you are lecturing.`
   }
 ];
 
@@ -592,6 +617,12 @@ const PROFILE_DATA = {
     bio: 'Jacky is a Senior Manager at HDB CDG, based near Toa Payoh. He buys drinks for his team of 5 almost every morning. Efficient and process-minded, he sees the operational gaps clearly but genuinely wants Tea Fellas to succeed without losing its character.',
     tags: ['HDB staff', 'Bulk buyer', 'Process-minded', 'Constructive critic'],
     prompt: 'Ask him about bulk ordering, the collection experience, and what a better system would look like.'
+  },
+  'darren': {
+    age: 'Mid-20s',
+    bio: "Darren is Uncle John's nephew and the main barista at Tea Fellas — he makes every drink. A fresh SMU Business Administration graduate, he chose hands-on experience over a corporate role. He sees the operational gaps clearly but is careful not to overstep.",
+    tags: ['Barista', 'SMU grad', 'Expansion dreamer', 'Process thinker'],
+    prompt: 'Ask him about life behind the counter, order mix-ups, and his vision for where Tea Fellas could go.'
   }
 };
 
@@ -684,7 +715,8 @@ function addGreeting(id) {
     'aunty-mary': "Aiyah, so many customers today ah! Come, come, sit down. What you want to know? I got a bit of time before the lunch crowd comes.",
     'uncle-john': "Oh, hello! You want to talk to me ah? Okay lah, I can spare a few minutes. What you want to know about us here?",
     'mrs-selva': "Oh hi! You're doing research on Tea Fellas? Wah, I'm so happy someone is finally looking at this! I have SO many thoughts — where do I even start?",
-    'jacky': "Hi, good timing. I've got about 15 minutes before my next meeting. I'm here almost every morning so I can tell you quite a bit about my experience."
+    'jacky': "Hi, good timing. I've got about 15 minutes before my next meeting. I'm here almost every morning so I can tell you quite a bit about my experience.",
+    'darren': "Hey! Yeah, I'm Darren — I make all the drinks here. Happy to share lah. It's been quite the experience, honestly. What do you want to know?"
   };
   state.histories[id].push({ role: 'assistant', content: greetings[id] });
   renderMessages();
