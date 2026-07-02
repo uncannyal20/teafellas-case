@@ -205,9 +205,71 @@
   .syn-copy-btn:hover { border-color: var(--tea-green); color: var(--tea-green); }
   .copy-toast { font-size: 12px; color: var(--tea-green); font-weight: 600; display: none; }
   .copy-toast.show { display: inline; }
+  .sp-btn-pdf { background: var(--tea-green); color: #fff; }
+  .sp-btn-pdf:hover { background: var(--tea-green-light); }
+  .syn-pdf-btn { background: var(--tea-card); color: var(--tea-text); border: 1px solid var(--tea-border); border-radius: 8px; padding: 10px 18px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .syn-pdf-btn:hover { border-color: var(--tea-green); color: var(--tea-green); }
+  .lp-pdf-btn { font-size: 10px; color: var(--tea-green); background: none; border: 1px solid var(--tea-green); border-radius: 5px; padding: 2px 8px; cursor: pointer; margin-top: 4px; font-weight: 600; display: inline-block; }
+  .lp-pdf-btn:hover { background: var(--tea-green); color: #fff; }
+
+  /* ── Team code screen ── */
+  #team-screen {
+    position: fixed; inset: 0; background: var(--tea-bg);
+    display: flex; align-items: center; justify-content: center; z-index: 200;
+  }
+  #team-screen.hidden { display: none; }
+  .tc-box {
+    background: var(--tea-card); border-radius: 16px; padding: 36px 40px;
+    max-width: 420px; width: 90%; border: 1px solid var(--tea-border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center;
+  }
+  .tc-logo { font-size: 40px; margin-bottom: 10px; }
+  .tc-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
+  .tc-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 28px; }
+  .tc-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .tc-team-btn {
+    background: var(--tea-cream); border: 2px solid var(--tea-border); border-radius: 10px;
+    padding: 16px 12px; cursor: pointer; font-size: 16px; font-weight: 700;
+    color: var(--tea-text); transition: border-color 0.15s, background 0.15s;
+  }
+  .tc-team-btn:hover { border-color: var(--tea-green); background: #EAF2E8; color: var(--tea-green); }
+  .tc-team-btn.selected { border-color: var(--tea-green); background: var(--tea-green); color: #fff; }
+  .tc-team-label { font-size: 11px; font-weight: 400; margin-top: 3px; opacity: 0.75; }
+  .tc-enter { width: 100%; background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
+    padding: 13px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+  .tc-enter:hover { background: var(--tea-green-light); }
+  .tc-enter:disabled { opacity: 0.4; cursor: not-allowed; }
+  .tc-badge { display: inline-block; background: var(--tea-green); color: #fff; font-size: 11px;
+    font-weight: 700; border-radius: 20px; padding: 2px 10px; margin-left: 8px; vertical-align: middle; }
+  #team-indicator { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 4px; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+
+<!-- Team selection screen -->
+<div id="team-screen">
+  <div class="tc-box">
+    <div class="tc-logo">🍵</div>
+    <div class="tc-title">Tea Fellas</div>
+    <div class="tc-sub">Select your team to begin the discovery workshop</div>
+    <div class="tc-teams">
+      <button class="tc-team-btn" onclick="selectTeam('A')">
+        Team A<div class="tc-team-label">POTeamA</div>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('B')">
+        Team B<div class="tc-team-label">POTeamB</div>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('C')">
+        Team C<div class="tc-team-label">POTeamC</div>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('D')">
+        Team D<div class="tc-team-label">POTeamD</div>
+      </button>
+    </div>
+    <button class="tc-enter" id="tc-enter-btn" onclick="enterWorkshop()" disabled>Enter workshop →</button>
+  </div>
+</div>
 
 <!-- Instruction overlay -->
 <div id="overlay">
@@ -245,6 +307,7 @@
     <div id="sidebar-header">
       <div id="sidebar-logo">teafellas</div>
       <div id="sidebar-tagline">Discovery Sim</div>
+      <div id="team-indicator"></div>
     </div>
     <div id="persona-list"></div>
     <div id="sidebar-footer">
@@ -307,6 +370,97 @@
 // Replace this URL with your Cloudflare Worker URL after deployment
 const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
 // ──────────────────────────────────────────────────────────────
+
+// ── Team / DB ──────────────────────────────────────────────────
+let TEAM_CODE = null;
+
+function selectTeam(code) {
+  TEAM_CODE = code;
+  document.querySelectorAll('.tc-team-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('tc-enter-btn').disabled = false;
+}
+
+function enterWorkshop() {
+  if (!TEAM_CODE) return;
+  document.getElementById('team-screen').classList.add('hidden');
+  document.getElementById('team-indicator').textContent = 'Team ' + TEAM_CODE;
+  loadTeamSession();
+}
+
+async function saveSession(personaId) {
+  if (!TEAM_CODE) return;
+  try {
+    await fetch(API_URL + '/save-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        team_code:  TEAM_CODE,
+        persona_id: personaId,
+        messages:   state.histories[personaId],
+        summary:    state.summaries[personaId] || null,
+        synthesis:  personaId === '__synthesis__' ? {
+          pain: state.synPain, problem: state.synProblem, vision: state.synVision
+        } : null,
+      }),
+    });
+  } catch (e) { console.warn('save failed', e); }
+}
+
+async function saveSynthesis() {
+  if (!TEAM_CODE) return;
+  try {
+    await fetch(API_URL + '/save-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        team_code:  TEAM_CODE,
+        persona_id: '__synthesis__',
+        messages:   [],
+        summary:    null,
+        synthesis:  { pain: state.synPain, problem: state.synProblem, vision: state.synVision },
+      }),
+    });
+  } catch (e) { console.warn('save synthesis failed', e); }
+}
+
+async function loadTeamSession() {
+  try {
+    const res = await fetch(`${API_URL}/load-session?team_code=${TEAM_CODE}`);
+    const { rows } = await res.json();
+    if (!rows || !rows.length) return;
+    rows.forEach(r => {
+      if (r.persona_id === '__synthesis__' && r.synthesis) {
+        state.synPain    = r.synthesis.pain    || '';
+        state.synProblem = r.synthesis.problem || '';
+        state.synVision  = r.synthesis.vision  || '';
+      } else if (state.histories[r.persona_id] !== undefined) {
+        if (r.messages?.length)  state.histories[r.persona_id] = r.messages;
+        if (r.summary)           state.summaries[r.persona_id] = r.summary;
+        if (r.summary && state.timers[r.persona_id]) {
+          state.timers[r.persona_id].seconds = 0;
+        }
+      }
+    });
+    renderSidebar();
+    renderLandingCards();
+  } catch (e) { console.warn('load failed', e); }
+}
+
+// Check URL param ?team=X to skip the selection screen
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const t = (params.get('team') || '').toUpperCase();
+  if (['A','B','C','D'].includes(t)) {
+    TEAM_CODE = t;
+    document.getElementById('team-screen').classList.add('hidden');
+    // Run after DOM + state ready
+    window.addEventListener('load', () => {
+      document.getElementById('team-indicator').textContent = 'Team ' + TEAM_CODE;
+      loadTeamSession();
+    });
+  }
+})();
 
 const PERSONAS = [
   {
@@ -522,7 +676,7 @@ function renderLandingCards() {
     const done = !!state.summaries[p.id];
     const c = document.createElement('div');
     c.className = 'lp-card' + (done ? ' done' : '');
-    c.innerHTML = `<div class="lp-emoji">${p.emoji}</div><div class="lp-name">${p.name}</div><div class="lp-role">${p.role}</div>${done ? '<div class="lp-badge">✓ Summarised</div>' : ''}`;
+    c.innerHTML = `<div class="lp-emoji">${p.emoji}</div><div class="lp-name">${p.name}</div><div class="lp-role">${p.role}</div>${done ? '<div class="lp-badge">✓ Summarised</div><button class="lp-pdf-btn" onclick="event.stopPropagation();downloadPersonaPDF(\''+p.id+'\',true)">Download PDF</button>' : ''}`;
     c.onclick = () => switchToPersona(p.id);
     cont.appendChild(c);
   });
@@ -682,6 +836,7 @@ async function sendMsg() {
     const reply = data.content?.[0]?.text || "Sorry ah, I got a bit distracted. What were you asking?";
     state.histories[id].push({ role: 'assistant', content: reply });
     renderMessages();
+    saveSession(id);
   } catch (e) {
     typing.remove();
     const err = document.createElement('div');
@@ -711,6 +866,7 @@ async function summarisePersona() {
     <div class="sp-card"><div class="sp-card-title">Key quotes / moments</div><div id="sp-quotes" class="sp-loading">Analysing conversation…</div></div>
     <div class="sp-actions">
       <button class="sp-btn sp-btn-back" onclick="backToChat()">← Back to interview</button>
+      <button class="sp-btn sp-btn-pdf" onclick="downloadPersonaPDF('${id}', false)">Download PDF</button>
       <button class="sp-btn sp-btn-confirm" onclick="confirmSummary('${id}')">Confirm & save →</button>
     </div>`;
 
@@ -761,6 +917,7 @@ function confirmSummary(id) {
   const asp = document.querySelector('#sp-asp textarea')?.value || '';
   const quotes = document.querySelector('#sp-quotes textarea')?.value || '';
   state.summaries[id] = { pain, asp, quotes, confirmed: true };
+  saveSession(id);
   state.view = 'landing';
   state.currentPersona = null;
   showView('landing');
@@ -816,6 +973,7 @@ function renderSynthesis() {
     <div class="syn-actions">
       <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Generate synthesis ↗</button>
       <button class="syn-copy-btn" onclick="copySynthesis()">Copy to clipboard</button>
+      <button class="syn-pdf-btn" onclick="downloadSynthesisPDF()">Download PDF</button>
       <span class="copy-toast" id="copy-toast">✓ Copied!</span>
     </div>
     <div style="height:24px"></div>`;
@@ -860,6 +1018,7 @@ Return ONLY valid JSON, no markdown:
     document.getElementById('syn-pain').value = state.synPain;
     document.getElementById('syn-problem').value = state.synProblem;
     document.getElementById('syn-vision').value = state.synVision;
+    saveSynthesis();
   } catch (e) {
     console.error(e);
   }
@@ -878,6 +1037,184 @@ function copySynthesis() {
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2500);
   });
+}
+
+// ── PDF Export ─────────────────────────────────────────────────
+function _pdfHeader(doc) {
+  const pw = doc.internal.pageSize.getWidth();
+  doc.setFillColor(45, 90, 39);
+  doc.rect(0, 0, pw, 36, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+  doc.text('teafellas', 16, 15);
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  doc.text('DISCOVERY SIMULATION', 16, 24);
+  doc.text(new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'long', year: 'numeric' }), pw - 16, 24, { align: 'right' });
+}
+
+function _pbk(doc, y, needed) {
+  if (y + needed > doc.internal.pageSize.getHeight() - 20) {
+    doc.addPage(); _pdfHeader(doc); return 46;
+  }
+  return y;
+}
+
+function downloadPersonaPDF(id, fromState) {
+  if (!window.jspdf) { alert('PDF library not loaded — please refresh.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const p = PERSONAS.find(x => x.id === id);
+  const pw = doc.internal.pageSize.getWidth();
+  const mg = 16, cw = pw - mg * 2;
+  let pain, asp, quotes;
+  if (fromState) {
+    const s = state.summaries[id] || {};
+    pain = s.pain || ''; asp = s.asp || ''; quotes = s.quotes || '';
+  } else {
+    pain  = document.querySelector('#sp-pain textarea')?.value  || '';
+    asp   = document.querySelector('#sp-asp textarea')?.value   || '';
+    quotes = document.querySelector('#sp-quotes textarea')?.value || '';
+  }
+
+  _pdfHeader(doc);
+  let y = 46;
+
+  doc.setFontSize(20); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
+  doc.text(p.name, mg, y); y += 7;
+  doc.setFontSize(11); doc.setFont('helvetica', 'normal'); doc.setTextColor(193, 122, 42);
+  doc.text(p.role + '  |  Tea Fellas, Toa Payoh', mg, y); y += 10;
+  doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 10;
+
+  [['KEY PAIN POINTS', pain], ['ASPIRATIONS & WISHES', asp], ['KEY QUOTES / MOMENTS', quotes]].forEach(([lbl, val]) => {
+    if (!val) return;
+    y = _pbk(doc, y, 20);
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
+    doc.text(lbl, mg, y); y += 5;
+    const lines = doc.splitTextToSize(val, cw - 6);
+    const bh = lines.length * 5 + 8;
+    y = _pbk(doc, y, bh);
+    doc.setFillColor(234, 242, 232);
+    doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
+    doc.text(lines, mg + 4, y + 2); y += bh + 6;
+  });
+
+  doc.addPage(); _pdfHeader(doc); y = 46;
+  doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
+  doc.text('FULL INTERVIEW TRANSCRIPT', mg, y); y += 4;
+  doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 8;
+
+  state.histories[id].forEach(m => {
+    const speaker = m.role === 'user' ? 'Interviewer' : p.name;
+    const clr = m.role === 'user' ? [193, 122, 42] : [45, 90, 39];
+    const lines = doc.splitTextToSize(m.content, cw - 4);
+    y = _pbk(doc, y, 6 + lines.length * 5 + 5);
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(...clr);
+    doc.text(speaker, mg, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
+    doc.text(lines, mg + 2, y); y += lines.length * 5 + 5;
+  });
+
+  doc.save(`teafellas-${p.name.toLowerCase().replace(/\s+/g, '-')}-interview.pdf`);
+}
+
+function downloadSynthesisPDF() {
+  if (!window.jspdf) { alert('PDF library not loaded — please refresh.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pw = doc.internal.pageSize.getWidth();
+  const mg = 16, cw = pw - mg * 2;
+
+  _pdfHeader(doc);
+  let y = 46;
+
+  doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
+  doc.text('Overall Synthesis', mg, y); y += 8;
+  doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(107, 90, 62);
+  doc.text('HDB TPO Workshop — Tea Fellas Discovery', mg, y); y += 12;
+
+  doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
+  doc.text('PERSONAS INTERVIEWED', mg, y); y += 5;
+  const colW = cw / 4;
+  PERSONAS.forEach((p, i) => {
+    const done = !!state.summaries[p.id];
+    const x = mg + i * colW;
+    doc.setFillColor(done ? 234 : 245, done ? 242 : 240, done ? 232 : 232);
+    doc.roundedRect(x, y, colW - 2, 20, 2, 2, 'F');
+    if (done) { doc.setDrawColor(45, 90, 39); doc.roundedRect(x, y, colW - 2, 20, 2, 2, 'S'); }
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
+    doc.text(p.name, x + 3, y + 6);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(107, 90, 62);
+    doc.text(p.role, x + 3, y + 12);
+    if (done) { doc.setTextColor(45, 90, 39); doc.text('✓ Done', x + 3, y + 17); }
+  });
+  y += 28;
+  doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 10;
+
+  if (state.synPain) {
+    y = _pbk(doc, y, 20);
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
+    doc.text('CONSOLIDATED PAIN POINTS', mg, y); y += 5;
+    const lines = doc.splitTextToSize(state.synPain, cw - 6);
+    const bh = lines.length * 5 + 8;
+    y = _pbk(doc, y, bh);
+    doc.setFillColor(234, 242, 232); doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
+    doc.text(lines, mg + 4, y + 2); y += bh + 8;
+  }
+
+  if (state.synProblem) {
+    y = _pbk(doc, y, 25);
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
+    doc.text('PROBLEM STATEMENT', mg, y); y += 5;
+    const lines = doc.splitTextToSize(state.synProblem, cw - 10);
+    const bh = lines.length * 5 + 10;
+    y = _pbk(doc, y, bh);
+    doc.setFillColor(254, 243, 205); doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
+    doc.setFillColor(193, 122, 42); doc.rect(mg, y - 3, 3, bh, 'F');
+    doc.setFont('helvetica', 'italic'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
+    doc.text(lines, mg + 6, y + 3); y += bh + 8;
+  }
+
+  if (state.synVision) {
+    y = _pbk(doc, y, 20);
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
+    doc.text('VISION FOR TEA FELLAS', mg, y); y += 5;
+    const lines = doc.splitTextToSize(state.synVision, cw - 6);
+    const bh = lines.length * 5 + 8;
+    y = _pbk(doc, y, bh);
+    doc.setFillColor(237, 228, 208); doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
+    doc.text(lines, mg + 4, y + 2); y += bh + 8;
+  }
+
+  const summarised = PERSONAS.filter(p => state.summaries[p.id]);
+  if (summarised.length > 0) {
+    doc.addPage(); _pdfHeader(doc); y = 46;
+    doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
+    doc.text('APPENDIX — Individual Interview Summaries', mg, y); y += 4;
+    doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 10;
+
+    summarised.forEach(p => {
+      const s = state.summaries[p.id];
+      y = _pbk(doc, y, 30);
+      doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
+      doc.text(`${p.name}  |  ${p.role}`, mg, y); y += 6;
+      [['PAIN POINTS', s.pain], ['ASPIRATIONS', s.asp], ['KEY QUOTES', s.quotes]].forEach(([lbl, val]) => {
+        if (!val) return;
+        y = _pbk(doc, y, 14);
+        doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(193, 122, 42);
+        doc.text(lbl, mg + 2, y); y += 4;
+        const lines = doc.splitTextToSize(val, cw - 4);
+        y = _pbk(doc, y, lines.length * 4.5);
+        doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(44, 36, 22);
+        doc.text(lines, mg + 2, y); y += lines.length * 4.5 + 4;
+      });
+      y += 4; doc.setDrawColor(237, 228, 208); doc.line(mg, y, pw - mg, y); y += 8;
+    });
+  }
+
+  doc.save('teafellas-synthesis.pdf');
 }
 
 // ── Init ───────────────────────────────────────────────────────
