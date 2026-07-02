@@ -474,10 +474,7 @@ const PERSONAS = [
     name: 'Aunty Mary',
     role: 'Cashier',
     emoji: '👵',
-    avatar: null,
-    avatarSeed: 'tf-aunty-mary-2024',
-    avatarGender: 'female',
-    avatarNat: 'cn',
+    avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
     bg: '#FEF0E6',
     system: `You are Aunty Mary, the cashier at Tea Fellas, a beloved bubble tea and tea shop in Toa Payoh, Singapore. You are a warm, hardworking woman in your 60s who has been running the cashier counter for years.
 
@@ -514,10 +511,7 @@ Share specific details when asked about operations. Be warm, authentic, and cand
     name: 'Uncle John',
     role: 'Server / Collection',
     emoji: '👴',
-    avatar: null,
-    avatarSeed: 'tf-uncle-john-2024',
-    avatarGender: 'male',
-    avatarNat: 'cn',
+    avatar: 'https://randomuser.me/api/portraits/men/64.jpg',
     bg: '#EAF2E8',
     system: `You are Uncle John, one of the founding family members of Tea Fellas, a bubble tea shop in Toa Payoh, Singapore. You manage the drink collection counter. You are in your late 50s, hardworking, proud, and direct.
 
@@ -551,10 +545,7 @@ Be authentic. Tell stories about specific incidents during your day — the cust
     name: 'Mrs Selva',
     role: 'Loyal Customer',
     emoji: '🧑‍🦳',
-    avatar: null,
-    avatarSeed: 'tf-mrs-selva-2024',
-    avatarGender: 'female',
-    avatarNat: 'in',
+    avatar: 'https://randomuser.me/api/portraits/women/46.jpg',
     bg: '#F0E8F8',
     system: `You are Mrs Selva, a loyal Tea Fellas customer. You are in your early 50s, Indian-Singaporean, live in the Toa Payoh HDB estate, and absolutely love bubble tea — especially milk teas and taro. You are warm, enthusiastic, and very opinionated about the shops you love.
 
@@ -587,10 +578,7 @@ Share personal anecdotes. You are enthusiastic and want this shop to thrive. You
     name: 'Jacky',
     role: 'HDB Staff / Regular',
     emoji: '👨‍💼',
-    avatar: null,
-    avatarSeed: 'tf-jacky-2024',
-    avatarGender: 'male',
-    avatarNat: 'cn',
+    avatar: 'https://randomuser.me/api/portraits/men/21.jpg',
     bg: '#E6F0FA',
     system: `You are Jacky, a Senior Manager in HDB's Corporate Development Group (CDG), based near Toa Payoh. You are 35, efficient, professional, and a regular Tea Fellas patron — you pick up drinks for yourself and your team of 5 almost every morning.
 
@@ -1244,29 +1232,11 @@ function downloadSynthesisPDF() {
 }
 
 // ── Init ───────────────────────────────────────────────────────
-async function fetchAvatars() {
-  await Promise.all(PERSONAS.map(async p => {
-    try {
-      const res = await fetch(
-        `https://randomuser.me/api/?gender=${p.avatarGender}&nat=${p.avatarNat}&seed=${p.avatarSeed}&results=1`
-      );
-      const data = await res.json();
-      p.avatar = data.results[0].picture.large;
-    } catch (e) {
-      p.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=2D5A27&color=fff&size=128`;
-    }
-  }));
-  // Re-render everywhere avatars appear
-  renderSidebar();
-  renderLandingCards();
-  // Update static overlay photos
-  document.querySelectorAll('.ov-p-img').forEach(img => {
-    const p = PERSONAS.find(x => x.name === img.dataset.name);
-    if (p && p.avatar) img.src = p.avatar;
-  });
-}
-
-fetchAvatars().then(() => {});
+// Populate static overlay avatar imgs
+document.querySelectorAll('.ov-p-img').forEach(img => {
+  const p = PERSONAS.find(x => x.name === img.dataset.name);
+  if (p) img.src = p.avatar;
+});
 renderLandingCards();
 renderSidebar();
 </script>
