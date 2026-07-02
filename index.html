@@ -44,7 +44,8 @@
   .ov-step-text strong { color: var(--tea-green); font-weight: 600; }
   .ov-personas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
   .ov-persona { background: var(--tea-cream); border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; }
-  .ov-p-emoji { font-size: 22px; }
+  .ov-p-emoji { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .ov-p-emoji img { width: 100%; height: 100%; object-fit: cover; }
   .ov-p-info { }
   .ov-p-name { font-size: 13px; font-weight: 600; color: var(--tea-text); }
   .ov-p-role { font-size: 11px; color: var(--tea-muted); }
@@ -61,9 +62,12 @@
   #sidebar-logo { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
   #sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; letter-spacing: 0.8px; text-transform: uppercase; }
   #persona-list { flex: 1; padding: 8px 0; overflow-y: auto; }
-  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 10px 14px;
-    text-align: left; display: flex; flex-direction: column; gap: 3px;
+  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 8px 14px;
+    text-align: left; display: flex; flex-direction: row; align-items: center; gap: 10px;
     border-left: 3px solid transparent; transition: background 0.15s; }
+  .pb-avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .pb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pb-info { display: flex; flex-direction: column; gap: 2px; }
   .persona-btn:hover { background: rgba(255,255,255,0.1); }
   .persona-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); }
   .pb-name { font-size: 13px; font-weight: 600; color: #fff; }
@@ -93,7 +97,8 @@
     padding: 16px; cursor: pointer; text-align: center; transition: border-color 0.15s, transform 0.12s; }
   .lp-card:hover { border-color: var(--tea-green); transform: translateY(-2px); }
   .lp-card.done { border-color: var(--tea-green); background: #EAF2E8; }
-  .lp-emoji { font-size: 30px; margin-bottom: 6px; }
+  .lp-emoji { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; margin: 0 auto 8px; }
+  .lp-emoji img { width: 100%; height: 100%; object-fit: cover; }
   .lp-name { font-size: 14px; font-weight: 600; color: var(--tea-text); }
   .lp-role { font-size: 11px; color: var(--tea-muted); margin-top: 2px; }
   .lp-badge { font-size: 10px; color: var(--tea-green); font-weight: 600; margin-top: 4px; }
@@ -103,8 +108,8 @@
   #chat-area.visible { display: flex; }
   #chat-header { background: var(--tea-card); border-bottom: 1px solid var(--tea-border);
     padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-  #ch-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center;
-    justify-content: center; font-size: 18px; flex-shrink: 0; }
+  #ch-avatar { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  #ch-avatar img { width: 100%; height: 100%; object-fit: cover; }
   #ch-info { flex: 1; min-width: 0; }
   #ch-name { font-size: 15px; font-weight: 600; color: var(--tea-text); }
   #ch-desc { font-size: 11px; color: var(--tea-muted); margin-top: 1px; }
@@ -119,9 +124,9 @@
   #messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
   .msg { display: flex; gap: 8px; align-items: flex-start; max-width: 88%; }
   .msg.user { align-self: flex-end; flex-direction: row-reverse; }
-  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
-    justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-  .msg-av.user-av { background: var(--tea-green); color: #fff; font-size: 10px; font-weight: 700; }
+  .msg-av { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; margin-top: 2px; }
+  .msg-av.user-av { background: var(--tea-green); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .msg-av img { width: 100%; height: 100%; object-fit: cover; }
   .msg-bubble { padding: 9px 13px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
   .msg.persona .msg-bubble { background: var(--tea-card); border: 1px solid var(--tea-border);
     color: var(--tea-text); border-top-left-radius: 3px; }
@@ -181,7 +186,8 @@
   .syn-prog-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px;
     padding: 10px 12px; text-align: center; }
   .syn-prog-card.done { border-color: var(--tea-green); background: #EAF2E8; }
-  .syn-prog-emoji { font-size: 20px; }
+  .syn-prog-emoji { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; margin: 0 auto 4px; }
+  .syn-prog-emoji img { width: 100%; height: 100%; object-fit: cover; }
   .syn-prog-name { font-size: 11px; font-weight: 600; color: var(--tea-text); margin-top: 3px; }
   .syn-prog-status { font-size: 10px; color: var(--tea-muted); margin-top: 2px; }
   .syn-prog-card.done .syn-prog-status { color: var(--tea-green); }
@@ -292,10 +298,10 @@
       </div>
     </div>
     <div class="ov-personas">
-      <div class="ov-persona"><div class="ov-p-emoji">👵</div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">🧑‍🦳</div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">👨‍💼</div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/women/79.jpg" alt="Aunty Mary"></div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/men/77.jpg" alt="Uncle John"></div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Mrs Selva"></div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Jacky"></div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
     </div>
     <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
   </div>
@@ -468,6 +474,7 @@ const PERSONAS = [
     name: 'Aunty Mary',
     role: 'Cashier',
     emoji: '👵',
+    avatar: 'https://randomuser.me/api/portraits/women/79.jpg',
     bg: '#FEF0E6',
     system: `You are Aunty Mary, the cashier at Tea Fellas, a beloved bubble tea and tea shop in Toa Payoh, Singapore. You are a warm, hardworking woman in your 60s who has been running the cashier counter for years.
 
@@ -504,6 +511,7 @@ Share specific details when asked about operations. Be warm, authentic, and cand
     name: 'Uncle John',
     role: 'Server / Collection',
     emoji: '👴',
+    avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
     bg: '#EAF2E8',
     system: `You are Uncle John, one of the founding family members of Tea Fellas, a bubble tea shop in Toa Payoh, Singapore. You manage the drink collection counter. You are in your late 50s, hardworking, proud, and direct.
 
@@ -537,6 +545,7 @@ Be authentic. Tell stories about specific incidents during your day — the cust
     name: 'Mrs Selva',
     role: 'Loyal Customer',
     emoji: '🧑‍🦳',
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
     bg: '#F0E8F8',
     system: `You are Mrs Selva, a loyal Tea Fellas customer. You are in your early 50s, Indian-Singaporean, live in the Toa Payoh HDB estate, and absolutely love bubble tea — especially milk teas and taro. You are warm, enthusiastic, and very opinionated about the shops you love.
 
@@ -569,6 +578,7 @@ Share personal anecdotes. You are enthusiastic and want this shop to thrive. You
     name: 'Jacky',
     role: 'HDB Staff / Regular',
     emoji: '👨‍💼',
+    avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
     bg: '#E6F0FA',
     system: `You are Jacky, a Senior Manager in HDB's Corporate Development Group (CDG), based near Toa Payoh. You are 35, efficient, professional, and a regular Tea Fellas patron — you pick up drinks for yourself and your team of 5 almost every morning.
 
@@ -661,7 +671,7 @@ function renderSidebar() {
       const label = t.seconds < 0 ? `+${formatTime(Math.abs(t.seconds))} OT` : formatTime(t.seconds);
       timerHtml = `<span class="pb-timer ${cls}">${label}</span>`;
     }
-    btn.innerHTML = `<span class="pb-name">${p.emoji} ${p.name}</span><span class="pb-role">${p.role}</span>${timerHtml}`;
+    btn.innerHTML = `<div class="pb-avatar"><img src="${p.avatar}" alt="${p.name}"></div><div class="pb-info"><span class="pb-name">${p.name}</span><span class="pb-role">${p.role}</span>${timerHtml}</div>`;
     btn.onclick = () => switchToPersona(p.id);
     list.appendChild(btn);
   });
@@ -676,7 +686,7 @@ function renderLandingCards() {
     const done = !!state.summaries[p.id];
     const c = document.createElement('div');
     c.className = 'lp-card' + (done ? ' done' : '');
-    c.innerHTML = `<div class="lp-emoji">${p.emoji}</div><div class="lp-name">${p.name}</div><div class="lp-role">${p.role}</div>${done ? '<div class="lp-badge">✓ Summarised</div><button class="lp-pdf-btn" onclick="event.stopPropagation();downloadPersonaPDF(\''+p.id+'\',true)">Download PDF</button>' : ''}`;
+    c.innerHTML = `<div class="lp-emoji"><img src="${p.avatar}" alt="${p.name}"></div><div class="lp-name">${p.name}</div><div class="lp-role">${p.role}</div>${done ? '<div class="lp-badge">✓ Summarised</div><button class="lp-pdf-btn" onclick="event.stopPropagation();downloadPersonaPDF(\''+p.id+'\',true)">Download PDF</button>' : ''}`;
     c.onclick = () => switchToPersona(p.id);
     cont.appendChild(c);
   });
@@ -697,8 +707,8 @@ function switchToPersona(id) {
 function renderChatHeader() {
   const p = PERSONAS.find(x => x.id === state.currentPersona);
   const av = document.getElementById('ch-avatar');
-  av.textContent = p.emoji;
-  av.style.background = p.bg;
+  av.innerHTML = `<img src="${p.avatar}" alt="${p.name}">`;
+  av.style.background = 'transparent';
   document.getElementById('ch-name').textContent = p.name;
   document.getElementById('ch-desc').textContent = `${p.role} · Tea Fellas, Toa Payoh`;
   updateTimerDisplay();
@@ -766,9 +776,13 @@ function renderMessages() {
     const d = document.createElement('div');
     d.className = 'msg ' + (m.role === 'user' ? 'user' : 'persona');
     const av = document.createElement('div');
-    av.className = 'msg-av ' + (m.role === 'user' ? 'user-av' : '');
-    av.style.background = m.role === 'user' ? 'var(--tea-green)' : p.bg;
-    av.textContent = m.role === 'user' ? 'PO' : p.emoji;
+    if (m.role === 'user') {
+      av.className = 'msg-av user-av';
+      av.textContent = 'PO';
+    } else {
+      av.className = 'msg-av';
+      av.innerHTML = `<img src="${p.avatar}" alt="${p.name}">`;
+    }
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
     bubble.textContent = m.content;
@@ -815,7 +829,7 @@ async function sendMsg() {
   const msgs = document.getElementById('messages');
   const typing = document.createElement('div');
   typing.className = 'msg persona';
-  typing.innerHTML = `<div class="msg-av" style="background:${p.bg}">${p.emoji}</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  typing.innerHTML = `<div class="msg-av"><img src="${p.avatar}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(typing);
   msgs.scrollTop = msgs.scrollHeight;
 
@@ -841,7 +855,7 @@ async function sendMsg() {
     typing.remove();
     const err = document.createElement('div');
     err.className = 'msg persona';
-    err.innerHTML = `<div class="msg-av" style="background:${p.bg}">${p.emoji}</div><div class="msg-bubble" style="color:var(--tea-danger);font-size:13px">Connection error — please check your setup and try again.</div>`;
+    err.innerHTML = `<div class="msg-av"><img src="${p.avatar}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div><div class="msg-bubble" style="color:var(--tea-danger);font-size:13px">Connection error — please check your setup and try again.</div>`;
     msgs.appendChild(err);
     msgs.scrollTop = msgs.scrollHeight;
   }
@@ -859,7 +873,7 @@ async function summarisePersona() {
 
   const panel = document.getElementById('summary-panel');
   panel.innerHTML = `
-    <div class="sp-title">${p.emoji} ${p.name} — Interview Summary</div>
+    <div class="sp-title"><img src="${p.avatar}" alt="${p.name}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:8px;">${p.name} — Interview Summary</div>
     <div class="sp-sub">Auto-generated from your conversation. Review and edit as a group before confirming.</div>
     <div class="sp-card"><div class="sp-card-title">Key pain points</div><div id="sp-pain" class="sp-loading">Analysing conversation…</div></div>
     <div class="sp-card"><div class="sp-card-title">Aspirations & wishes</div><div id="sp-asp" class="sp-loading">Analysing conversation…</div></div>
@@ -941,7 +955,7 @@ function renderSynthesis() {
   const progress = PERSONAS.map(p => {
     const done = !!state.summaries[p.id];
     return `<div class="syn-prog-card ${done ? 'done' : ''}">
-      <div class="syn-prog-emoji">${p.emoji}</div>
+      <div class="syn-prog-emoji"><img src="${p.avatar}" alt="${p.name}"></div>
       <div class="syn-prog-name">${p.name}</div>
       <div class="syn-prog-status">${done ? '✓ Summarised' : 'Not yet done'}</div>
     </div>`;
