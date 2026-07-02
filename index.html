@@ -44,8 +44,7 @@
   .ov-step-text strong { color: var(--tea-green); font-weight: 600; }
   .ov-personas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
   .ov-persona { background: var(--tea-cream); border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; }
-  .ov-p-emoji { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
-  .ov-p-emoji img { width: 100%; height: 100%; object-fit: cover; }
+  .ov-p-emoji { font-size: 22px; }
   .ov-p-info { }
   .ov-p-name { font-size: 13px; font-weight: 600; color: var(--tea-text); }
   .ov-p-role { font-size: 11px; color: var(--tea-muted); }
@@ -62,12 +61,9 @@
   #sidebar-logo { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
   #sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; letter-spacing: 0.8px; text-transform: uppercase; }
   #persona-list { flex: 1; padding: 8px 0; overflow-y: auto; }
-  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 8px 14px;
-    text-align: left; display: flex; flex-direction: row; align-items: center; gap: 10px;
+  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 10px 14px;
+    text-align: left; display: flex; flex-direction: column; gap: 3px;
     border-left: 3px solid transparent; transition: background 0.15s; }
-  .pb-avatar { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
-  .pb-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .pb-info { display: flex; flex-direction: column; gap: 2px; }
   .persona-btn:hover { background: rgba(255,255,255,0.1); }
   .persona-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); }
   .pb-name { font-size: 13px; font-weight: 600; color: #fff; }
@@ -97,8 +93,7 @@
     padding: 16px; cursor: pointer; text-align: center; transition: border-color 0.15s, transform 0.12s; }
   .lp-card:hover { border-color: var(--tea-green); transform: translateY(-2px); }
   .lp-card.done { border-color: var(--tea-green); background: #EAF2E8; }
-  .lp-emoji { width: 60px; height: 60px; border-radius: 50%; overflow: hidden; margin: 0 auto 8px; }
-  .lp-emoji img { width: 100%; height: 100%; object-fit: cover; }
+  .lp-emoji { font-size: 30px; margin-bottom: 6px; }
   .lp-name { font-size: 14px; font-weight: 600; color: var(--tea-text); }
   .lp-role { font-size: 11px; color: var(--tea-muted); margin-top: 2px; }
   .lp-badge { font-size: 10px; color: var(--tea-green); font-weight: 600; margin-top: 4px; }
@@ -108,8 +103,8 @@
   #chat-area.visible { display: flex; }
   #chat-header { background: var(--tea-card); border-bottom: 1px solid var(--tea-border);
     padding: 10px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-  #ch-avatar { width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
-  #ch-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  #ch-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0; }
   #ch-info { flex: 1; min-width: 0; }
   #ch-name { font-size: 15px; font-weight: 600; color: var(--tea-text); }
   #ch-desc { font-size: 11px; color: var(--tea-muted); margin-top: 1px; }
@@ -124,9 +119,9 @@
   #messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
   .msg { display: flex; gap: 8px; align-items: flex-start; max-width: 88%; }
   .msg.user { align-self: flex-end; flex-direction: row-reverse; }
-  .msg-av { width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0; margin-top: 2px; }
-  .msg-av.user-av { background: var(--tea-green); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-  .msg-av img { width: 100%; height: 100%; object-fit: cover; }
+  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .msg-av.user-av { background: var(--tea-green); color: #fff; font-size: 10px; font-weight: 700; }
   .msg-bubble { padding: 9px 13px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
   .msg.persona .msg-bubble { background: var(--tea-card); border: 1px solid var(--tea-border);
     color: var(--tea-text); border-top-left-radius: 3px; }
@@ -186,8 +181,7 @@
   .syn-prog-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px;
     padding: 10px 12px; text-align: center; }
   .syn-prog-card.done { border-color: var(--tea-green); background: #EAF2E8; }
-  .syn-prog-emoji { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; margin: 0 auto 4px; }
-  .syn-prog-emoji img { width: 100%; height: 100%; object-fit: cover; }
+  .syn-prog-emoji { font-size: 20px; }
   .syn-prog-name { font-size: 11px; font-weight: 600; color: var(--tea-text); margin-top: 3px; }
   .syn-prog-status { font-size: 10px; color: var(--tea-muted); margin-top: 2px; }
   .syn-prog-card.done .syn-prog-status { color: var(--tea-green); }
@@ -211,71 +205,31 @@
   .syn-copy-btn:hover { border-color: var(--tea-green); color: var(--tea-green); }
   .copy-toast { font-size: 12px; color: var(--tea-green); font-weight: 600; display: none; }
   .copy-toast.show { display: inline; }
-  .sp-btn-pdf { background: var(--tea-green); color: #fff; }
-  .sp-btn-pdf:hover { background: var(--tea-green-light); }
-  .syn-pdf-btn { background: var(--tea-card); color: var(--tea-text); border: 1px solid var(--tea-border); border-radius: 8px; padding: 10px 18px; font-size: 13px; cursor: pointer; font-weight: 600; }
-  .syn-pdf-btn:hover { border-color: var(--tea-green); color: var(--tea-green); }
-  .lp-pdf-btn { font-size: 10px; color: var(--tea-green); background: none; border: 1px solid var(--tea-green); border-radius: 5px; padding: 2px 8px; cursor: pointer; margin-top: 4px; font-weight: 600; display: inline-block; }
-  .lp-pdf-btn:hover { background: var(--tea-green); color: #fff; }
 
-  /* ── Team code screen ── */
-  #team-screen {
-    position: fixed; inset: 0; background: var(--tea-bg);
-    display: flex; align-items: center; justify-content: center; z-index: 200;
-  }
-  #team-screen.hidden { display: none; }
-  .tc-box {
-    background: var(--tea-card); border-radius: 16px; padding: 36px 40px;
-    max-width: 420px; width: 90%; border: 1px solid var(--tea-border);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08); text-align: center;
-  }
-  .tc-logo { font-size: 40px; margin-bottom: 10px; }
-  .tc-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
-  .tc-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 28px; }
-  .tc-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .tc-team-btn {
-    background: var(--tea-cream); border: 2px solid var(--tea-border); border-radius: 10px;
-    padding: 16px 12px; cursor: pointer; font-size: 16px; font-weight: 700;
-    color: var(--tea-text); transition: border-color 0.15s, background 0.15s;
-  }
-  .tc-team-btn:hover { border-color: var(--tea-green); background: #EAF2E8; color: var(--tea-green); }
-  .tc-team-btn.selected { border-color: var(--tea-green); background: var(--tea-green); color: #fff; }
-  .tc-team-label { font-size: 11px; font-weight: 400; margin-top: 3px; opacity: 0.75; }
-  .tc-enter { width: 100%; background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
-    padding: 13px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 4px; }
-  .tc-enter:hover { background: var(--tea-green-light); }
-  .tc-enter:disabled { opacity: 0.4; cursor: not-allowed; }
-  .tc-badge { display: inline-block; background: var(--tea-green); color: #fff; font-size: 11px;
-    font-weight: 700; border-radius: 20px; padding: 2px 10px; margin-left: 8px; vertical-align: middle; }
-  #team-indicator { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+  /* ── Landing profile cards ── */
+  #landing { overflow-y: auto; justify-content: flex-start; padding-top: 28px; }
+  .landing-header { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
+  .landing-header h2 { font-size: 20px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
+  .landing-header p { font-size: 13px; color: var(--tea-muted); max-width: 480px; margin: 0 auto; line-height: 1.6; }
+  .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: 100%; max-width: 780px; margin: 0 auto; padding: 0 20px 28px; }
+  .profile-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s; }
+  .profile-card:hover { border-color: var(--tea-green); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(45,90,39,0.1); }
+  .profile-card.done { border-color: var(--tea-green); background: #EAF2E8; }
+  .pc-header { padding: 14px 16px 10px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--tea-border); }
+  .pc-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .pc-identity { flex: 1; min-width: 0; }
+  .pc-name { font-size: 15px; font-weight: 700; color: var(--tea-text); }
+  .pc-role { font-size: 11px; color: var(--tea-muted); margin-top: 2px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; }
+  .pc-badge { font-size: 10px; font-weight: 700; color: var(--tea-green); background: #D4EDD1; border-radius: 20px; padding: 2px 8px; margin-left: auto; flex-shrink: 0; }
+  .pc-body { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .pc-bio { font-size: 13px; color: var(--tea-text); line-height: 1.6; }
+  .pc-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .pc-tag { font-size: 11px; background: var(--tea-cream); color: var(--tea-muted); border-radius: 20px; padding: 3px 9px; border: 1px solid var(--tea-border); }
+  .pc-cta { margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--tea-green); display: flex; align-items: center; gap: 4px; }
+  .pc-card-done .pc-cta { color: var(--tea-muted); }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
-<!-- Team selection screen -->
-<div id="team-screen">
-  <div class="tc-box">
-    <div class="tc-logo">🍵</div>
-    <div class="tc-title">Tea Fellas</div>
-    <div class="tc-sub">Select your team to begin the discovery workshop</div>
-    <div class="tc-teams">
-      <button class="tc-team-btn" onclick="selectTeam('A')">
-        Team A<div class="tc-team-label">POTeamA</div>
-      </button>
-      <button class="tc-team-btn" onclick="selectTeam('B')">
-        Team B<div class="tc-team-label">POTeamB</div>
-      </button>
-      <button class="tc-team-btn" onclick="selectTeam('C')">
-        Team C<div class="tc-team-label">POTeamC</div>
-      </button>
-      <button class="tc-team-btn" onclick="selectTeam('D')">
-        Team D<div class="tc-team-label">POTeamD</div>
-      </button>
-    </div>
-    <button class="tc-enter" id="tc-enter-btn" onclick="enterWorkshop()" disabled>Enter workshop →</button>
-  </div>
-</div>
 
 <!-- Instruction overlay -->
 <div id="overlay">
@@ -298,10 +252,10 @@
       </div>
     </div>
     <div class="ov-personas">
-      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Aunty Mary" src="" alt="Aunty Mary"></div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Uncle John" src="" alt="Uncle John"></div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Mrs Selva" src="" alt="Mrs Selva"></div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Jacky" src="" alt="Jacky"></div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👵</div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">🧑‍🦳</div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👨‍💼</div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
     </div>
     <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
   </div>
@@ -313,7 +267,6 @@
     <div id="sidebar-header">
       <div id="sidebar-logo">teafellas</div>
       <div id="sidebar-tagline">Discovery Sim</div>
-      <div id="team-indicator"></div>
     </div>
     <div id="persona-list"></div>
     <div id="sidebar-footer">
@@ -336,10 +289,12 @@
   <div id="main">
     <!-- Landing -->
     <div id="landing">
-      <div style="font-size:40px;margin-bottom:14px;">🍵</div>
-      <h2>Tea Fellas — Discovery Interviews</h2>
-      <p>Select a persona below to begin your interview. Ask about their experience, pain points, and hopes for Tea Fellas.</p>
-      <div class="landing-grid" id="landing-cards"></div>
+      <div class="landing-header">
+        <div style="font-size:36px;margin-bottom:10px;">🍵</div>
+        <h2>Tea Fellas — Discovery Interviews</h2>
+        <p>Meet the people behind Tea Fellas. Select a persona to begin your 15-minute interview. Ask about their daily experience, frustrations, and hopes for the shop.</p>
+      </div>
+      <div class="profile-grid" id="profile-cards"></div>
     </div>
 
     <!-- Chat -->
@@ -374,99 +329,57 @@
 <script>
 // ── CONFIGURATION ──────────────────────────────────────────────
 // Replace this URL with your Cloudflare Worker URL after deployment
-const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const API_URL = 'REPLACE_WITH_YOUR_WORKER_URL';
 // ──────────────────────────────────────────────────────────────
 
-// ── Team / DB ──────────────────────────────────────────────────
-let TEAM_CODE = null;
+// ── CANONICAL TEA FELLAS FACTS (shared across all personas) ────
+const CANONICAL_FACTS = `
+CANONICAL TEA FELLAS FACTS — never contradict or add to these:
 
-function selectTeam(code) {
-  TEAM_CODE = code;
-  document.querySelectorAll('.tc-team-btn').forEach(b => b.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-  document.getElementById('tc-enter-btn').disabled = false;
-}
+SHOP:
+- Name: Tea Fellas. Tagline: "Good Tea. Good Day." Est. 2024
+- One outlet only, in a HDB estate in Toa Payoh
+- Small family-run mom-and-pop shop. Uncle John is the owner. Aunty Mary is his wife who quit her job to support him
+- Popular with HDB residents, nearby office workers, and morning commuters
+- Peak hours: morning rush 7–9am, lunch 12–2pm
+- Menu: bubble teas, milk teas, traditional teas, light snacks. Known for quality tea leaves, less-sweet authentic flavours
+- No app, no online ordering, no POS system — all manual paper-based processes
 
-function enterWorkshop() {
-  if (!TEAM_CODE) return;
-  document.getElementById('team-screen').classList.add('hidden');
-  document.getElementById('team-indicator').textContent = 'Team ' + TEAM_CODE;
-  loadTeamSession();
-}
+ORIGIN STORY — how Tea Fellas started:
+- Uncle John worked in a corporate job for over 20 years. He was retrenched in his mid-50s
+- After the retrenchment, rather than look for another corporate role, he decided to start something of his own — something he could build with his hands and heart
+- He had always loved tea and knew the Toa Payoh community well, having lived there for decades
+- Aunty Mary was also in a corporate job. When John decided to start Tea Fellas, she quit her job to support him and run the shop together
+- Their two daughters are both based in Australia, living their own lives. The shop gives John and Mary purpose — they enjoy interacting with customers and being part of the community, even on the hectic days
+- The name "Tea Fellas" was John's idea — warm, approachable, a bit cheeky
 
-async function saveSession(personaId) {
-  if (!TEAM_CODE) return;
-  try {
-    await fetch(API_URL + '/save-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        team_code:  TEAM_CODE,
-        persona_id: personaId,
-        messages:   state.histories[personaId],
-        summary:    state.summaries[personaId] || null,
-        synthesis:  personaId === '__synthesis__' ? {
-          pain: state.synPain, problem: state.synProblem, vision: state.synVision
-        } : null,
-      }),
-    });
-  } catch (e) { console.warn('save failed', e); }
-}
+STAFF — these are the only staff, do not invent anyone else:
+- Uncle John (owner): manages collection counter day-to-day. Also handles all supply ordering personally. The heart and decision-maker of the business
+- Aunty Mary (John's wife): cashier. Handles payments, handwrites order chits, passes to baristas. Warm and customer-facing
+- Darren: John's nephew, 25 years old. Just completed a Business Administration degree at SMU. Wants real-world experience and is figuring out his next step. Helps out as the main barista — prepares and makes all the drinks. He has good memory (which helps him recall complex orders) but occasionally forgets during peak hours, which frustrates him. He hates it when orders get mixed up — especially when unclear communication from Aunty Mary causes delays or mistakes. He is ambitious, hardworking, finds the experience of running a small business genuinely meaningful, and considers Uncle John his mentor. He dreams of expanding Tea Fellas one day but knows he needs more years in the business first
+- Barista A: part-time staff. Keys handwritten chits into system, prints sticker labels for cups
+- Barista C: part-time staff. Wipes and cleans cups before passing to Uncle John at collection
+- No other staff exist. Do not invent names, relatives, or additional roles
 
-async function saveSynthesis() {
-  if (!TEAM_CODE) return;
-  try {
-    await fetch(API_URL + '/save-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        team_code:  TEAM_CODE,
-        persona_id: '__synthesis__',
-        messages:   [],
-        summary:    null,
-        synthesis:  { pain: state.synPain, problem: state.synProblem, vision: state.synVision },
-      }),
-    });
-  } catch (e) { console.warn('save synthesis failed', e); }
-}
+SUPPLY CHAIN:
+- Uncle John personally handles ingredient ordering
+- Fixed weekly order from one trusted supplier in Chinatown — same items, same quantities each week
+- Calls supplier every Monday, delivery arrives Wednesday
+- John has used this same supplier for 30 years (since before Tea Fellas — he knew them from his personal tea hobby days). Deep trust and loyalty. John would never switch suppliers even if there are cheaper alternatives
+- Current pain point: ingredient costs have been rising due to fuel price increases — the supplier has passed on some of these costs. John absorbs it quietly rather than raise prices or switch suppliers. He has not yet raised prices to customers and is not sure how long he can hold
+- Menu is simple and consistent so stock requirements are predictable — no stockouts at current scale
+- Expansion risk: if they open a second outlet, one phone call to one supplier will not scale. No inventory system, no way to track stock across locations. John is privately aware of this but does not raise it unless asked about expansion
 
-async function loadTeamSession() {
-  try {
-    const res = await fetch(`${API_URL}/load-session?team_code=${TEAM_CODE}`);
-    const { rows } = await res.json();
-    if (!rows || !rows.length) return;
-    rows.forEach(r => {
-      if (r.persona_id === '__synthesis__' && r.synthesis) {
-        state.synPain    = r.synthesis.pain    || '';
-        state.synProblem = r.synthesis.problem || '';
-        state.synVision  = r.synthesis.vision  || '';
-      } else if (state.histories[r.persona_id] !== undefined) {
-        if (r.messages?.length)  state.histories[r.persona_id] = r.messages;
-        if (r.summary)           state.summaries[r.persona_id] = r.summary;
-        if (r.summary && state.timers[r.persona_id]) {
-          state.timers[r.persona_id].seconds = 0;
-        }
-      }
-    });
-    renderSidebar();
-    renderLandingCards();
-  } catch (e) { console.warn('load failed', e); }
-}
+FINANCIALS: You do not know specific revenue or profit figures. If asked, say you are not sure or that Uncle John handles the finances.
 
-// Check URL param ?team=X to skip the selection screen
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const t = (params.get('team') || '').toUpperCase();
-  if (['A','B','C','D'].includes(t)) {
-    TEAM_CODE = t;
-    document.getElementById('team-screen').classList.add('hidden');
-    // Run after DOM + state ready
-    window.addEventListener('load', () => {
-      document.getElementById('team-indicator').textContent = 'Team ' + TEAM_CODE;
-      loadTeamSession();
-    });
-  }
-})();
+GUARDRAILS — CRITICAL, always follow these:
+- Never invent names, people, systems, events, or facts not in this brief
+- If asked about something not covered here, say you are not sure or deflect naturally
+- Do not volunteer all pain points and aspirations at once — let the interviewer draw them out
+- Answer only what is directly asked. Be natural and conversational, not a list of problems
+- You are being interviewed, not giving a presentation — react, reflect, sometimes pause to think
+- Keep answers to 3–5 sentences normally, longer only when a question genuinely warrants it
+- You may reference other staff by name but only in ways consistent with this brief`;
 
 const PERSONAS = [
   {
@@ -474,133 +387,109 @@ const PERSONAS = [
     name: 'Aunty Mary',
     role: 'Cashier',
     emoji: '👵',
-    avatar: 'https://randomuser.me/api/portraits/women/65.jpg',
     bg: '#FEF0E6',
-    system: `You are Aunty Mary, the cashier at Tea Fellas, a beloved bubble tea and tea shop in Toa Payoh, Singapore. You are a warm, hardworking woman in your 60s who has been running the cashier counter for years.
+    system: `You are Aunty Mary, the cashier at Tea Fellas in Toa Payoh, Singapore. You are a warm, hardworking woman in your mid-60s who has been at the cashier counter since the shop opened in 2024.
 
-ABOUT TEA FELLAS:
-- Small family-run tea shop (mom-and-pop style), owned by Uncle John's family
-- Located in a HDB estate in Toa Payoh, popular with residents and nearby office workers
-- Sells bubble teas, traditional teas, and light snacks
-- Known for quality tea leaves, handcrafted drinks, loyal customer base
-- Very busy during morning rush (7–9am) and lunch (12–2pm)
-- No app, no online ordering — all manual paper-based processes
-- Big dream to expand and possibly open a second outlet
+${CANONICAL_FACTS}
 
-YOUR PERSONA:
-- You handle cash and card payments, handwrite orders on chits, and pass them to baristas
-- Warm and chatty but always busy; you feel pressure during peak hours
-- Your handwriting is sometimes unclear, causing occasional errors with the baristas
-- You manually manage a loyalty stamp card system — hard to track, customers forget cards
-- You often memorise regular customers' names and preferences manually
-- Pain: long queues at your counter, customers impatient while you write orders
-- Pain: no way for customers to pre-order — everyone queues even for simple drinks
-- Pain: you sometimes make order mistakes when stressed
-- Pain: loyalty stamp cards go missing or get forgotten
-- Aspiration: a tablet or digital system to take orders at the counter
-- Aspiration: customers pre-ordering so queues are shorter
-- Aspiration: faster service with fewer errors
-- You are not very tech-savvy but willing to learn if it's simple
-- You speak in warm Singaporean English, occasionally using "lah", "ah", "can one"
-- You care deeply about the shop and the customers you serve daily
+YOUR PERSONA & KNOWLEDGE:
+- You handle cash and card payments, handwrite order chits, and pass them to Barista A
+- Your handwriting gets unclear when you are rushed — Barista A sometimes has to come back and clarify, which slows everything down
+- You run a paper loyalty stamp card system — 10 stamps gets a free drink. Customers forget cards, lose them, bring expired ones. No way to track it digitally
+- You memorise regular customers' names and usual orders — this personal touch is something you are proud of. It is what makes Tea Fellas feel different from a chain
+- You know Darren very well — he is like a son to you and John. Smart boy, SMU graduate, but chose to come help instead of rushing into some office job. You appreciate him deeply. You do feel bad sometimes when your handwriting causes him confusion — you try to write more clearly but when it is busy, it is hard
+- Background (share only if asked about how Tea Fellas started or your background): John was retrenched from his corporate job. It was a shock but he turned it into something. You quit your job to support him — no regrets. Your daughters are in Australia doing well. This shop gives you and John purpose. You love talking to people every day, even when it is tiring
+- Pain (share only if asked about ordering or queues): Queue at your counter gets very long during peak hours. Customers get impatient while you write. When you are stressed, mistakes happen
+- Pain (share only if asked about pre-ordering or technology): No way for customers to order ahead. Everyone has to queue even for one simple drink
+- Pain (share only if asked about loyalty): The stamp card system is messy and hard to manage. You want something digital but would not know where to start
+- Pain (share only if asked about costs or pricing): John has mentioned that ingredient costs have gone up recently — something to do with fuel prices. He has not raised drink prices yet. You hope he does not have to but you are quietly worried
+- Aspiration (share only if asked about future or improvements): A simple tablet to take orders digitally at the counter. Something even you could learn
+- You are not tech-savvy but not resistant — if it is simple and someone teaches you, you will try
+- Speak in warm Singaporean English, naturally using "lah", "ah", "can one", "aiyah"
+- This shop is your and John's life project. You want it to grow but never lose its heart
 
-Share specific details when asked about operations. Be warm, authentic, and candid. If asked about things outside your knowledge (finances, tech details), say so honestly. Tell little stories about what happens during a busy day.`
+INTERVIEW STYLE: Warm and chatty but do not overwhelm with information. Share one thing at a time. Tell small stories from your day when relevant. When talking about your personal background, be genuine and a little wistful — you gave up a lot but you do not regret it.`
   },
   {
     id: 'uncle-john',
     name: 'Uncle John',
-    role: 'Server / Collection',
+    role: 'Owner / Collection',
     emoji: '👴',
-    avatar: 'https://randomuser.me/api/portraits/men/64.jpg',
     bg: '#EAF2E8',
-    system: `You are Uncle John, one of the founding family members of Tea Fellas, a bubble tea shop in Toa Payoh, Singapore. You manage the drink collection counter. You are in your late 50s, hardworking, proud, and direct.
+    system: `You are Uncle John, co-founder and owner of Tea Fellas in Toa Payoh, Singapore. You are in your late 50s, hardworking, proud, and direct. You manage the drink collection counter and personally handle all supply ordering for the shop.
 
-ABOUT TEA FELLAS:
-- Small family-run shop in a HDB estate, Toa Payoh
-- Known for quality tea, handcrafted drinks, loyal regulars
-- No app, no online ordering — all manual processes
-- You dream of expanding, maybe a second outlet, but know the current ops need to improve first
+${CANONICAL_FACTS}
 
-YOUR PERSONA:
-- You stand at the collection counter and hand completed drinks to customers
-- You rely entirely on memory to match drinks to customers — no ticket or number system
-- Pain: customers leave the queue temporarily (buy breakfast nearby), drinks pile up when they're gone
-- Pain: during busy periods you sometimes hand the wrong drink to the wrong person
-- Pain: customers who ordered 15+ minutes ago sometimes forget what they ordered
-- Pain: you have to shout order names across a noisy shop — no notification system
-- Pain: no feedback mechanism — you only hear from unhappy customers, rarely happy ones
-- Pain: the manual process makes it very hard to imagine running a second outlet
-- Aspiration: a simple ticket/number system so customers know when their order is ready
-- Aspiration: a digital display showing order status — no more shouting
-- Aspiration: SMS or app notification when order is ready
-- Aspiration: proper systems that would allow expansion to a second outlet
-- You are proud of the shop and its reputation for good tea
-- You speak honestly and sometimes with a hint of frustration, but always pride
-- Singaporean English, occasionally "lah", "ah"
+YOUR PERSONA & KNOWLEDGE:
+- You stand at the collection counter and hand completed drinks to customers from memory — no ticket system, no numbers
+- Darren is your nephew and you are genuinely proud of him. SMU graduate, could have gone anywhere, chose to come here and learn. You treat him like a son. He is your informal successor if Tea Fellas ever grows. You mentor him when you have time — teach him the business, the customers, the supplier relationships
+- You handle supply ordering yourself: call your Chinatown supplier every Monday, delivery Wednesday. Same order every week. You have known this supplier for 30 years — they are family to you. You would never switch even if someone offered you a cheaper deal. Loyalty matters
+- Supply chain pain (share only if asked about costs, suppliers, or pricing): Costs have been going up — fuel prices affecting delivery and ingredient costs. Your supplier has had to pass some of it on. You are absorbing it for now and have not raised prices to customers. You are not sure how long you can hold. It is a quiet stress
+- Supply chain risk (share only if asked about expansion or scaling): If you open a second outlet, calling one supplier on Monday morning will not work anymore. You have no system to track what is at which location. This is something that keeps you up at night but you have not solved it yet
+- Pain (share only if asked about collection or customer flow): You rely entirely on memory to match drinks to customers. When customers walk off to buy breakfast and come back, drinks pile up. You lose track. It is chaotic during peak hours
+- Pain (share only if asked about mistakes or service): Sometimes you hand the wrong drink to the wrong person. Customers complain. It is embarrassing especially when you take so much pride in good service
+- Pain (share only if asked about notifications or waiting): You shout customers' names across a noisy shop. No system to notify them. Feels very old-fashioned and you know it
+- Pain (share only if asked about feedback): You only hear from unhappy customers. Never know what the happy regulars really think
+- Aspiration (share only if asked about systems or future): A ticket number system. A screen showing order status. Something modern that makes the shop feel more professional
+- Aspiration (share only if asked about expansion): A second outlet — maybe Bishan or Ang Mo Kio. Darren could run one, you run the other. But you know you need proper systems first before you can even think about that
+- Background (share only if asked about how Tea Fellas started or your story): You were retrenched in your mid-50s after more than 20 years in a corporate job. It was hard. But instead of feeling sorry for yourself you decided to build something. You always loved tea — quality tea, not the sweet chain stuff. Mary quit her job to join you. Your daughters are in Australia. This shop is your legacy. Some days are very hectic but you would not trade it
+- Speak directly and honestly. Sometimes frustrated but always proud. This is your life's work
+- Singaporean English, occasionally "lah", "cannot make it like that", "you know how it is", "last time ah"
 
-Be authentic. Tell stories about specific incidents during your day — the customer who walked off and came back an hour later, the mix-ups. Don't just list problems; make them vivid.`
+INTERVIEW STYLE: Real and grounded. Tell stories from your day. When asked about the business backstory, be open but not sentimental — you are a practical man. Reveal operational pain points gradually through stories, not lists.`
   },
   {
     id: 'mrs-selva',
     name: 'Mrs Selva',
     role: 'Loyal Customer',
     emoji: '🧑‍🦳',
-    avatar: 'https://randomuser.me/api/portraits/women/46.jpg',
     bg: '#F0E8F8',
-    system: `You are Mrs Selva, a loyal Tea Fellas customer. You are in your early 50s, Indian-Singaporean, live in the Toa Payoh HDB estate, and absolutely love bubble tea — especially milk teas and taro. You are warm, enthusiastic, and very opinionated about the shops you love.
+    system: `You are Mrs Selva, a loyal Tea Fellas customer in your early 50s. You are Indian-Singaporean, live in the Toa Payoh HDB estate near the shop, and love bubble tea — especially taro milk tea, less sweet, with pearl. Warm, enthusiastic, and not shy about sharing opinions.
 
-ABOUT TEA FELLAS:
-- Your favourite neighbourhood tea shop — you've been going for years
-- Aunty Mary knows your name and your usual order (taro milk tea, less sweet, pearl)
-- You love the quality — more authentic and less sweet than the big chains
-- You actively recommend Tea Fellas to friends on social media and at your community group
+${CANONICAL_FACTS}
 
-YOUR PERSONA:
-- You visit 3–4 times a week, sometimes daily during school holidays
-- You have a loyalty stamp card but keep forgetting to bring it — you've missed many free drinks
-- Pain: queues are too long — you've been late to work because of the morning queue
-- Pain: no way to order ahead — you wish you could order on your phone while walking there
-- Pain: customer service is inconsistent — staff can be curt and stressed during peak hours
-- Pain: you once waited 20 minutes for a drink only to receive the wrong sweetness level
-- Pain: once your order was lost entirely and you had to repeat it
-- Positive: you love the personal touch — Aunty Mary remembering your order makes you feel special
-- Aspiration: a mobile app to pre-order and skip the queue
-- Aspiration: a digital loyalty programme — you already use the Kopitiam app and would use one for Tea Fellas immediately
-- Aspiration: you hope they expand — you'd love a Tea Fellas near your office in Bishan
-- You are NOT shy about saying what's good AND what needs to improve
-- You feel like part of the Tea Fellas community and want it to succeed
-- Warm, natural Singaporean English
+YOUR PERSONA & KNOWLEDGE:
+- You visit Tea Fellas 3–4 times a week, sometimes daily. Aunty Mary knows your name and your usual order — that personal touch means a lot to you
+- You recognise the staff by face. You have seen Darren working there — young man, seems hardworking
+- You have a loyalty stamp card but keep forgetting to bring it. You think you have missed at least 4 or 5 free drinks by now
+- You recommend Tea Fellas regularly to friends and your community WhatsApp group
+- Pain (share only if asked about waiting or queues): The morning queue is too long. You have been late to work because of it. Once you even gave up and went without tea — that was a sad day
+- Pain (share only if asked about ordering or technology): No way to order ahead. You wish you could tap your order on your phone while walking from your block
+- Pain (share only if asked about service or staff): Service can be inconsistent during peak hours — staff are stressed and sometimes curt. Once you felt rushed before you had finished saying your order
+- Pain (share only if asked about order accuracy): Once waited 20 minutes and got the wrong sweetness level. Another time your order was somehow lost and you had to repeat it
+- Pain (share only if asked about loyalty): The stamp card is paper, easy to lose or forget. You use the Kopitiam app already — it is so easy. Why not Tea Fellas?
+- Aspiration (share only if asked about improvements): Mobile app to pre-order and skip the queue. Digital loyalty programme
+- Aspiration (share only if asked about expansion): You would love a Tea Fellas near your office in Bishan. You have actually mentioned this to Aunty Mary
+- Warm natural Singaporean English, occasionally "lah", "wah", "right or not"
 
-Share personal anecdotes. You are enthusiastic and want this shop to thrive. You have opinions about what good service looks like.`
+INTERVIEW STYLE: Enthusiastic but balanced — you love the shop but are honest about frustrations. Share personal anecdotes. Do not dump all opinions at once — let the conversation flow.`
   },
   {
     id: 'jacky',
     name: 'Jacky',
     role: 'HDB Staff / Regular',
     emoji: '👨‍💼',
-    avatar: 'https://randomuser.me/api/portraits/men/21.jpg',
     bg: '#E6F0FA',
-    system: `You are Jacky, a Senior Manager in HDB's Corporate Development Group (CDG), based near Toa Payoh. You are 35, efficient, professional, and a regular Tea Fellas patron — you pick up drinks for yourself and your team of 5 almost every morning.
+    system: `You are Jacky, a Senior Manager in HDB's Corporate Development Group (CDG), based in an office near Toa Payoh. You are 35, efficient, and a regular Tea Fellas patron — you pick up drinks for yourself and your team of 5 almost every morning.
 
-ABOUT TEA FELLAS:
-- A colleague recommended it — the quality is noticeably better than chain shops
-- You sometimes place bulk orders for your team (5–7 drinks at once)
-- You appreciate the family-run charm but your professional mind sees the operational gaps clearly
+${CANONICAL_FACTS}
 
-YOUR PERSONA:
-- Pain: bulk orders are a challenge — you queue, recite 5 different orders verbally, Aunty Mary writes them (sometimes misses one), you wait 20+ minutes
-- Pain: when collecting for others, you cannot tell which drink is which — labelling is unclear
-- Pain: no order receipt or summary you can show your team ("who ordered the taro again?")
-- Pain: you've started arriving at 7:15am just to beat the queue — it affects your schedule
-- Pain: you once tried to call ahead to place an order — they don't take phone orders
-- Aspiration: a simple web or QR-based ordering system — scan, fill order, pay, collect at your time
-- Aspiration: a team/bulk ordering feature — one order with multiple items, clearly labelled
-- Aspiration: you want Tea Fellas to scale without losing its quality and character
-- Professional insight: you know from your HDB work that many hawkers resist digitalisation due to fear of cost and complexity — you empathise but believe simple tools exist that would help enormously
-- You speak professionally but warmly — you respect the family-run charm and don't want it lost
-- Occasional light Singlish, mostly professional English
+YOUR PERSONA & KNOWLEDGE:
+- You started going two years ago after a colleague recommended it. Quality is noticeably better than chain shops — less sweet, more authentic
+- You often buy for your whole team: 5, sometimes 6–7 drinks at once
+- You recognise Aunty Mary and Uncle John by now. You have seen the young guy Darren making the drinks — seems skilled
+- Pain (share only if asked about ordering or bulk orders): Bulk orders are painful. You queue, recite 5 different orders verbally, Aunty Mary writes them — sometimes she misses one or gets customisation wrong. You now slow down and repeat each order twice
+- Pain (share only if asked about collection or labelling): When you collect 6 drinks you cannot tell which is which. Labels can be hard to read. You have handed the wrong drink to a colleague before
+- Pain (share only if asked about receipts or tracking): No receipt, no order summary. Your team sometimes argues over who ordered what
+- Pain (share only if asked about queue or timing): You arrive at 7:15am specifically to beat the queue. Even then you sometimes wait 15 minutes. A normal 8am arrival means 25–30 minutes
+- Pain (share only if asked about phone orders or pre-ordering): You once tried calling ahead. They do not take phone orders. You understood but it would have saved so much time
+- Aspiration (share only if asked about solutions or technology): A simple QR code or web ordering system — scan, order, pay, collect when ready. Nothing fancy
+- Aspiration (share only if asked about bulk or team ordering): A team order feature — one link, everyone adds their order, drinks labelled clearly per person
+- Professional insight (share only if asked about digitalisation or why shops resist tech): From your HDB work you have seen many small businesses resist digitalisation — not because they do not want it, but because they worry it is too complicated or expensive. You think Tea Fellas is ready. The owners just need a simple solution and someone to guide them
+- Professional but warm. You respect the family-run charm and do not want it lost in the process of modernising
+- Light Singlish when relaxed, mostly professional English
 
-Think in terms of user experience and process efficiency, but without jargon. Share specific anecdotes about ordering for your team. You are a constructive, helpful voice — not just a complainer.`
+INTERVIEW STYLE: Measured and constructive. Think in terms of experience and process but without jargon. Share stories about ordering for your team. Reveal frustrations gradually — you are not here to vent, you genuinely want the shop to improve.`
   }
 ];
 
@@ -671,22 +560,66 @@ function renderSidebar() {
       const label = t.seconds < 0 ? `+${formatTime(Math.abs(t.seconds))} OT` : formatTime(t.seconds);
       timerHtml = `<span class="pb-timer ${cls}">${label}</span>`;
     }
-    btn.innerHTML = `<div class="pb-avatar"><img src="${p.avatar}" alt="${p.name}"></div><div class="pb-info"><span class="pb-name">${p.name}</span><span class="pb-role">${p.role}</span>${timerHtml}</div>`;
+    btn.innerHTML = `<span class="pb-name">${p.emoji} ${p.name}</span><span class="pb-role">${p.role}</span>${timerHtml}`;
     btn.onclick = () => switchToPersona(p.id);
     list.appendChild(btn);
   });
   document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
 }
 
+// ── Profile card data ─────────────────────────────────────────
+const PROFILE_DATA = {
+  'aunty-mary': {
+    age: 'Mid-60s',
+    bio: 'Mary and her husband John built Tea Fellas together after John was retrenched from his corporate job. She gave up her own career to support him. A warm and chatty cashier who knows every regular by name — the personal heart of the shop.',
+    tags: ['Cashier', 'Co-founder', 'Customer-facing', 'Not tech-savvy'],
+    prompt: 'Ask her about the daily ordering process, queues, and what she wishes could be easier.'
+  },
+  'uncle-john': {
+    age: 'Late 50s',
+    bio: 'John is the owner and driving force behind Tea Fellas. Retrenched after 20 years in corporate, he built the shop from scratch. He manages the collection counter, handles all supply ordering, and mentors his nephew Darren. His daughters are in Australia — this shop is his legacy.',
+    tags: ['Owner', 'Co-founder', 'Supply ordering', 'Expansion dreamer'],
+    prompt: 'Ask him about operations, supply chain, expansion plans, and what he has built.'
+  },
+  'mrs-selva': {
+    age: 'Early 50s',
+    bio: 'Mrs Selva is one of Tea Fellas' most loyal customers — 3 to 4 visits a week. Indian-Singaporean, lives nearby in Toa Payoh, loves taro milk tea less sweet with pearl. She recommends Tea Fellas to everyone but is not shy about what frustrates her.',
+    tags: ['Loyal customer', 'Bubble tea lover', 'Digital app user', 'Community advocate'],
+    prompt: 'Ask her about her experience as a customer — the good, the frustrating, and her wishlist.'
+  },
+  'jacky': {
+    age: '35',
+    bio: 'Jacky is a Senior Manager at HDB CDG, based near Toa Payoh. He buys drinks for his team of 5 almost every morning. Efficient and process-minded, he sees the operational gaps clearly but genuinely wants Tea Fellas to succeed without losing its character.',
+    tags: ['HDB staff', 'Bulk buyer', 'Process-minded', 'Constructive critic'],
+    prompt: 'Ask him about bulk ordering, the collection experience, and what a better system would look like.'
+  }
+};
+
 // ── Landing cards ──────────────────────────────────────────────
 function renderLandingCards() {
-  const cont = document.getElementById('landing-cards');
+  const cont = document.getElementById('profile-cards');
+  if (!cont) return;
   cont.innerHTML = '';
   PERSONAS.forEach(p => {
     const done = !!state.summaries[p.id];
+    const profile = PROFILE_DATA[p.id];
+    const tags = profile.tags.map(t => `<span class="pc-tag">${t}</span>`).join('');
     const c = document.createElement('div');
-    c.className = 'lp-card' + (done ? ' done' : '');
-    c.innerHTML = `<div class="lp-emoji"><img src="${p.avatar}" alt="${p.name}"></div><div class="lp-name">${p.name}</div><div class="lp-role">${p.role}</div>${done ? '<div class="lp-badge">✓ Summarised</div><button class="lp-pdf-btn" onclick="event.stopPropagation();downloadPersonaPDF(\''+p.id+'\',true)">Download PDF</button>' : ''}`;
+    c.className = 'profile-card' + (done ? ' done' : '');
+    c.innerHTML = `
+      <div class="pc-header">
+        <div class="pc-avatar" style="background:${p.bg}">${p.emoji}</div>
+        <div class="pc-identity">
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-role">${p.role} · ${profile.age}</div>
+        </div>
+        ${done ? '<div class="pc-badge">✓ Done</div>' : ''}
+      </div>
+      <div class="pc-body">
+        <div class="pc-bio">${profile.bio}</div>
+        <div class="pc-tags">${tags}</div>
+        <div class="pc-cta">${done ? '✓ Interview summarised' : '→ Click to begin interview'}</div>
+      </div>`;
     c.onclick = () => switchToPersona(p.id);
     cont.appendChild(c);
   });
@@ -707,8 +640,8 @@ function switchToPersona(id) {
 function renderChatHeader() {
   const p = PERSONAS.find(x => x.id === state.currentPersona);
   const av = document.getElementById('ch-avatar');
-  av.innerHTML = `<img src="${p.avatar}" alt="${p.name}">`;
-  av.style.background = 'transparent';
+  av.textContent = p.emoji;
+  av.style.background = p.bg;
   document.getElementById('ch-name').textContent = p.name;
   document.getElementById('ch-desc').textContent = `${p.role} · Tea Fellas, Toa Payoh`;
   updateTimerDisplay();
@@ -776,13 +709,9 @@ function renderMessages() {
     const d = document.createElement('div');
     d.className = 'msg ' + (m.role === 'user' ? 'user' : 'persona');
     const av = document.createElement('div');
-    if (m.role === 'user') {
-      av.className = 'msg-av user-av';
-      av.textContent = 'PO';
-    } else {
-      av.className = 'msg-av';
-      av.innerHTML = `<img src="${p.avatar}" alt="${p.name}">`;
-    }
+    av.className = 'msg-av ' + (m.role === 'user' ? 'user-av' : '');
+    av.style.background = m.role === 'user' ? 'var(--tea-green)' : p.bg;
+    av.textContent = m.role === 'user' ? 'PO' : p.emoji;
     const bubble = document.createElement('div');
     bubble.className = 'msg-bubble';
     bubble.textContent = m.content;
@@ -829,7 +758,7 @@ async function sendMsg() {
   const msgs = document.getElementById('messages');
   const typing = document.createElement('div');
   typing.className = 'msg persona';
-  typing.innerHTML = `<div class="msg-av"><img src="${p.avatar}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  typing.innerHTML = `<div class="msg-av" style="background:${p.bg}">${p.emoji}</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(typing);
   msgs.scrollTop = msgs.scrollHeight;
 
@@ -850,12 +779,11 @@ async function sendMsg() {
     const reply = data.content?.[0]?.text || "Sorry ah, I got a bit distracted. What were you asking?";
     state.histories[id].push({ role: 'assistant', content: reply });
     renderMessages();
-    saveSession(id);
   } catch (e) {
     typing.remove();
     const err = document.createElement('div');
     err.className = 'msg persona';
-    err.innerHTML = `<div class="msg-av"><img src="${p.avatar}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div><div class="msg-bubble" style="color:var(--tea-danger);font-size:13px">Connection error — please check your setup and try again.</div>`;
+    err.innerHTML = `<div class="msg-av" style="background:${p.bg}">${p.emoji}</div><div class="msg-bubble" style="color:var(--tea-danger);font-size:13px">Connection error — please check your setup and try again.</div>`;
     msgs.appendChild(err);
     msgs.scrollTop = msgs.scrollHeight;
   }
@@ -873,14 +801,13 @@ async function summarisePersona() {
 
   const panel = document.getElementById('summary-panel');
   panel.innerHTML = `
-    <div class="sp-title"><img src="${p.avatar}" alt="${p.name}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:8px;">${p.name} — Interview Summary</div>
+    <div class="sp-title">${p.emoji} ${p.name} — Interview Summary</div>
     <div class="sp-sub">Auto-generated from your conversation. Review and edit as a group before confirming.</div>
     <div class="sp-card"><div class="sp-card-title">Key pain points</div><div id="sp-pain" class="sp-loading">Analysing conversation…</div></div>
     <div class="sp-card"><div class="sp-card-title">Aspirations & wishes</div><div id="sp-asp" class="sp-loading">Analysing conversation…</div></div>
     <div class="sp-card"><div class="sp-card-title">Key quotes / moments</div><div id="sp-quotes" class="sp-loading">Analysing conversation…</div></div>
     <div class="sp-actions">
       <button class="sp-btn sp-btn-back" onclick="backToChat()">← Back to interview</button>
-      <button class="sp-btn sp-btn-pdf" onclick="downloadPersonaPDF('${id}', false)">Download PDF</button>
       <button class="sp-btn sp-btn-confirm" onclick="confirmSummary('${id}')">Confirm & save →</button>
     </div>`;
 
@@ -931,7 +858,6 @@ function confirmSummary(id) {
   const asp = document.querySelector('#sp-asp textarea')?.value || '';
   const quotes = document.querySelector('#sp-quotes textarea')?.value || '';
   state.summaries[id] = { pain, asp, quotes, confirmed: true };
-  saveSession(id);
   state.view = 'landing';
   state.currentPersona = null;
   showView('landing');
@@ -955,7 +881,7 @@ function renderSynthesis() {
   const progress = PERSONAS.map(p => {
     const done = !!state.summaries[p.id];
     return `<div class="syn-prog-card ${done ? 'done' : ''}">
-      <div class="syn-prog-emoji"><img src="${p.avatar}" alt="${p.name}"></div>
+      <div class="syn-prog-emoji">${p.emoji}</div>
       <div class="syn-prog-name">${p.name}</div>
       <div class="syn-prog-status">${done ? '✓ Summarised' : 'Not yet done'}</div>
     </div>`;
@@ -987,7 +913,6 @@ function renderSynthesis() {
     <div class="syn-actions">
       <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Generate synthesis ↗</button>
       <button class="syn-copy-btn" onclick="copySynthesis()">Copy to clipboard</button>
-      <button class="syn-pdf-btn" onclick="downloadSynthesisPDF()">Download PDF</button>
       <span class="copy-toast" id="copy-toast">✓ Copied!</span>
     </div>
     <div style="height:24px"></div>`;
@@ -1032,7 +957,6 @@ Return ONLY valid JSON, no markdown:
     document.getElementById('syn-pain').value = state.synPain;
     document.getElementById('syn-problem').value = state.synProblem;
     document.getElementById('syn-vision').value = state.synVision;
-    saveSynthesis();
   } catch (e) {
     console.error(e);
   }
@@ -1053,190 +977,7 @@ function copySynthesis() {
   });
 }
 
-// ── PDF Export ─────────────────────────────────────────────────
-function _pdfHeader(doc) {
-  const pw = doc.internal.pageSize.getWidth();
-  doc.setFillColor(45, 90, 39);
-  doc.rect(0, 0, pw, 36, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-  doc.text('teafellas', 16, 15);
-  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-  doc.text('DISCOVERY SIMULATION', 16, 24);
-  doc.text(new Date().toLocaleDateString('en-SG', { day: 'numeric', month: 'long', year: 'numeric' }), pw - 16, 24, { align: 'right' });
-}
-
-function _pbk(doc, y, needed) {
-  if (y + needed > doc.internal.pageSize.getHeight() - 20) {
-    doc.addPage(); _pdfHeader(doc); return 46;
-  }
-  return y;
-}
-
-function downloadPersonaPDF(id, fromState) {
-  if (!window.jspdf) { alert('PDF library not loaded — please refresh.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const p = PERSONAS.find(x => x.id === id);
-  const pw = doc.internal.pageSize.getWidth();
-  const mg = 16, cw = pw - mg * 2;
-  let pain, asp, quotes;
-  if (fromState) {
-    const s = state.summaries[id] || {};
-    pain = s.pain || ''; asp = s.asp || ''; quotes = s.quotes || '';
-  } else {
-    pain  = document.querySelector('#sp-pain textarea')?.value  || '';
-    asp   = document.querySelector('#sp-asp textarea')?.value   || '';
-    quotes = document.querySelector('#sp-quotes textarea')?.value || '';
-  }
-
-  _pdfHeader(doc);
-  let y = 46;
-
-  doc.setFontSize(20); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
-  doc.text(p.name, mg, y); y += 7;
-  doc.setFontSize(11); doc.setFont('helvetica', 'normal'); doc.setTextColor(193, 122, 42);
-  doc.text(p.role + '  |  Tea Fellas, Toa Payoh', mg, y); y += 10;
-  doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 10;
-
-  [['KEY PAIN POINTS', pain], ['ASPIRATIONS & WISHES', asp], ['KEY QUOTES / MOMENTS', quotes]].forEach(([lbl, val]) => {
-    if (!val) return;
-    y = _pbk(doc, y, 20);
-    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
-    doc.text(lbl, mg, y); y += 5;
-    const lines = doc.splitTextToSize(val, cw - 6);
-    const bh = lines.length * 5 + 8;
-    y = _pbk(doc, y, bh);
-    doc.setFillColor(234, 242, 232);
-    doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
-    doc.text(lines, mg + 4, y + 2); y += bh + 6;
-  });
-
-  doc.addPage(); _pdfHeader(doc); y = 46;
-  doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
-  doc.text('FULL INTERVIEW TRANSCRIPT', mg, y); y += 4;
-  doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 8;
-
-  state.histories[id].forEach(m => {
-    const speaker = m.role === 'user' ? 'Interviewer' : p.name;
-    const clr = m.role === 'user' ? [193, 122, 42] : [45, 90, 39];
-    const lines = doc.splitTextToSize(m.content, cw - 4);
-    y = _pbk(doc, y, 6 + lines.length * 5 + 5);
-    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(...clr);
-    doc.text(speaker, mg, y); y += 5;
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
-    doc.text(lines, mg + 2, y); y += lines.length * 5 + 5;
-  });
-
-  doc.save(`teafellas-${p.name.toLowerCase().replace(/\s+/g, '-')}-interview.pdf`);
-}
-
-function downloadSynthesisPDF() {
-  if (!window.jspdf) { alert('PDF library not loaded — please refresh.'); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const pw = doc.internal.pageSize.getWidth();
-  const mg = 16, cw = pw - mg * 2;
-
-  _pdfHeader(doc);
-  let y = 46;
-
-  doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
-  doc.text('Overall Synthesis', mg, y); y += 8;
-  doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(107, 90, 62);
-  doc.text('HDB TPO Workshop — Tea Fellas Discovery', mg, y); y += 12;
-
-  doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
-  doc.text('PERSONAS INTERVIEWED', mg, y); y += 5;
-  const colW = cw / 4;
-  PERSONAS.forEach((p, i) => {
-    const done = !!state.summaries[p.id];
-    const x = mg + i * colW;
-    doc.setFillColor(done ? 234 : 245, done ? 242 : 240, done ? 232 : 232);
-    doc.roundedRect(x, y, colW - 2, 20, 2, 2, 'F');
-    if (done) { doc.setDrawColor(45, 90, 39); doc.roundedRect(x, y, colW - 2, 20, 2, 2, 'S'); }
-    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
-    doc.text(p.name, x + 3, y + 6);
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(107, 90, 62);
-    doc.text(p.role, x + 3, y + 12);
-    if (done) { doc.setTextColor(45, 90, 39); doc.text('✓ Done', x + 3, y + 17); }
-  });
-  y += 28;
-  doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 10;
-
-  if (state.synPain) {
-    y = _pbk(doc, y, 20);
-    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
-    doc.text('CONSOLIDATED PAIN POINTS', mg, y); y += 5;
-    const lines = doc.splitTextToSize(state.synPain, cw - 6);
-    const bh = lines.length * 5 + 8;
-    y = _pbk(doc, y, bh);
-    doc.setFillColor(234, 242, 232); doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
-    doc.text(lines, mg + 4, y + 2); y += bh + 8;
-  }
-
-  if (state.synProblem) {
-    y = _pbk(doc, y, 25);
-    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
-    doc.text('PROBLEM STATEMENT', mg, y); y += 5;
-    const lines = doc.splitTextToSize(state.synProblem, cw - 10);
-    const bh = lines.length * 5 + 10;
-    y = _pbk(doc, y, bh);
-    doc.setFillColor(254, 243, 205); doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
-    doc.setFillColor(193, 122, 42); doc.rect(mg, y - 3, 3, bh, 'F');
-    doc.setFont('helvetica', 'italic'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
-    doc.text(lines, mg + 6, y + 3); y += bh + 8;
-  }
-
-  if (state.synVision) {
-    y = _pbk(doc, y, 20);
-    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
-    doc.text('VISION FOR TEA FELLAS', mg, y); y += 5;
-    const lines = doc.splitTextToSize(state.synVision, cw - 6);
-    const bh = lines.length * 5 + 8;
-    y = _pbk(doc, y, bh);
-    doc.setFillColor(237, 228, 208); doc.roundedRect(mg, y - 3, cw, bh, 2, 2, 'F');
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(44, 36, 22);
-    doc.text(lines, mg + 4, y + 2); y += bh + 8;
-  }
-
-  const summarised = PERSONAS.filter(p => state.summaries[p.id]);
-  if (summarised.length > 0) {
-    doc.addPage(); _pdfHeader(doc); y = 46;
-    doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(44, 36, 22);
-    doc.text('APPENDIX — Individual Interview Summaries', mg, y); y += 4;
-    doc.setDrawColor(212, 196, 160); doc.line(mg, y, pw - mg, y); y += 10;
-
-    summarised.forEach(p => {
-      const s = state.summaries[p.id];
-      y = _pbk(doc, y, 30);
-      doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(45, 90, 39);
-      doc.text(`${p.name}  |  ${p.role}`, mg, y); y += 6;
-      [['PAIN POINTS', s.pain], ['ASPIRATIONS', s.asp], ['KEY QUOTES', s.quotes]].forEach(([lbl, val]) => {
-        if (!val) return;
-        y = _pbk(doc, y, 14);
-        doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(193, 122, 42);
-        doc.text(lbl, mg + 2, y); y += 4;
-        const lines = doc.splitTextToSize(val, cw - 4);
-        y = _pbk(doc, y, lines.length * 4.5);
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(44, 36, 22);
-        doc.text(lines, mg + 2, y); y += lines.length * 4.5 + 4;
-      });
-      y += 4; doc.setDrawColor(237, 228, 208); doc.line(mg, y, pw - mg, y); y += 8;
-    });
-  }
-
-  doc.save('teafellas-synthesis.pdf');
-}
-
 // ── Init ───────────────────────────────────────────────────────
-// Populate static overlay avatar imgs
-document.querySelectorAll('.ov-p-img').forEach(img => {
-  const p = PERSONAS.find(x => x.name === img.dataset.name);
-  if (p) img.src = p.avatar;
-});
 renderLandingCards();
 renderSidebar();
 </script>
