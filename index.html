@@ -298,10 +298,10 @@
       </div>
     </div>
     <div class="ov-personas">
-      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/women/79.jpg" alt="Aunty Mary"></div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/men/77.jpg" alt="Uncle John"></div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Mrs Selva"></div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji"><img src="https://randomuser.me/api/portraits/men/36.jpg" alt="Jacky"></div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Aunty Mary" src="" alt="Aunty Mary"></div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Uncle John" src="" alt="Uncle John"></div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Mrs Selva" src="" alt="Mrs Selva"></div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji"><img class="ov-p-img" data-name="Jacky" src="" alt="Jacky"></div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
     </div>
     <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
   </div>
@@ -474,7 +474,10 @@ const PERSONAS = [
     name: 'Aunty Mary',
     role: 'Cashier',
     emoji: '👵',
-    avatar: 'https://randomuser.me/api/portraits/women/79.jpg',
+    avatar: null,
+    avatarSeed: 'tf-aunty-mary-2024',
+    avatarGender: 'female',
+    avatarNat: 'cn',
     bg: '#FEF0E6',
     system: `You are Aunty Mary, the cashier at Tea Fellas, a beloved bubble tea and tea shop in Toa Payoh, Singapore. You are a warm, hardworking woman in your 60s who has been running the cashier counter for years.
 
@@ -511,7 +514,10 @@ Share specific details when asked about operations. Be warm, authentic, and cand
     name: 'Uncle John',
     role: 'Server / Collection',
     emoji: '👴',
-    avatar: 'https://randomuser.me/api/portraits/men/77.jpg',
+    avatar: null,
+    avatarSeed: 'tf-uncle-john-2024',
+    avatarGender: 'male',
+    avatarNat: 'cn',
     bg: '#EAF2E8',
     system: `You are Uncle John, one of the founding family members of Tea Fellas, a bubble tea shop in Toa Payoh, Singapore. You manage the drink collection counter. You are in your late 50s, hardworking, proud, and direct.
 
@@ -545,7 +551,10 @@ Be authentic. Tell stories about specific incidents during your day — the cust
     name: 'Mrs Selva',
     role: 'Loyal Customer',
     emoji: '🧑‍🦳',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    avatar: null,
+    avatarSeed: 'tf-mrs-selva-2024',
+    avatarGender: 'female',
+    avatarNat: 'in',
     bg: '#F0E8F8',
     system: `You are Mrs Selva, a loyal Tea Fellas customer. You are in your early 50s, Indian-Singaporean, live in the Toa Payoh HDB estate, and absolutely love bubble tea — especially milk teas and taro. You are warm, enthusiastic, and very opinionated about the shops you love.
 
@@ -578,7 +587,10 @@ Share personal anecdotes. You are enthusiastic and want this shop to thrive. You
     name: 'Jacky',
     role: 'HDB Staff / Regular',
     emoji: '👨‍💼',
-    avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
+    avatar: null,
+    avatarSeed: 'tf-jacky-2024',
+    avatarGender: 'male',
+    avatarNat: 'cn',
     bg: '#E6F0FA',
     system: `You are Jacky, a Senior Manager in HDB's Corporate Development Group (CDG), based near Toa Payoh. You are 35, efficient, professional, and a regular Tea Fellas patron — you pick up drinks for yourself and your team of 5 almost every morning.
 
@@ -1232,6 +1244,29 @@ function downloadSynthesisPDF() {
 }
 
 // ── Init ───────────────────────────────────────────────────────
+async function fetchAvatars() {
+  await Promise.all(PERSONAS.map(async p => {
+    try {
+      const res = await fetch(
+        `https://randomuser.me/api/?gender=${p.avatarGender}&nat=${p.avatarNat}&seed=${p.avatarSeed}&results=1`
+      );
+      const data = await res.json();
+      p.avatar = data.results[0].picture.large;
+    } catch (e) {
+      p.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=2D5A27&color=fff&size=128`;
+    }
+  }));
+  // Re-render everywhere avatars appear
+  renderSidebar();
+  renderLandingCards();
+  // Update static overlay photos
+  document.querySelectorAll('.ov-p-img').forEach(img => {
+    const p = PERSONAS.find(x => x.name === img.dataset.name);
+    if (p && p.avatar) img.src = p.avatar;
+  });
+}
+
+fetchAvatars().then(() => {});
 renderLandingCards();
 renderSidebar();
 </script>
