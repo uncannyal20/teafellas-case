@@ -207,7 +207,7 @@
   .copy-toast.show { display: inline; }
 
   /* ── Landing profile cards ── */
-  #landing { overflow-y: auto; justify-content: flex-start; padding-top: 28px; }
+  #landing { flex: 1; display: flex; flex-direction: column; align-items: center; overflow-y: auto; justify-content: flex-start; padding-top: 28px; }
   .landing-header { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
   .landing-header h2 { font-size: 20px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
   .landing-header p { font-size: 13px; color: var(--tea-muted); max-width: 480px; margin: 0 auto; line-height: 1.6; }
@@ -329,7 +329,7 @@
 <script>
 // ── CONFIGURATION ──────────────────────────────────────────────
 // Replace this URL with your Cloudflare Worker URL after deployment
-const API_URL = 'REPLACE_WITH_YOUR_WORKER_URL';
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
 // ──────────────────────────────────────────────────────────────
 
 // ── CANONICAL TEA FELLAS FACTS (shared across all personas) ────
