@@ -342,6 +342,48 @@
   .syn-proceed-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 600; cursor: pointer; }
   .syn-proceed-btn:hover { background: var(--tea-green-light); }
   .syn-confirmed-badge { font-size: 12px; font-weight: 600; color: var(--tea-green); background: #EAF2E8; border: 1px solid var(--tea-green); border-radius: 20px; padding: 4px 12px; }
+
+  /* ── Background view ── */
+  #background-area { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+  #background-area.visible { display: flex; }
+  .bg-wrapper { max-width: 820px; margin: 0 auto; padding: 24px 28px 48px; width: 100%; }
+  .bg-hero { background: var(--tea-green); color: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; }
+  .bg-hero-title { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+  .bg-hero-sub { font-size: 13px; opacity: 0.75; margin-bottom: 14px; line-height: 1.55; }
+  .bg-hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bg-hero-tag { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 500; }
+  .bg-section { margin-bottom: 28px; }
+  .bg-section-title { font-size: 11px; font-weight: 700; color: var(--tea-green); text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--tea-green); padding-bottom: 6px; margin-bottom: 14px; }
+  .bg-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; padding: 16px 20px; margin-bottom: 10px; }
+  .bg-card-title { font-size: 13px; font-weight: 700; color: var(--tea-text); margin-bottom: 6px; }
+  .bg-card-body { font-size: 13px; color: var(--tea-muted); line-height: 1.75; }
+  .bg-card-body strong { color: var(--tea-text); }
+  .bg-people-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .bg-person { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; padding: 14px 16px; display: flex; gap: 12px; }
+  .bg-person-emoji { font-size: 30px; flex-shrink: 0; line-height: 1; padding-top: 4px; }
+  .bg-person-info {}
+  .bg-person-name { font-size: 14px; font-weight: 700; color: var(--tea-text); margin-bottom: 3px; }
+  .bg-person-role { font-size: 10px; color: var(--tea-amber); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; }
+  .bg-person-bio { font-size: 12px; color: var(--tea-muted); line-height: 1.65; }
+  .bg-timeline { display: flex; flex-direction: column; gap: 0; }
+  .bg-timeline-item { display: flex; gap: 0; }
+  .bg-timeline-year { font-size: 12px; font-weight: 700; color: var(--tea-green); min-width: 52px; padding: 14px 0 14px; text-align: right; flex-shrink: 0; }
+  .bg-timeline-dot { display: flex; flex-direction: column; align-items: center; padding: 0 14px; }
+  .bg-timeline-dot-circle { width: 10px; height: 10px; border-radius: 50%; background: var(--tea-green); margin-top: 18px; flex-shrink: 0; }
+  .bg-timeline-dot-line { width: 2px; flex: 1; background: var(--tea-border); }
+  .bg-timeline-item:last-child .bg-timeline-dot-line { display: none; }
+  .bg-timeline-text { font-size: 13px; color: var(--tea-text); line-height: 1.7; padding: 14px 0 14px; flex: 1; }
+  .bg-timeline-text strong { color: var(--tea-green); }
+  .bg-timeline-text em { color: var(--tea-muted); font-style: normal; }
+  .bg-ops-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .bg-ops-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px; padding: 12px 14px; }
+  .bg-ops-label { font-size: 10px; font-weight: 700; color: var(--tea-amber); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .bg-ops-value { font-size: 12px; color: var(--tea-text); line-height: 1.6; }
+  .bg-challenge { background: #FFF8E6; border: 1px solid #F5D76E; border-left: 4px solid var(--tea-amber); border-radius: 10px; padding: 18px 22px; }
+  .bg-challenge-title { font-size: 13px; font-weight: 700; color: var(--tea-amber); margin-bottom: 10px; }
+  .bg-challenge-body { font-size: 13px; color: var(--tea-text); line-height: 1.8; }
+  .bg-challenge-body strong { color: var(--tea-text); }
+  .sidebar-section-toggle.active { background: rgba(255,255,255,0.15) !important; color: #fff !important; border-left: 3px solid var(--tea-amber-light); }
 </style>
 </head>
 <body>
@@ -410,16 +452,11 @@
         <div id="sidebar-team-code" style="font-size:13px;font-weight:700;color:#fff;font-family:'Courier New',monospace;letter-spacing:1px;"></div>
       </div>
     </div>
-    <!-- Background story -->
+    <!-- Background story nav -->
     <div id="sidebar-story-section">
-      <button class="sidebar-section-toggle" id="story-toggle" onclick="toggleStory()">
-        Background story <span class="toggle-arrow">▼</span>
+      <button class="sidebar-section-toggle" id="story-toggle" onclick="showBackground()">
+        Background story <span style="font-size:11px;opacity:0.6;float:right;line-height:1.4">›</span>
       </button>
-      <div id="sidebar-story-body">
-        <p>Tea Fellas was founded in 2008 by <strong style="color:#fff">John DeSouza</strong> at #01-08, Block 190 Toa Payoh Lorong 6. After 25 years in corporate life, John was retrenched in his mid-50s. A trip to Taiwan and Japan inspired him — he saw the craft and quality of bubble tea there, and decided to bring it to the Toa Payoh heartlands.</p>
-        <p>His wife <strong style="color:#fff">Mary Tan</strong> quit her job to run the shop alongside him. Their nephew <strong style="color:#fff">Darren</strong>, a fresh SMU Business Administration graduate, now works as the main barista — crafting their signature <strong style="color:#fff">Brown Sugar Pearl Milk Tea</strong> fresh each morning.</p>
-        <p>Open Monday to Friday, Tea Fellas has served the Toa Payoh community for 17 years — surviving COVID and building real loyalty. But rising ingredient costs and growing operational strain are pushing John to ask: stay the same, go digital, or expand?</p>
-      </div>
     </div>
 
     <!-- Interviewees -->
@@ -497,6 +534,9 @@
 
     <!-- John's email + scenario selection -->
     <div id="email-area"></div>
+
+    <!-- Background story full view -->
+    <div id="background-area"></div>
   </div>
 </div>
 
@@ -761,14 +801,191 @@ function showView(name) {
   document.getElementById('declaration-area').className = name === 'declaration' ? 'visible' : '';
   document.getElementById('email-area').style.display = name === 'email' ? 'flex' : 'none';
   document.getElementById('email-area').className = name === 'email' ? 'visible' : '';
+  document.getElementById('background-area').style.display = name === 'background' ? 'flex' : 'none';
+  document.getElementById('background-area').className = name === 'background' ? 'visible' : '';
 }
 
 // ── Sidebar ────────────────────────────────────────────────────
-function toggleStory() {
-  const body = document.getElementById('sidebar-story-body');
-  const toggle = document.getElementById('story-toggle');
-  const open = body.classList.toggle('open');
-  toggle.classList.toggle('open', open);
+function showBackground() {
+  state.view = 'background';
+  state.currentPersona = null;
+  showView('background');
+  renderBackground();
+  renderSidebar();
+}
+
+function renderBackground() {
+  document.getElementById('background-area').innerHTML = `
+    <div class="bg-wrapper">
+
+      <div class="bg-hero">
+        <div style="font-size:38px;margin-bottom:10px;">🍵</div>
+        <div class="bg-hero-title">Tea Fellas</div>
+        <div class="bg-hero-sub">Good Tea. Good Day. &nbsp;·&nbsp; Est. 2008 &nbsp;·&nbsp; #01-08, Block 190 Toa Payoh Lorong 6, Singapore 310190</div>
+        <div class="bg-hero-tags">
+          <span class="bg-hero-tag">17 Years Strong</span>
+          <span class="bg-hero-tag">Mon–Fri &nbsp;7:30am – 8pm</span>
+          <span class="bg-hero-tag">Family-Run</span>
+          <span class="bg-hero-tag">One Outlet Only</span>
+          <span class="bg-hero-tag">Toa Payoh Central Market & Food Centre</span>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">The Shop</div>
+        <div class="bg-card">
+          <div class="bg-card-body">
+            Tea Fellas is a small, family-run bubble tea stall at <strong>Toa Payoh Central Market &amp; Food Centre</strong>. It has been serving the Toa Payoh heartlands community since 2008 — HDB residents, morning commuters, and nearby office workers who have made it part of their daily routine. The shop is well-known for its quality tea leaves, less-sweet authentic flavours, and the handcrafted <strong>Brown Sugar Pearl Milk Tea</strong> — made fresh every morning with in-house brown sugar syrup and tapioca pearls.
+          </div>
+        </div>
+        <div class="bg-ops-grid">
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Operating Hours</div>
+            <div class="bg-ops-value">Mon–Fri only<br>Opens 7:30am<br>Closes 8pm<br>Closed weekends</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Signature Drink</div>
+            <div class="bg-ops-value">Brown Sugar Pearl Milk Tea — handcrafted brown sugar syrup, tapioca pearls made fresh in-house daily</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Menu</div>
+            <div class="bg-ops-value">Bubble teas, milk teas, traditional teas, light snacks. Known for quality leaves and authentic, less-sweet flavours.</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Peak Hours</div>
+            <div class="bg-ops-value">Morning rush: 7–9am<br>Lunch: 12–2pm</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Customer Base</div>
+            <div class="bg-ops-value">HDB residents, morning commuters, nearby office workers. Roughly 200–300 customers on a typical weekday.</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Technology</div>
+            <div class="bg-ops-value">No app. No POS system. No online ordering. All manual, paper-based processes.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">The Story</div>
+        <div class="bg-timeline">
+          <div class="bg-timeline-item">
+            <div class="bg-timeline-year">~2000</div>
+            <div class="bg-timeline-dot"><div class="bg-timeline-dot-circle"></div><div class="bg-timeline-dot-line"></div></div>
+            <div class="bg-timeline-text"><strong>John DeSouza</strong> spends over 25 years in a corporate career. In his mid-50s, after a quarter-century of office life, he is retrenched. Rather than look for another corporate role, he decides to build something of his own — something with his hands and his heart.</div>
+          </div>
+          <div class="bg-timeline-item">
+            <div class="bg-timeline-year">2007</div>
+            <div class="bg-timeline-dot"><div class="bg-timeline-dot-circle"></div><div class="bg-timeline-dot-line"></div></div>
+            <div class="bg-timeline-text">Post-retrenchment, John travels to <strong>Taiwan and Japan</strong>. He is struck by the seriousness with which they approach tea and bubble tea — young people genuinely willing to pay for quality and craft. He returns with a vision: bring that same dedication to the Toa Payoh heartlands. His wife <strong>Mary Tan</strong> quits her own corporate job to join him.</div>
+          </div>
+          <div class="bg-timeline-item">
+            <div class="bg-timeline-year">2008</div>
+            <div class="bg-timeline-dot"><div class="bg-timeline-dot-circle"></div><div class="bg-timeline-dot-line"></div></div>
+            <div class="bg-timeline-text"><strong>Tea Fellas opens</strong> at Toa Payoh Central Market &amp; Food Centre. The name — warm, approachable, a bit cheeky — was John's idea. In the same year, a church friend recommends <em>Lim Teck Seng Trading</em> as their ingredient supplier. That relationship has now lasted 18 years. Mrs Selva becomes one of their very first regulars.</div>
+          </div>
+          <div class="bg-timeline-item">
+            <div class="bg-timeline-year">2020</div>
+            <div class="bg-timeline-dot"><div class="bg-timeline-dot-circle"></div><div class="bg-timeline-dot-line"></div></div>
+            <div class="bg-timeline-text">Tea Fellas <strong>survives COVID-19</strong>. Many food stalls close during this period. Tea Fellas holds on — testament to 12 years of goodwill, regulars, and community ties that a chain store cannot replicate.</div>
+          </div>
+          <div class="bg-timeline-item">
+            <div class="bg-timeline-year">2025</div>
+            <div class="bg-timeline-dot"><div class="bg-timeline-dot-circle"></div><div class="bg-timeline-dot-line"></div></div>
+            <div class="bg-timeline-text"><strong>Darren DeSouza</strong>, John's nephew, graduates from SMU with a Business Administration degree and joins as the main barista. He could have taken any office job — he chose Tea Fellas to learn how to run a real business from the ground up. John is proud. Darren is quietly ambitious.</div>
+          </div>
+          <div class="bg-timeline-item">
+            <div class="bg-timeline-year">Today</div>
+            <div class="bg-timeline-dot"><div class="bg-timeline-dot-circle"></div><div class="bg-timeline-dot-line"></div></div>
+            <div class="bg-timeline-text">Tea Fellas is <strong>17 years old</strong> and still running. But ingredient costs are rising, operations are strained at peak hours, and John is quietly wrestling with the biggest question of the shop's life: <em>hold steady, go digital, or expand?</em></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">The People You'll Interview</div>
+        <div class="bg-people-grid">
+          <div class="bg-person">
+            <div class="bg-person-emoji">👴</div>
+            <div class="bg-person-info">
+              <div class="bg-person-role">Owner · Collection Counter</div>
+              <div class="bg-person-name">Uncle John DeSouza</div>
+              <div class="bg-person-bio">Early 60s. Founder and sole decision-maker. Manages the collection counter entirely from memory — no ticket system, no numbers called out digitally. Handles all supply ordering himself, every Monday, by phone. Proud, direct, and deeply protective of what Tea Fellas stands for.</div>
+            </div>
+          </div>
+          <div class="bg-person">
+            <div class="bg-person-emoji">👵</div>
+            <div class="bg-person-info">
+              <div class="bg-person-role">Cashier · Co-Founder</div>
+              <div class="bg-person-name">Aunty Mary Tan</div>
+              <div class="bg-person-bio">Late 50s. John's wife, who gave up her own corporate career to be here. Handles all payments and handwrites every order chit. Knows regulars by name and usual order — the personal heart of Tea Fellas. Her handwriting gets unclear under pressure during rush hours.</div>
+            </div>
+          </div>
+          <div class="bg-person">
+            <div class="bg-person-emoji">👨‍🍳</div>
+            <div class="bg-person-info">
+              <div class="bg-person-role">Main Barista · John's Nephew</div>
+              <div class="bg-person-name">Darren DeSouza</div>
+              <div class="bg-person-bio">25 years old. SMU Business Administration graduate. Makes every single drink — including the signature Brown Sugar Pearl Milk Tea. Good memory, but occasionally forgets orders during the craziest peaks. Considers Uncle John his mentor. Quietly dreams of expanding Tea Fellas one day.</div>
+            </div>
+          </div>
+          <div class="bg-person">
+            <div class="bg-person-emoji">🧑‍🦳</div>
+            <div class="bg-person-info">
+              <div class="bg-person-role">Loyal Customer · Toa Payoh Resident</div>
+              <div class="bg-person-name">Mrs Selva</div>
+              <div class="bg-person-bio">Early 50s, Indian-Singaporean. A customer since Tea Fellas opened in 2008. Visits 3–4 times a week. Her usual: taro milk tea, less sweet, with pearl. Works in Bishan and knows the faces but not everyone by name. Warm and enthusiastic — but not shy about what frustrates her.</div>
+            </div>
+          </div>
+          <div class="bg-person">
+            <div class="bg-person-emoji">👨‍💼</div>
+            <div class="bg-person-info">
+              <div class="bg-person-role">HDB Senior Manager · Frequent Bulk Buyer</div>
+              <div class="bg-person-name">Jacky Chan</div>
+              <div class="bg-person-bio">35 years old. Senior Manager at HDB CDG. Buys drinks for his team of 5 almost every morning. Favourite: Brown Sugar Pearl Milk Tea. Constructive and process-minded — he sees the operational gaps clearly and genuinely wants Tea Fellas to succeed without losing its character.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">How The Shop Operates Today</div>
+        <div class="bg-card">
+          <div class="bg-card-title">The Manual Order Flow</div>
+          <div class="bg-card-body">
+            There is no POS system, no app, no digital queue. Every customer walks up to <strong>Aunty Mary</strong> at the cashier, orders verbally, pays cash or card, and receives a handwritten order chit. Mary passes the chit to <strong>Barista A (Salmiah, part-time)</strong>, who keys the order into a sticker label printer — the sticker goes on the cup. <strong>Darren</strong> makes the drink. <strong>Barista C (Chew, part-time)</strong> wipes the cup clean before handing it to <strong>Uncle John</strong> at the collection counter. John calls out the customer's name from memory and hands them their drink. When it works, it feels warm and personal. When it is busy, it strains at every seam.
+          </div>
+        </div>
+        <div class="bg-card">
+          <div class="bg-card-title">Loyalty Cards</div>
+          <div class="bg-card-body">
+            Tea Fellas runs a paper stamp card system — collect 10 stamps for a free drink. Aunty Mary manages it by hand. Customers regularly forget their cards, lose them, or come back with expired ones. There is no digital backup and no way to check a customer's stamp history. It is a pain point that Mary is aware of but does not know how to fix.
+          </div>
+        </div>
+        <div class="bg-card">
+          <div class="bg-card-title">Supplier & Stock</div>
+          <div class="bg-card-body">
+            Uncle John calls <strong>Lim Teck Seng Trading</strong> every Monday to place a fixed weekly order. Delivery arrives Wednesday. The same order, the same supplier, for 18 years. There is no inventory tracking system — John manages stock from experience and intuition. Ingredient costs have been rising, driven by fuel price increases that Lim Teck Seng has had to pass on. John is absorbing this quietly without raising prices to customers — for now.
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">The Challenge Ahead</div>
+        <div class="bg-challenge">
+          <div class="bg-challenge-title">Why Tea Fellas is at an inflection point</div>
+          <div class="bg-challenge-body">
+            Tea Fellas has built 17 years of goodwill through personal service, community presence, and genuine quality. But it is under growing pressure from multiple directions at once.<br><br>
+            <strong>Rising costs.</strong> Ingredient costs are climbing and John is absorbing them rather than passing them to customers. This cannot continue indefinitely, but raising prices risks alienating the loyal base he has spent 17 years building.<br><br>
+            <strong>Operational strain.</strong> The manual order process — handwritten chits, memory-based collection, paper loyalty cards — works because of the people running it. But at peak hours it buckles: chits get misread, drinks go to the wrong customer, queues grow long, regulars get frustrated.<br><br>
+            <strong>The scaling question.</strong> If Tea Fellas were to open a second outlet, the entire operation would need to be rebuilt. One phone call to one supplier on Monday morning does not scale. There is no inventory system, no way to track stock across locations, no digital customer database.<br><br>
+            <strong>Your job.</strong> Discover what John, Mary, Darren, Mrs Selva, and Jacky are actually experiencing — the friction, the workarounds, the quiet pain points they have learned to live with, and the aspirations they have never fully voiced. Their stories, taken together, will reveal the real problems — and guide a product recommendation that fits Tea Fellas as it truly is.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  `;
 }
 
 function logoutTeamCode() {
@@ -802,6 +1019,8 @@ function renderSidebar() {
     list.appendChild(btn);
   });
   document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
+  const storyBtn = document.getElementById('story-toggle');
+  if (storyBtn) storyBtn.classList.toggle('active', state.view === 'background');
   const teamBadge = document.getElementById('sidebar-team');
   const teamCode = document.getElementById('sidebar-team-code');
   if (state.teamCode) {
