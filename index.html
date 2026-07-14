@@ -259,12 +259,12 @@
   .tc-logo { margin-bottom: 10px; }
   .tc-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
   .tc-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 24px; line-height: 1.6; }
-  .tc-input-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
-  .tc-input { flex: 1; border: 2px solid var(--tea-border); border-radius: 8px; padding: 10px 14px; font-size: 20px; font-weight: 700; font-family: 'Courier New', monospace; text-align: center; text-transform: uppercase; letter-spacing: 4px; color: var(--tea-text); background: #fff; outline: none; }
-  .tc-input:focus { border-color: var(--tea-green); }
-  .tc-start-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-  .tc-start-btn:hover { background: var(--tea-green-light); }
   .tc-hint { font-size: 11px; color: var(--tea-muted); margin-bottom: 14px; }
+  .tc-team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .tc-team-btn { background: var(--tea-card); border: 2px solid var(--tea-border); border-radius: 10px;
+    padding: 14px 10px; font-size: 15px; font-weight: 700; font-family: 'Courier New', monospace;
+    letter-spacing: 1px; color: var(--tea-text); cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+  .tc-team-btn:hover { border-color: var(--tea-green); background: #EAF2E8; color: var(--tea-green); }
   #tc-continue { display: none; }
   .tc-continue-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 8px; }
   .tc-continue-btn:hover { background: var(--tea-green-light); }
@@ -397,19 +397,25 @@
   <div class="tc-box">
     <div class="tc-logo"><img src="tf-logo.jpg" class="tf-logo-img" alt="Tea Fellas"></div>
     <div class="tc-title">Tea Fellas</div>
-    <div class="tc-sub">Enter your group's team code to begin. All devices in your group should use the same code — your session will stay in sync across devices.</div>
+    <div class="tc-sub">Select your team to begin. Everyone in the same group should pick the same team — your session stays in sync across all devices.</div>
     <div id="tc-continue">
       <div class="tc-saved-code" id="tc-saved-display"></div>
       <button class="tc-continue-btn" onclick="resumeTeamCode()">Continue as this team →</button>
-      <div><button class="tc-change" onclick="changeTeamCode()">Change team code</button></div>
+      <div><button class="tc-change" onclick="changeTeamCode()">Switch to a different team</button></div>
       <br>
     </div>
     <div id="tc-new-entry">
-      <div class="tc-input-wrap">
-        <input class="tc-input" id="tc-input" maxlength="10" placeholder="e.g. ALPHA1" onkeydown="if(event.key==='Enter')enterTeamCode()">
-        <button class="tc-start-btn" onclick="enterTeamCode()">Start →</button>
+      <div class="tc-team-grid">
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-1')">TEAM-1</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-2')">TEAM-2</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-3')">TEAM-3</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-4')">TEAM-4</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-5')">TEAM-5</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-6')">TEAM-6</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-7')">TEAM-7</button>
+        <button class="tc-team-btn" onclick="selectTeamCode('TEAM-8')">TEAM-8</button>
       </div>
-      <div class="tc-hint">Your facilitator will give you a team code. Use the same code on all devices in your group.</div>
+      <div class="tc-hint">Ask your facilitator which team number you are. Use the same team on all devices in your group.</div>
     </div>
   </div>
 </div>
@@ -1005,13 +1011,12 @@ function renderBackground() {
 }
 
 function logoutTeamCode() {
-  if (!confirm('Sign out of this team session? Your progress is saved — just enter the same team code to return.')) return;
+  if (!confirm('Sign out of this team session? Your progress is saved — just select the same team to return.')) return;
   localStorage.removeItem('teafellas_team_code');
   state.teamCode = null;
   document.getElementById('team-code-overlay').classList.remove('hidden');
   document.getElementById('tc-continue').style.display = 'none';
   document.getElementById('tc-new-entry').style.display = 'block';
-  document.getElementById('tc-input').value = '';
 }
 
 function renderSidebar() {
@@ -1483,11 +1488,9 @@ function copySynthesis() {
 }
 
 // ── Team code ─────────────────────────────────────────────────
-function enterTeamCode() {
-  const val = document.getElementById('tc-input').value.trim().toUpperCase();
-  if (!val) return;
-  state.teamCode = val;
-  localStorage.setItem('teafellas_team_code', val);
+function selectTeamCode(code) {
+  state.teamCode = code;
+  localStorage.setItem('teafellas_team_code', code);
   document.getElementById('team-code-overlay').classList.add('hidden');
   loadTeamSession().then(() => {
     renderLandingCards();
