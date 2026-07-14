@@ -382,6 +382,10 @@
     <div id="sidebar-header">
       <div id="sidebar-logo">teafellas</div>
       <div id="sidebar-tagline">Discovery Sim</div>
+      <div id="sidebar-team" style="display:none; margin-top:8px; background:rgba(255,255,255,0.12); border-radius:6px; padding:5px 8px;">
+        <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:2px;">Signed in as</div>
+        <div id="sidebar-team-code" style="font-size:13px;font-weight:700;color:#fff;font-family:'Courier New',monospace;letter-spacing:1px;"></div>
+      </div>
     </div>
     <div id="persona-list"></div>
     <div id="sidebar-footer">
@@ -740,6 +744,14 @@ function renderSidebar() {
     list.appendChild(btn);
   });
   document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
+  const teamBadge = document.getElementById('sidebar-team');
+  const teamCode = document.getElementById('sidebar-team-code');
+  if (state.teamCode) {
+    teamBadge.style.display = 'block';
+    teamCode.textContent = state.teamCode;
+  } else {
+    teamBadge.style.display = 'none';
+  }
   document.getElementById('nav-declaration').classList.toggle('active', state.view === 'declaration');
   document.getElementById('nav-email').classList.toggle('active', state.view === 'email');
   if (state.synConfirmed && !state.declarationDone) {
