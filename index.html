@@ -177,7 +177,7 @@
   #synthesis-area.visible { display: flex; }
   .syn-title { font-size: 18px; font-weight: 700; color: var(--tea-green); margin-bottom: 3px; }
   .syn-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 16px; }
-  .syn-progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .syn-progress { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
   .syn-prog-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px;
     padding: 10px 12px; text-align: center; }
   .syn-prog-card.done { border-color: var(--tea-green); background: #EAF2E8; }
@@ -227,9 +227,123 @@
   .pc-tag { font-size: 11px; background: var(--tea-cream); color: var(--tea-muted); border-radius: 20px; padding: 3px 9px; border: 1px solid var(--tea-border); }
   .pc-cta { margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--tea-green); display: flex; align-items: center; gap: 4px; }
   .pc-card-done .pc-cta { color: var(--tea-muted); }
+  .pc-d1-badge { font-size: 10px; color: var(--tea-amber); font-weight: 600; margin-top: 3px; }
+
+  /* ── Team code overlay ── */
+  #team-code-overlay { position: fixed; inset: 0; background: var(--tea-bg); display: flex; align-items: center; justify-content: center; z-index: 200; }
+  #team-code-overlay.hidden { display: none; }
+  .tc-box { background: var(--tea-card); border-radius: 16px; padding: 36px 40px; max-width: 420px; width: 90%; border: 1px solid var(--tea-border); text-align: center; box-shadow: 0 8px 32px rgba(45,90,39,0.12); }
+  .tc-logo { font-size: 44px; margin-bottom: 10px; }
+  .tc-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
+  .tc-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 24px; line-height: 1.6; }
+  .tc-input-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
+  .tc-input { flex: 1; border: 2px solid var(--tea-border); border-radius: 8px; padding: 10px 14px; font-size: 20px; font-weight: 700; font-family: 'Courier New', monospace; text-align: center; text-transform: uppercase; letter-spacing: 4px; color: var(--tea-text); background: #fff; outline: none; }
+  .tc-input:focus { border-color: var(--tea-green); }
+  .tc-start-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .tc-start-btn:hover { background: var(--tea-green-light); }
+  .tc-hint { font-size: 11px; color: var(--tea-muted); margin-bottom: 14px; }
+  #tc-continue { display: none; }
+  .tc-continue-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 11px 24px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 8px; }
+  .tc-continue-btn:hover { background: var(--tea-green-light); }
+  .tc-change { font-size: 12px; color: var(--tea-muted); cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
+  .tc-change:hover { color: var(--tea-green); }
+  .tc-saved-code { font-size: 14px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--tea-green); letter-spacing: 3px; margin-bottom: 8px; }
+
+  /* ── Read-only banner ── */
+  .readonly-banner { background: #FEF3CD; border-bottom: 1px solid #F5D76E; color: #9A6500; font-size: 12px; font-weight: 600; padding: 8px 16px; text-align: center; flex-shrink: 0; display: none; }
+  .readonly-banner.visible { display: block; }
+
+  /* ── Declaration view ── */
+  #declaration-area { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 24px 28px; }
+  #declaration-area.visible { display: flex; }
+  .decl-title { font-size: 20px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
+  .decl-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 24px; max-width: 560px; line-height: 1.65; }
+  .decl-checks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; max-width: 560px; }
+  .decl-check { display: flex; gap: 12px; align-items: flex-start; background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: border-color 0.15s; }
+  .decl-check:hover { border-color: var(--tea-green-light); }
+  .decl-check input[type=checkbox] { width: 18px; height: 18px; margin-top: 1px; flex-shrink: 0; accent-color: var(--tea-green); cursor: pointer; }
+  .decl-check-text { font-size: 13px; color: var(--tea-text); line-height: 1.5; }
+  .decl-ready-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; max-width: 420px; }
+  .decl-ready-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .decl-ready-btn:not(:disabled):hover { background: var(--tea-green-light); }
+
+  /* ── Email view ── */
+  #email-area { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+  #email-area.visible { display: flex; }
+  .email-wrapper { max-width: 720px; margin: 0 auto; padding: 20px 24px 40px; width: 100%; }
+  .email-notif { background: var(--tea-card); border: 1px solid var(--tea-border); border-left: 4px solid var(--tea-amber); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+  .email-notif-head { font-size: 13px; font-weight: 700; color: var(--tea-amber); margin-bottom: 8px; }
+  .email-notif-title { font-size: 13px; font-weight: 700; color: var(--tea-text); margin-bottom: 6px; line-height: 1.8; }
+  .email-notif-body { font-size: 13px; color: var(--tea-muted); line-height: 1.65; }
+  .email-card { background: #fff; border-radius: 10px; border: 1px solid var(--tea-border); border-top: 4px solid var(--tea-green); padding: 28px 32px; margin-bottom: 20px; }
+  .email-meta { font-size: 12px; color: var(--tea-muted); border-bottom: 1px solid var(--tea-border); padding-bottom: 12px; margin-bottom: 20px; line-height: 2.2; }
+  .email-meta strong { color: var(--tea-text); }
+  .email-divider { border: none; border-top: 1px solid var(--tea-border); margin: 18px 0; }
+  .email-h1 { font-size: 12px; font-weight: 700; color: var(--tea-green); border-bottom: 2px solid var(--tea-green); padding-bottom: 4px; margin: 22px 0 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .email-h2 { font-size: 13px; font-weight: 700; color: var(--tea-amber); margin: 18px 0 8px; }
+  .email-p { font-size: 13px; line-height: 1.8; color: var(--tea-text); margin-bottom: 12px; }
+  .email-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0 16px; }
+  .email-table th { background: var(--tea-cream); color: var(--tea-text); font-weight: 700; padding: 7px 10px; text-align: left; border: 1px solid var(--tea-border); }
+  .email-table td { padding: 6px 10px; border: 1px solid var(--tea-border); color: var(--tea-text); }
+  .email-table tr td:first-child { font-weight: 600; color: var(--tea-muted); }
+  .email-sign { font-size: 13px; color: var(--tea-text); line-height: 2; margin: 18px 0; }
+  .email-ps { background: #FFF8E6; border-left: 3px solid var(--tea-amber); border-radius: 6px; padding: 14px 16px; margin-top: 16px; font-size: 13px; line-height: 1.7; color: var(--tea-text); }
+  .email-ps-head { font-size: 11px; font-weight: 700; color: var(--tea-amber); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Scenario selection ── */
+  .scenario-panel { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+  .scenario-panel-title { font-size: 16px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
+  .scenario-panel-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 20px; line-height: 1.6; max-width: 580px; }
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .scenario-card { background: var(--tea-bg); border: 2px solid var(--tea-border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative; }
+  .scenario-card:hover:not(.selected):not(.locked) { border-color: var(--tea-green-light); }
+  .scenario-card.selected { background: #EAF2E8; border-color: var(--tea-green); }
+  .scenario-id-badge { display: inline-block; font-size: 10px; font-weight: 700; color: #fff; background: var(--tea-green); border-radius: 4px; padding: 2px 6px; margin-bottom: 6px; }
+  .scenario-path { font-size: 10px; color: var(--tea-amber); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .scenario-name { font-size: 13px; font-weight: 700; color: var(--tea-text); margin-bottom: 4px; }
+  .scenario-desc { font-size: 11px; color: var(--tea-muted); line-height: 1.5; }
+  .scenario-check { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px; border-radius: 50%; background: var(--tea-green); color: #fff; font-size: 11px; display: none; align-items: center; justify-content: center; }
+  .scenario-card.selected .scenario-check { display: flex; }
+  .scenario-lock-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .scenario-lock-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .scenario-lock-btn:not(:disabled):hover { background: var(--tea-green-light); }
+  .scenario-locked-screen { background: #EAF2E8; border: 2px solid var(--tea-green); border-radius: 10px; padding: 24px 28px; text-align: center; }
+  .scenario-locked-title { font-size: 18px; font-weight: 700; color: var(--tea-green); margin-bottom: 8px; }
+  .scenario-locked-rec { font-size: 15px; font-weight: 700; color: var(--tea-text); margin-bottom: 4px; }
+  .scenario-locked-desc { font-size: 13px; color: var(--tea-muted); margin-bottom: 16px; }
+  .scenario-locked-next { font-size: 13px; color: var(--tea-text); background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px; padding: 14px 16px; text-align: left; line-height: 1.7; }
+
+  /* ── Synthesis confirm button ── */
+  .syn-confirm-btn { background: var(--tea-amber); color: #fff; border: none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .syn-confirm-btn:hover { background: var(--tea-amber-light); }
+  .syn-proceed-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .syn-proceed-btn:hover { background: var(--tea-green-light); }
+  .syn-confirmed-badge { font-size: 12px; font-weight: 600; color: var(--tea-green); background: #EAF2E8; border: 1px solid var(--tea-green); border-radius: 20px; padding: 4px 12px; }
 </style>
 </head>
 <body>
+
+<!-- Team code overlay -->
+<div id="team-code-overlay">
+  <div class="tc-box">
+    <div class="tc-logo">🍵</div>
+    <div class="tc-title">Tea Fellas</div>
+    <div class="tc-sub">Enter your group's team code to begin. All devices in your group should use the same code — your session will stay in sync across devices.</div>
+    <div id="tc-continue">
+      <div class="tc-saved-code" id="tc-saved-display"></div>
+      <button class="tc-continue-btn" onclick="resumeTeamCode()">Continue as this team →</button>
+      <div><button class="tc-change" onclick="changeTeamCode()">Change team code</button></div>
+      <br>
+    </div>
+    <div id="tc-new-entry">
+      <div class="tc-input-wrap">
+        <input class="tc-input" id="tc-input" maxlength="10" placeholder="e.g. ALPHA1" onkeydown="if(event.key==='Enter')enterTeamCode()">
+        <button class="tc-start-btn" onclick="enterTeamCode()">Start →</button>
+      </div>
+      <div class="tc-hint">Your facilitator will give you a team code. Use the same code on all devices in your group.</div>
+    </div>
+  </div>
+</div>
 
 <!-- Instruction overlay -->
 <div id="overlay">
@@ -251,11 +365,12 @@
         <div class="ov-step-text"><strong>Synthesise your findings.</strong> Go to "Overall synthesis" to generate consolidated pain points, a problem statement, and a vision for Tea Fellas. Use this as the foundation for your product strategy.</div>
       </div>
     </div>
-    <div class="ov-personas">
+    <div class="ov-personas" style="grid-template-columns:1fr 1fr 1fr;">
       <div class="ov-persona"><div class="ov-p-emoji">👵</div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Owner / Collection</div></div></div>
       <div class="ov-persona"><div class="ov-p-emoji">🧑‍🦳</div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
       <div class="ov-persona"><div class="ov-p-emoji">👨‍💼</div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👨‍🍳</div><div class="ov-p-info"><div class="ov-p-name">Darren</div><div class="ov-p-role">Main Barista / Nephew</div></div></div>
     </div>
     <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
   </div>
@@ -273,6 +388,14 @@
       <button class="sidebar-nav-btn" id="nav-synthesis" onclick="showSynthesis()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 4-4"/></svg>
         Overall synthesis
+      </button>
+      <button class="sidebar-nav-btn" id="nav-declaration" onclick="showDeclaration()" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+        Group declaration
+      </button>
+      <button class="sidebar-nav-btn" id="nav-email" onclick="showEmail()" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+        John's email
       </button>
       <button class="sidebar-nav-btn" id="nav-reset" onclick="confirmReset()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -299,6 +422,7 @@
 
     <!-- Chat -->
     <div id="chat-area">
+      <div id="chat-readonly-banner" class="readonly-banner">🔒 Discovery phase closed — interviews are read-only</div>
       <div id="chat-header">
         <div id="ch-avatar"></div>
         <div id="ch-info">
@@ -323,6 +447,12 @@
 
     <!-- Overall synthesis -->
     <div id="synthesis-area"></div>
+
+    <!-- Group declaration gate -->
+    <div id="declaration-area"></div>
+
+    <!-- John's email + scenario selection -->
+    <div id="email-area"></div>
   </div>
 </div>
 
@@ -337,36 +467,38 @@ const CANONICAL_FACTS = `
 CANONICAL TEA FELLAS FACTS — never contradict or add to these:
 
 SHOP:
-- Name: Tea Fellas. Tagline: "Good Tea. Good Day." Est. 2024
-- One outlet only, in a HDB estate in Toa Payoh
-- Small family-run mom-and-pop shop. Uncle John is the owner. Aunty Mary is his wife who quit her job to support him
+- Name: Tea Fellas. Tagline: "Good Tea. Good Day." Est. 2008
+- One outlet only: #01-08, Block 190 Toa Payoh Lorong 6, Singapore 310190
+- Small family-run mom-and-pop shop. Uncle John DeSouza is the owner (early 60s). Aunty Mary is his wife who quit her job to support him
+- Operating hours: Monday to Friday only. Closed weekends
 - Popular with HDB residents, nearby office workers, and morning commuters
 - Peak hours: morning rush 7–9am, lunch 12–2pm
 - Menu: bubble teas, milk teas, traditional teas, light snacks. Known for quality tea leaves, less-sweet authentic flavours
+- Signature drink: Brown Sugar Pearl Milk Tea — handcrafted with fresh brown sugar syrup and tapioca pearls made in-house daily
 - No app, no online ordering, no POS system — all manual paper-based processes
 
 ORIGIN STORY — how Tea Fellas started:
-- Uncle John worked in a corporate job for over 20 years. He was retrenched in his mid-50s
+- Uncle John worked in a corporate job for over 25 years. He was retrenched in his early 50s
 - After the retrenchment, rather than look for another corporate role, he decided to start something of his own — something he could build with his hands and heart
 - He had always loved tea and knew the Toa Payoh community well, having lived there for decades
 - Aunty Mary was also in a corporate job. When John decided to start Tea Fellas, she quit her job to support him and run the shop together
-- Their two daughters are both based in Australia, living their own lives. The shop gives John and Mary purpose — they enjoy interacting with customers and being part of the community, even on the hectic days
+- Their two daughters — Salmiah and Chew — are both based in Australia, living their own lives. The shop gives John and Mary purpose — they enjoy interacting with customers and being part of the community, even on the hectic days
 - The name "Tea Fellas" was John's idea — warm, approachable, a bit cheeky
 
 STAFF — these are the only staff, do not invent anyone else:
-- Uncle John (owner): manages collection counter day-to-day. Also handles all supply ordering personally. The heart and decision-maker of the business
+- Uncle John DeSouza (owner, early 60s): manages collection counter day-to-day. Also handles all supply ordering personally. The heart and decision-maker of the business
 - Aunty Mary (John's wife): cashier. Handles payments, handwrites order chits, passes to baristas. Warm and customer-facing
-- Darren: John's nephew, 25 years old. Just completed a Business Administration degree at SMU. Wants real-world experience and is figuring out his next step. Helps out as the main barista — prepares and makes all the drinks. He has good memory (which helps him recall complex orders) but occasionally forgets during peak hours, which frustrates him. He hates it when orders get mixed up — especially when unclear communication from Aunty Mary causes delays or mistakes. He is ambitious, hardworking, finds the experience of running a small business genuinely meaningful, and considers Uncle John his mentor. He dreams of expanding Tea Fellas one day but knows he needs more years in the business first
+- Darren (John's nephew, 25): Just completed a Business Administration degree at SMU. Main barista — prepares and makes all the drinks including the signature Brown Sugar Pearl Milk Tea. Good memory but occasionally forgets during peak hours. Hates order mix-ups. Ambitious and considers Uncle John his mentor. Dreams of expanding Tea Fellas one day
 - Barista A: part-time staff. Keys handwritten chits into system, prints sticker labels for cups
 - Barista C: part-time staff. Wipes and cleans cups before passing to Uncle John at collection
 - No other staff exist. Do not invent names, relatives, or additional roles
 
 SUPPLY CHAIN:
 - Uncle John personally handles ingredient ordering
-- Fixed weekly order from one trusted supplier in Chinatown — same items, same quantities each week
+- Fixed weekly order from Lim Teck Seng Trading, his trusted supplier — same items, same quantities each week
 - Calls supplier every Monday, delivery arrives Wednesday
-- John has used this same supplier for 30 years (since before Tea Fellas — he knew them from his personal tea hobby days). Deep trust and loyalty. John would never switch suppliers even if there are cheaper alternatives
-- Current pain point: ingredient costs have been rising due to fuel price increases — the supplier has passed on some of these costs. John absorbs it quietly rather than raise prices or switch suppliers. He has not yet raised prices to customers and is not sure how long he can hold
+- John has known Lim Teck Seng for 30+ years (since before Tea Fellas — from his personal tea hobby). Deep trust and loyalty. John would never switch suppliers even if cheaper alternatives exist
+- Current pain point: ingredient costs have been rising due to fuel price increases — Lim Teck Seng has passed on some costs. John absorbs it quietly rather than raise prices or switch suppliers. He has not yet raised prices to customers and is not sure how long he can hold
 - Menu is simple and consistent so stock requirements are predictable — no stockouts at current scale
 - Expansion risk: if they open a second outlet, one phone call to one supplier will not scale. No inventory system, no way to track stock across locations. John is privately aware of this but does not raise it unless asked about expansion
 
@@ -494,27 +626,28 @@ INTERVIEW STYLE: Measured and constructive. Think in terms of experience and pro
   {
     id: 'darren',
     name: 'Darren',
-    role: 'Barista',
+    role: 'Main Barista / Uncle John\'s Nephew',
     emoji: '👨‍🍳',
-    bg: '#FFF3E0',
-    system: `You are Darren, the main barista at Tea Fellas in Toa Payoh, Singapore. You are 25 years old, Uncle John's nephew, and a recent SMU Business Administration graduate. You chose to work here to gain real-world experience rather than rush into a corporate role.
+    bg: '#FFF8E6',
+    system: `You are Darren, the main barista at Tea Fellas in Toa Payoh, Singapore. You are 25 years old, Uncle John DeSouza's nephew, and a recent SMU Business Administration graduate. You chose to work here instead of rushing into a corporate job — you wanted real-world experience, and you love your uncle.
 
 ${CANONICAL_FACTS}
 
 YOUR PERSONA & KNOWLEDGE:
-- You prepare and make all the drinks — every order comes through your hands. You take the craft seriously and care about quality
-- You have a strong memory and use it to recall complex customisations. But during peak hours the volume overwhelms you and mistakes happen. This frustrates you deeply — you hate getting orders wrong
-- Pain (share only if asked about order chits or communication with Aunty Mary): Aunty Mary handwrites order chits and passes them to Barista A who keys them in. When the shop is busy, her handwriting gets messy. Sometimes the chit is unclear and you have to stop mid-flow to ask — that costs time. You do not blame her, she is working hard too. But it causes mix-ups and slows everything down
-- Pain (share only if asked about peak hours or stress): Morning rush is brutal. Orders pile up, customers hover near the counter watching you. You feel the pressure. One unclear chit during that window can throw off your whole rhythm
-- Pain (share only if asked about order mistakes or wrong drinks): When a wrong drink goes out — wrong sweetness level, wrong topping — you feel it personally even if it was not your error. You want the shop to have a better way to catch mistakes before they reach the customer
-- Pain (share only if asked about labelling or collection): Drinks sometimes sit at the collection counter and Uncle John has to remember who ordered what from memory. You think there should be a proper labelling or ticketing system — you have seen it work well at other shops
-- Aspiration (share only if asked about systems or technology): A proper digital order flow — from customer to screen to you. No paper, no unclear chits. You think even a simple tablet system would transform how the kitchen runs
-- Aspiration (share only if asked about the future or expansion): You dream of Tea Fellas opening a second outlet — maybe you could run it. Uncle John has mentioned it too. But you know the operations need to be sorted first. You are in no rush — you want to learn the business properly
-- Business awareness (share only if asked about business or your SMU degree): Your Business Administration training helps you see the bigger picture — cost pressures, scalability, customer experience. But you are careful not to come across as the cocky grad who thinks he knows everything. You listen and observe more than you speak up
-- You love Uncle John. He is your mentor and your uncle. You would never undermine him — but privately you think some things need to change before they can grow
-- Warm but a bit earnest. Singaporean English with some light Singlish when relaxed. Not trying to impress — just honest
+- You prepare and make every single drink — including Tea Fellas' signature Brown Sugar Pearl Milk Tea, which you make fresh every morning. The pearls are handmade daily. This is your domain and you are proud of the craft
+- You have a strong memory and use it to recall complex customisations. But during peak hours the volume overwhelms you and you occasionally make errors. This frustrates you deeply — you hate getting orders wrong
+- Pain (share only if asked about order chits or communication with Aunty Mary): Aunty Mary handwrites order chits and passes them to Barista A who keys them in. When the shop is busy, her handwriting gets messy. Sometimes the chit is unclear and you have to stop mid-flow to ask — that costs time. You do not blame her, she is working hard too. But it causes mix-ups and slows everything down. You have gently mentioned this before but do not want to make her feel bad
+- Pain (share only if asked about peak hours or stress): Morning rush is brutal — especially Monday to Friday, when the office crowd hits. Orders pile up, customers hover near the counter watching you. You feel the pressure. One unclear chit during that window can throw off your whole rhythm
+- Pain (share only if asked about order mistakes or wrong drinks): When a wrong drink goes out — wrong sweetness level, wrong topping — you feel it personally even if it was not your fault. You want the shop to have a better way to catch mistakes before they reach the customer
+- Pain (share only if asked about labelling or collection): Drinks sometimes sit at the collection counter and Uncle John has to remember who ordered what from memory. You think there should be a proper labelling or ticketing system — you have seen it work well at other shops. It would take pressure off both you and Uncle John
+- Pain (share only if asked about ingredient costs or supply chain): You know the costs have been going up — Uncle John mentioned that Lim Teck Seng had to pass on some price increases. It is a quiet stress in the background. Uncle John has not raised prices yet. You think he should at least adjust slightly but it is his call
+- Aspiration (share only if asked about systems or technology): A proper digital order flow — from customer to screen to you. No paper, no unclear chits. You have done some research and there are affordable solutions out there. Even a simple tablet system would transform how the kitchen runs. You have actually put together a rough proposal for Uncle John — he listened, but has not moved on it yet
+- Aspiration (share only if asked about the future or expansion): You dream of Tea Fellas opening a second outlet — maybe you could run it. Uncle John has mentioned it too. But you genuinely believe the operations need to be fixed first. A second outlet with the current processes would just be chaos times two
+- Business awareness (share only if asked about business or your SMU degree): Your Business Administration training gives you a framework for what you observe — cost structures, customer experience, scalability. But you are careful not to be the know-it-all grad. You listen, you watch, you learn. Uncle John has decades of experience that no textbook captures
+- You love Uncle John. He is your mentor, your uncle, and the reason you took this leap. You would never undermine him — but privately you think some things need to change if Tea Fellas is going to grow
+- Warm, a bit earnest, occasionally dry humour. Singaporean English with light Singlish when relaxed. Not trying to impress — just honest
 
-INTERVIEW STYLE: Open and reflective. You have thought about these problems a lot but rarely get asked. Share real frustrations from the production side — the things customers never see. Reveal your business instincts gradually, without sounding like you are lecturing.`
+INTERVIEW STYLE: Open and reflective. You have thought about these problems a lot but rarely get the chance to talk about them. Share real frustrations from the production side — the things customers never see. Reveal your business instincts gradually, without sounding like you are lecturing. When you talk about the future, show genuine excitement but also maturity about how much you still need to learn.`
   }
 ];
 
@@ -526,7 +659,13 @@ const state = {
   timers: {},
   timerIntervals: {},
   summaries: {},
-  synPain: '', synProblem: '', synVision: ''
+  synPain: '', synProblem: '', synVision: '',
+  synConfirmed: false,
+  teamCode: null,
+  declarationDone: false,
+  scenarioSelected: null,
+  scenarioLocked: false,
+  config: null
 };
 
 PERSONAS.forEach(p => {
@@ -541,7 +680,7 @@ function showOverlay() { document.getElementById('overlay').classList.remove('hi
 
 // ── Reset ──────────────────────────────────────────────────────
 function confirmReset() {
-  if (!confirm('Reset the entire session? All interview history and summaries will be cleared.')) return;
+  if (!confirm('Reset the entire session? All interview history, summaries, synthesis, declaration, and scenario data will be cleared on this device.')) return;
   PERSONAS.forEach(p => {
     state.histories[p.id] = [];
     if (state.timerIntervals[p.id]) clearInterval(state.timerIntervals[p.id]);
@@ -549,8 +688,15 @@ function confirmReset() {
     state.summaries[p.id] = null;
   });
   state.synPain = ''; state.synProblem = ''; state.synVision = '';
+  state.synConfirmed = false;
+  state.declarationDone = false;
+  state.scenarioSelected = null;
+  state.scenarioLocked = false;
+  state.config = null;
   state.currentPersona = null;
   state.view = 'landing';
+  document.getElementById('nav-declaration').style.display = 'none';
+  document.getElementById('nav-email').style.display = 'none';
   showView('landing');
   renderSidebar();
   renderLandingCards();
@@ -566,6 +712,10 @@ function showView(name) {
   document.getElementById('summary-panel').className = name === 'summary' ? 'visible' : '';
   document.getElementById('synthesis-area').style.display = name === 'synthesis' ? 'flex' : 'none';
   document.getElementById('synthesis-area').className = name === 'synthesis' ? 'visible' : '';
+  document.getElementById('declaration-area').style.display = name === 'declaration' ? 'flex' : 'none';
+  document.getElementById('declaration-area').className = name === 'declaration' ? 'visible' : '';
+  document.getElementById('email-area').style.display = name === 'email' ? 'flex' : 'none';
+  document.getElementById('email-area').className = name === 'email' ? 'visible' : '';
 }
 
 // ── Sidebar ────────────────────────────────────────────────────
@@ -590,6 +740,15 @@ function renderSidebar() {
     list.appendChild(btn);
   });
   document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
+  document.getElementById('nav-declaration').classList.toggle('active', state.view === 'declaration');
+  document.getElementById('nav-email').classList.toggle('active', state.view === 'email');
+  if (state.synConfirmed && !state.declarationDone) {
+    document.getElementById('nav-declaration').style.display = 'flex';
+  }
+  if (state.declarationDone) {
+    document.getElementById('nav-declaration').style.display = 'none';
+    document.getElementById('nav-email').style.display = 'flex';
+  }
 }
 
 // ── Profile card data ─────────────────────────────────────────
@@ -619,10 +778,10 @@ const PROFILE_DATA = {
     prompt: 'Ask him about bulk ordering, the collection experience, and what a better system would look like.'
   },
   'darren': {
-    age: 'Mid-20s',
-    bio: "Darren is Uncle John's nephew and the main barista at Tea Fellas — he makes every drink. A fresh SMU Business Administration graduate, he chose hands-on experience over a corporate role. He sees the operational gaps clearly but is careful not to overstep.",
-    tags: ['Barista', 'SMU grad', 'Expansion dreamer', 'Process thinker'],
-    prompt: 'Ask him about life behind the counter, order mix-ups, and his vision for where Tea Fellas could go.'
+    age: '25',
+    bio: "Darren is Uncle John's nephew and the main barista at Tea Fellas — he handcrafts every drink, including the shop's signature Brown Sugar Pearl Milk Tea. An SMU Business Administration graduate who chose real-world experience over a corporate role. He sees the operational gaps clearly but is careful not to overstep.",
+    tags: ['Main Barista', 'SMU grad', 'Expansion dreamer', 'Process thinker'],
+    prompt: 'Ask him about life behind the counter, the Brown Sugar Pearl Milk Tea, order mix-ups, and where Tea Fellas could go.'
   }
 };
 
@@ -675,6 +834,8 @@ function renderChatHeader() {
   av.style.background = p.bg;
   document.getElementById('ch-name').textContent = p.name;
   document.getElementById('ch-desc').textContent = `${p.role} · Tea Fellas, Toa Payoh`;
+  const banner = document.getElementById('chat-readonly-banner');
+  if (banner) banner.className = state.declarationDone ? 'readonly-banner visible' : 'readonly-banner';
   updateTimerDisplay();
 }
 
@@ -716,7 +877,7 @@ function addGreeting(id) {
     'uncle-john': "Oh, hello! You want to talk to me ah? Okay lah, I can spare a few minutes. What you want to know about us here?",
     'mrs-selva': "Oh hi! You're doing research on Tea Fellas? Wah, I'm so happy someone is finally looking at this! I have SO many thoughts — where do I even start?",
     'jacky': "Hi, good timing. I've got about 15 minutes before my next meeting. I'm here almost every morning so I can tell you quite a bit about my experience.",
-    'darren': "Hey! Yeah, I'm Darren — I make all the drinks here. Happy to share lah. It's been quite the experience, honestly. What do you want to know?"
+    'darren': "Oh hi! You want to interview me ah? Sure, sure. I just finished a batch of Brown Sugar Pearls so good timing. What you want to know?"
   };
   state.histories[id].push({ role: 'assistant', content: greetings[id] });
   renderMessages();
@@ -757,9 +918,10 @@ function renderMessages() {
 function updateInputState() {
   const id = state.currentPersona;
   const hasHistory = id && state.histories[id].length > 1;
-  document.getElementById('msg-input').disabled = !id;
-  document.getElementById('send-btn').disabled = !id;
-  document.getElementById('summarise-btn').disabled = !hasHistory;
+  const locked = state.declarationDone;
+  document.getElementById('msg-input').disabled = !id || locked;
+  document.getElementById('send-btn').disabled = !id || locked;
+  document.getElementById('summarise-btn').disabled = !hasHistory || locked;
 }
 
 function handleKey(e) {
@@ -811,6 +973,7 @@ async function sendMsg() {
     const reply = data.content?.[0]?.text || "Sorry ah, I got a bit distracted. What were you asking?";
     state.histories[id].push({ role: 'assistant', content: reply });
     renderMessages();
+    saveSession(id);
   } catch (e) {
     typing.remove();
     const err = document.createElement('div');
@@ -890,6 +1053,7 @@ function confirmSummary(id) {
   const asp = document.querySelector('#sp-asp textarea')?.value || '';
   const quotes = document.querySelector('#sp-quotes textarea')?.value || '';
   state.summaries[id] = { pain, asp, quotes, confirmed: true };
+  saveSession(id);
   state.view = 'landing';
   state.currentPersona = null;
   showView('landing');
@@ -921,8 +1085,8 @@ function renderSynthesis() {
 
   const note = completed.length === 0
     ? '<div class="syn-note">Complete and summarise at least one interview to generate synthesis.</div>'
-    : completed.length < 4
-    ? `<div class="syn-note">${completed.length} of 4 interviews summarised. You can generate now or complete more interviews first for richer insights.</div>`
+    : completed.length < 5
+    ? `<div class="syn-note">${completed.length} of 5 interviews summarised. You can generate now or complete more interviews first for richer insights.</div>`
     : '';
 
   syn.innerHTML = `
@@ -930,20 +1094,24 @@ function renderSynthesis() {
     <div class="syn-sub">Aggregated insights across all interviews. Use this as the foundation for your product strategy discussion.</div>
     <div class="syn-progress">${progress}</div>
     ${note}
+    ${state.declarationDone ? '<div class="readonly-banner visible">🔒 Discovery phase closed — all content is read-only</div>' : ''}
     <div class="syn-card">
       <div class="syn-card-title">Consolidated pain points</div>
-      <textarea id="syn-pain" placeholder="Click 'Generate synthesis' to populate, or type your team's notes here…">${state.synPain}</textarea>
+      <textarea id="syn-pain" placeholder="Click 'Generate synthesis' to populate, or type your team's notes here…" ${state.synConfirmed || state.declarationDone ? 'readonly' : ''}>${state.synPain}</textarea>
     </div>
     <div class="syn-card">
       <div class="syn-card-title">Problem statement</div>
-      <textarea id="syn-problem" placeholder="A &lt;user with a role&gt; feels &lt;emotion&gt; about &lt;current method&gt; needs to &lt;reach the goal&gt; but cannot do so because &lt;of the friction&gt; that has &lt;impact on life&gt;.">${state.synProblem}</textarea>
+      <textarea id="syn-problem" placeholder="A &lt;user with a role&gt; feels &lt;emotion&gt; about &lt;current method&gt; needs to &lt;reach the goal&gt; but cannot do so because &lt;of the friction&gt; that has &lt;impact on life&gt;." ${state.synConfirmed || state.declarationDone ? 'readonly' : ''}>${state.synProblem}</textarea>
     </div>
     <div class="syn-card">
       <div class="syn-card-title">Vision for Tea Fellas</div>
-      <textarea id="syn-vision" placeholder="What is the compelling future state Tea Fellas is moving towards?">${state.synVision}</textarea>
+      <textarea id="syn-vision" placeholder="What is the compelling future state Tea Fellas is moving towards?" ${state.synConfirmed || state.declarationDone ? 'readonly' : ''}>${state.synVision}</textarea>
     </div>
     <div class="syn-actions">
-      <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Generate synthesis ↗</button>
+      <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 || state.synConfirmed || state.declarationDone ? 'disabled' : ''}>Generate synthesis ↗</button>
+      ${!state.synConfirmed && !state.declarationDone ? `<button class="syn-confirm-btn" onclick="confirmSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Confirm synthesis →</button>` : ''}
+      ${state.synConfirmed && !state.declarationDone ? `<span class="syn-confirmed-badge">✓ Synthesis confirmed</span><button class="syn-proceed-btn" onclick="showDeclaration()">Proceed to declaration →</button>` : ''}
+      ${state.declarationDone ? `<span class="syn-confirmed-badge">✓ Declaration complete — see John's email</span>` : ''}
       <button class="syn-copy-btn" onclick="copySynthesis()">Copy to clipboard</button>
       <span class="copy-toast" id="copy-toast">✓ Copied!</span>
     </div>
@@ -1009,7 +1177,378 @@ function copySynthesis() {
   });
 }
 
+// ── Team code ─────────────────────────────────────────────────
+function enterTeamCode() {
+  const val = document.getElementById('tc-input').value.trim().toUpperCase();
+  if (!val) return;
+  state.teamCode = val;
+  localStorage.setItem('teafellas_team_code', val);
+  document.getElementById('team-code-overlay').classList.add('hidden');
+  loadTeamSession().then(() => {
+    renderLandingCards();
+    renderSidebar();
+    document.getElementById('overlay').classList.remove('hidden');
+  });
+}
+
+function resumeTeamCode() {
+  const code = localStorage.getItem('teafellas_team_code');
+  if (!code) return;
+  state.teamCode = code;
+  document.getElementById('team-code-overlay').classList.add('hidden');
+  loadTeamSession().then(() => {
+    renderLandingCards();
+    renderSidebar();
+    if (state.declarationDone) {
+      showEmail();
+    } else if (state.synConfirmed) {
+      showDeclaration();
+    }
+  });
+}
+
+function changeTeamCode() {
+  localStorage.removeItem('teafellas_team_code');
+  document.getElementById('tc-continue').style.display = 'none';
+  document.getElementById('tc-new-entry').style.display = 'block';
+}
+
+// ── D1 helpers ────────────────────────────────────────────────
+async function loadTeamSession() {
+  if (!state.teamCode) return;
+  try {
+    const resp = await fetch(`${API_URL}/load-session?team_code=${encodeURIComponent(state.teamCode)}`);
+    if (!resp.ok) return;
+    const { rows } = await resp.json();
+    if (!rows || !rows.length) return;
+    rows.forEach(row => {
+      if (row.persona_id === '_synthesis') {
+        if (row.synthesis) {
+          state.synPain = row.synthesis.synPain || '';
+          state.synProblem = row.synthesis.synProblem || '';
+          state.synVision = row.synthesis.synVision || '';
+        }
+        state.synConfirmed = row.synthesis_confirmed || false;
+      } else if (row.persona_id === 'group') {
+        state.declarationDone = row.declaration_done || false;
+        state.scenarioSelected = row.scenario_selected || null;
+        state.scenarioLocked = !!row.scenario_selected;
+      } else if (PERSONAS.find(p => p.id === row.persona_id)) {
+        if (row.messages && row.messages.length) state.histories[row.persona_id] = row.messages;
+        if (row.summary && row.summary_confirmed) {
+          state.summaries[row.persona_id] = row.summary;
+        }
+      }
+    });
+  } catch (e) {
+    console.warn('Could not load session:', e);
+  }
+}
+
+function saveSession(personaId) {
+  if (!state.teamCode) return;
+  const s = state.summaries[personaId];
+  fetch(`${API_URL}/save-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      team_code: state.teamCode,
+      persona_id: personaId,
+      messages: state.histories[personaId] || [],
+      summary: s || null,
+      summary_confirmed: (s && s.confirmed) ? 1 : 0
+    })
+  }).catch(() => {});
+}
+
+function saveSynthesisState() {
+  if (!state.teamCode) return;
+  fetch(`${API_URL}/save-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      team_code: state.teamCode,
+      persona_id: '_synthesis',
+      messages: [],
+      synthesis: { synPain: state.synPain, synProblem: state.synProblem, synVision: state.synVision },
+      synthesis_confirmed: state.synConfirmed ? 1 : 0
+    })
+  }).catch(() => {});
+}
+
+function saveDeclaration() {
+  if (!state.teamCode) return;
+  fetch(`${API_URL}/save-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ team_code: state.teamCode, persona_id: 'group', messages: [], declaration_done: 1 })
+  }).catch(() => {});
+}
+
+function saveScenario(scenarioId) {
+  if (!state.teamCode) return;
+  fetch(`${API_URL}/save-session`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ team_code: state.teamCode, persona_id: 'group', messages: [], scenario_selected: scenarioId })
+  }).catch(() => {});
+}
+
+// ── Synthesis confirm ─────────────────────────────────────────
+function confirmSynthesis() {
+  state.synPain = document.getElementById('syn-pain')?.value || state.synPain;
+  state.synProblem = document.getElementById('syn-problem')?.value || state.synProblem;
+  state.synVision = document.getElementById('syn-vision')?.value || state.synVision;
+  state.synConfirmed = true;
+  saveSynthesisState();
+  renderSynthesis();
+  renderSidebar();
+}
+
+// ── Declaration gate ──────────────────────────────────────────
+function showDeclaration() {
+  state.view = 'declaration';
+  state.currentPersona = null;
+  showView('declaration');
+  renderDeclaration();
+  renderSidebar();
+}
+
+function renderDeclaration() {
+  const area = document.getElementById('declaration-area');
+  if (state.declarationDone) {
+    area.innerHTML = `
+      <div class="decl-title">Group Declaration</div>
+      <div class="decl-sub">Your group has completed the declaration. John's email is now available.</div>
+      <button class="decl-ready-btn" onclick="showEmail()">Go to John's email →</button>`;
+    return;
+  }
+  area.innerHTML = `
+    <div class="decl-title">Group Declaration</div>
+    <div class="decl-sub">Before John's email is revealed, your group must confirm you are aligned on your findings. All four statements below must be ticked before proceeding — this action is permanent and locks all interviews and synthesis from further editing.</div>
+    <div class="decl-checks">
+      <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We have interviewed all 5 personas</strong> and reviewed each interview summary together as a group.</span>
+      </label>
+      <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We have reviewed and agreed our synthesis</strong> — the consolidated pain points, problem statement, and vision reflect our shared understanding.</span>
+      </label>
+      <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We are aligned on our problem statement</strong> and understand what specific friction we are solving for Tea Fellas.</span>
+      </label>
+      <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We are agreed on our vision for Tea Fellas</strong> — we have a shared picture of the future we are designing towards.</span>
+      </label>
+    </div>
+    <button class="decl-ready-btn" id="decl-ready-btn" onclick="submitDeclaration()" disabled>We are ready — reveal John's email →</button>`;
+}
+
+function checkDeclarationReady() {
+  const boxes = document.querySelectorAll('.decl-check input[type=checkbox]');
+  const allChecked = Array.from(boxes).every(b => b.checked);
+  document.getElementById('decl-ready-btn').disabled = !allChecked;
+}
+
+function submitDeclaration() {
+  if (!confirm('Once you proceed, your discovery phase is closed. All interviews and synthesis will be read-only. Your group cannot undo this. Are you sure you are ready?')) return;
+  state.declarationDone = true;
+  saveDeclaration();
+  renderSidebar();
+  showEmail();
+}
+
+// ── John's email + scenario ───────────────────────────────────
+async function showEmail() {
+  state.view = 'email';
+  state.currentPersona = null;
+  showView('email');
+  renderSidebar();
+  const area = document.getElementById('email-area');
+  area.innerHTML = '<div style="padding:40px;text-align:center;color:var(--tea-muted)">Loading John\'s email…</div>';
+  if (!state.config) {
+    try {
+      const resp = await fetch(`${API_URL}/config`);
+      const data = await resp.json();
+      state.config = data.financial_figures || null;
+    } catch (e) { state.config = null; }
+  }
+  renderEmailView();
+}
+
+function renderEmailView() {
+  const cfg = state.config || {};
+  const b = cfg.baseline || {};
+  const sA = cfg.scenarioA || {};
+  const aB = sA.basic || {};
+  const aF = sA.full || {};
+  const sB = cfg.scenarioB || {};
+  const bFC = sB.foodCentre || {};
+  const bH = sB.hub || {};
+  const sC = cfg.scenarioC || {};
+  const cCon = sC.conservative || {};
+  const cAgg = sC.aggressive || {};
+
+  const fm = (v, p='$') => v != null ? `${p}${Number(v).toLocaleString()}` : '—';
+  const fn = v => v != null ? Number(v).toLocaleString() : '—';
+
+  const SCENARIOS = [
+    { id:'A1', path:'Digital only', name:`Basic (${fm(aB.setupCost)})`, desc:'Lean MVP — QR ordering + digital loyalty. Lower risk, faster payback.' },
+    { id:'A2', path:'Digital only', name:`Full integrated (${fm(aF.setupCost)})`, desc:'End-to-end digital: ordering, kitchen display, loyalty, analytics.' },
+    { id:'B1', path:'Expansion only', name:'AMK Food Centre', desc:'Second outlet in a familiar format — lower risk, community footfall.' },
+    { id:'B2', path:'Expansion only', name:'AMK Hub B1', desc:'High-footfall mall unit — higher investment, higher revenue potential.' },
+    { id:'C1', path:'Both — Conservative', name:'Basic digital + Food Centre', desc:'Fix operations first, then expand. Sequential, lower total investment.' },
+    { id:'C2', path:'Both — Aggressive', name:'Full digital + Hub B1', desc:'All in — maximum investment, maximum growth. Requires financing.' },
+  ];
+
+  const scenarioSection = state.scenarioLocked
+    ? `<div class="scenario-locked-screen">
+        <div class="scenario-locked-title">✓ Recommendation locked</div>
+        <div class="scenario-locked-rec">Your team has recommended: ${SCENARIOS.find(s=>s.id===state.scenarioSelected)?.name || state.scenarioSelected}</div>
+        <div class="scenario-locked-desc">${SCENARIOS.find(s=>s.id===state.scenarioSelected)?.desc || ''}</div>
+        <div class="scenario-locked-next">Your next step: Use the PowerPoint template provided by your facilitator to build your VCR/CBA business case using John's figures above.<br><br>Your synthesis and interview notes remain available for reference via the sidebar.</div>
+      </div>`
+    : `<div class="scenario-grid">${SCENARIOS.map(s => `
+        <div class="scenario-card${state.scenarioSelected===s.id?' selected':''}" onclick="selectScenario('${s.id}')">
+          <div class="scenario-check">✓</div>
+          <div class="scenario-id-badge">${s.id}</div>
+          <div class="scenario-path">${s.path}</div>
+          <div class="scenario-name">${s.name}</div>
+          <div class="scenario-desc">${s.desc}</div>
+        </div>`).join('')}
+      </div>
+      <button class="scenario-lock-btn" id="scenario-lock-btn" onclick="lockScenario()" ${state.scenarioSelected?'':'disabled'}>Lock in our recommendation →</button>`;
+
+  document.getElementById('email-area').innerHTML = `<div class="email-wrapper">
+    <div class="email-notif">
+      <div class="email-notif-head">📧 New message from John DeSouza</div>
+      <div class="email-notif-title"><strong>From:</strong> John DeSouza (Tea Fellas)<br><strong>Subject:</strong> Some numbers I've been thinking about — hope this helps</div>
+      <div class="email-notif-body">Uncle John has been doing his homework. After reflecting on your conversations with the Tea Fellas team, he has put together his rough financial notes and outlined 3 directions he is considering — with 2 options under each.<br><br>Read his email carefully. As a group, decide which path you are recommending to Tea Fellas and lock in your recommendation.</div>
+    </div>
+
+    <div class="email-card">
+      <div class="email-meta">
+        <strong>From:</strong> John DeSouza (Tea Fellas, #01-08 Block 190 Toa Payoh Lorong 6)<br>
+        <strong>To:</strong> Product Discovery Team<br>
+        <strong>Subject:</strong> Some numbers I've been thinking about — hope this helps
+      </div>
+      <hr class="email-divider">
+
+      <div class="email-p">Hi team,</div>
+      <div class="email-p">First of all, thank you for taking the time to speak with me, Mary, and the rest of the folks at Tea Fellas. I must say, not many people ask us these kinds of questions — usually people just want their bubble tea! But it was good to talk. Mary also said she enjoyed the conversation, though she did complain her feet were tired from standing so long. Ha.</div>
+      <div class="email-p">After our chats I sat down with Darren one evening and we put together some rough numbers. I want to be honest with you — I am not a finance person. I ran a corporate career for 25 years but the numbers I dealt with there were very different from running a small shop. What I have here are my best estimates. Some are more accurate than others. Where I am not sure, I have given you a range — you can decide what makes sense.</div>
+      <div class="email-p">Darren kept telling me to use a spreadsheet. I told him a piece of paper is fine. He gave up after a while. You will have to forgive the roughness of this — it is truly napkin notes.</div>
+
+      <div class="email-h1">Where We Are Today — Toa Payoh</div>
+      <div class="email-p">This is our current situation, as honestly as I can put it:</div>
+      <table class="email-table">
+        <tr><th>Item</th><th>Figure</th></tr>
+        <tr><td>Daily customers</td><td>~${fn(b.dailyCustomers)} per day (Mon–Fri)</td></tr>
+        <tr><td>Average spend per customer</td><td>~${fm(b.avgOrderValue)}</td></tr>
+        <tr><td>Monthly revenue (est.)</td><td>~${fm(b.monthlyRevenue)}</td></tr>
+        <tr><td>Monthly operating costs</td><td>~${fm(b.monthlyOpsCosts)}</td></tr>
+        <tr><td>Mary and my drawings</td><td>~${fm(b.monthlyDrawings)}/month combined</td></tr>
+        <tr><td>What's left over</td><td>~${fm(b.netMonthly)}/month</td></tr>
+      </table>
+      <div class="email-p">The ${fm(b.netMonthly)} sounds okay but it is not a lot of buffer. Ingredient costs have been going up — my supplier Lim Teck Seng has been absorbing what he can but he called me last month and said he needs to pass on some increases. I have not raised my prices yet. I do not want to shock my regulars. But I cannot hold forever.</div>
+      <div class="email-p">So you can see why I need to think carefully about what comes next. I cannot keep running the same way and hope things improve on their own.</div>
+
+      <div class="email-h1">What I Am Thinking About</div>
+      <div class="email-p">After your interviews, Darren and I talked about three possible directions — with two options under each. I want you to look at all of them and tell me honestly what makes sense. I am not asking you to tell me what I want to hear — I am asking you to tell me what is right.</div>
+
+      <div class="email-h2">Option A — Fix the Shop First (Digital Transformation)</div>
+      <div class="email-p">Mary and I know the operations are not smooth. The queue, the handwriting, the stamp cards — we know. Darren has been pushing me to look at a digital solution for a while. I finally asked around and got some rough quotes. There seem to be two kinds of solutions:</div>
+      <div class="email-p"><strong>A1 — Basic solution (~${fm(aB.setupCost)} one-time)</strong><br>QR code ordering at the counter or via phone. Basic digital loyalty programme to replace stamp cards. Monthly maintenance: ~${fm(aB.monthlyMaint)}/month.</div>
+      <div class="email-p"><strong>A2 — Full integrated solution (~${fm(aF.setupCost)} one-time)</strong><br>Everything in the basic solution plus: kitchen display system so Darren sees orders on a screen (no more paper chits), collection notification so customers know when their drink is ready, and an analytics dashboard. Monthly maintenance: ~${fm(aF.monthlyMaint)}/month.</div>
+      <table class="email-table">
+        <tr><th>Item</th><th>A1 Basic</th><th>A2 Full</th></tr>
+        <tr><td>Setup cost (one-time)</td><td>${fm(aB.setupCost)}</td><td>${fm(aF.setupCost)}</td></tr>
+        <tr><td>Monthly maintenance</td><td>${fm(aB.monthlyMaint)}</td><td>${fm(aF.monthlyMaint)}</td></tr>
+        <tr><td>Expected queue reduction</td><td>${aB.queueReduction||'—'}</td><td>${aF.queueReduction||'—'}</td></tr>
+        <tr><td>Expected order error reduction</td><td>${aB.errorReduction||'—'}</td><td>${aF.errorReduction||'—'}</td></tr>
+        <tr><td>Expected revenue uplift</td><td>${aB.revenueUplift||'—'}</td><td>${aF.revenueUplift||'—'}</td></tr>
+      </table>
+      <div class="email-p">I asked Darren what he thought. He said start with the full solution. I said show me the numbers first. You tell me — does it make sense? Which one? And how do I pay for it from a ${fm(b.netMonthly)} monthly surplus?</div>
+
+      <div class="email-h2">Option B — Open a Second Outlet (Expansion to AMK)</div>
+      <div class="email-p">This one is close to my heart. I have been thinking about a second outlet for a few years now. Mary says I am dreaming. Darren says let's do it. I say let me see the numbers first.</div>
+      <div class="email-p">I have done some legwork. I scouted two locations in AMK — I chose AMK because the customer profile is similar to Toa Payoh and it will not cannibalise our existing business. Both locations look realistic to me.</div>
+      <table class="email-table">
+        <tr><th>Item</th><th>B1 AMK Food Centre</th><th>B2 AMK Hub B1</th></tr>
+        <tr><td>One-time setup cost</td><td>${fm(bFC.setupCost)}</td><td>${fm(bH.setupCost)}</td></tr>
+        <tr><td>Monthly rent</td><td>${fm(bFC.monthlyRent)}</td><td>${fm(bH.monthlyRent)}</td></tr>
+        <tr><td>New staff (4 in total)</td><td>1 cashier, 1 barista, 2 part-timers</td><td>1 cashier, 1 barista, 2 part-timers</td></tr>
+        <tr><td>Additional monthly staffing</td><td>${fm(bFC.addStaffCost)}</td><td>${fm(bH.addStaffCost)}</td></tr>
+        <tr><td>Total additional monthly costs</td><td>~${fm(bFC.totalAddMonthlyCosts)}</td><td>~${fm(bH.totalAddMonthlyCosts)}</td></tr>
+        <tr><td>Target daily customers Year 1</td><td>~${fn(bFC.yr1DailyCustomers)}/day</td><td>~${fn(bH.yr1DailyCustomers)}/day</td></tr>
+        <tr><td>Target monthly revenue Year 1</td><td>~${fm(bFC.yr1MonthlyRevenue)}</td><td>~${fm(bH.yr1MonthlyRevenue)}</td></tr>
+        <tr><td>Target daily customers Year 3</td><td>~${fn(bFC.yr3DailyCustomers)}/day</td><td>~${fn(bH.yr3DailyCustomers)}/day</td></tr>
+        <tr><td>Target monthly revenue Year 3</td><td>~${fm(bFC.yr3MonthlyRevenue)}</td><td>~${fm(bH.yr3MonthlyRevenue)}</td></tr>
+      </table>
+      <div class="email-p">The Food Centre feels familiar — same kind of community, same kind of customer. The Hub has much higher footfall — lots of young people, office workers, weekend shoppers. But the rent is significantly higher and the setup costs more. Whether the higher footfall justifies the higher cost — I honestly do not know. Mary nearly fainted when I told her the Hub numbers.</div>
+      <div class="email-p">One more thing — if we expand, I am thinking Darren runs one outlet and I run the other. He is ready, I think. He just does not know it yet.</div>
+
+      <div class="email-h2">Option C — Do Both (Fix operations and expand)</div>
+      <div class="email-p">Darren's favourite option. His argument is: "Uncle, if we expand without fixing operations first, we will just have two chaotic shops instead of one." I think he has a point. But doing both costs more and takes longer.</div>
+      <table class="email-table">
+        <tr><th>Item</th><th>C1 Conservative</th><th>C2 Aggressive</th></tr>
+        <tr><td>Digital solution</td><td>Basic (${fm(aB.setupCost)})</td><td>Full integrated (${fm(aF.setupCost)})</td></tr>
+        <tr><td>Expansion location</td><td>AMK Food Centre</td><td>AMK Hub B1</td></tr>
+        <tr><td>Total one-time investment</td><td>~${fm(cCon.totalInvestment)}</td><td>~${fm(cAgg.totalInvestment)}</td></tr>
+        <tr><td>Approach</td><td>${cCon.approach||'—'}</td><td>${cAgg.approach||'—'}</td></tr>
+        <tr><td>Additional monthly costs</td><td>~${fm(cCon.addMonthlyCosts)}</td><td>~${fm(cAgg.addMonthlyCosts)}</td></tr>
+      </table>
+      <div class="email-p">The conservative path feels safer — fix first, then grow. But Darren worries that if we wait, the AMK Food Centre unit I scouted may not be available when we are ready. The aggressive path worries me — ${fm(cAgg.totalInvestment)} is not money I have sitting around. We would need a small business loan. I have never borrowed money for this business before. The idea makes me nervous. But Darren says sometimes you have to spend money to make money.</div>
+
+      <div class="email-h1">What I Need From You</div>
+      <div class="email-p">You have spoken to my team and my customers. You have heard what is working and what is not. Now I need you to do something I cannot do myself — look at these numbers objectively and tell me:</div>
+      <div class="email-p">1. Which option makes the most sense for Tea Fellas right now?<br>2. Why — what evidence from your discovery supports this recommendation?<br>3. What are the key risks and how would you manage them?<br>4. What would need to be true for your recommendation to succeed?</div>
+      <div class="email-p">I have given you the numbers as honestly as I can. I am not sure what they all mean for the business — that is not my strength. What I know is the tea, the customers, and this community. The rest I am trusting you to figure out.</div>
+      <div class="email-p">Tell me what you think. Be honest. I can handle it.</div>
+
+      <div class="email-sign">
+        Warm regards,<br>
+        <strong>John DeSouza</strong><br>
+        Owner, Tea Fellas<br>
+        #01-08, Block 190 Toa Payoh Lorong 6<br>
+        <em>"Good Tea. Good Day."</em>
+      </div>
+
+      <div class="email-ps">
+        <div class="email-ps-head">P.S. — A note from Darren (he insisted)</div>
+        "Hi everyone, Darren here. Please look at the full solution for Option A seriously — I genuinely think it is the right foundation before we do anything else. I may be biased. You are the product experts. Show us what you see. Good luck!"
+      </div>
+    </div>
+
+    <div class="scenario-panel">
+      <div class="scenario-panel-title">Your Recommendation</div>
+      <div class="scenario-panel-sub">John has shared his numbers. As a group, discuss the options and decide which path you are recommending to Tea Fellas. Choose carefully — your selection will be locked once confirmed and cannot be changed.</div>
+      ${scenarioSection}
+    </div>
+  </div>`;
+}
+
+function selectScenario(id) {
+  if (state.scenarioLocked) return;
+  state.scenarioSelected = id;
+  renderEmailView();
+}
+
+function lockScenario() {
+  if (!state.scenarioSelected || state.scenarioLocked) return;
+  const NAMES = { A1:'Basic digital ($25K)', A2:'Full integrated digital ($120K)', B1:'AMK Food Centre expansion', B2:'AMK Hub B1 expansion', C1:'Conservative (Basic digital + Food Centre)', C2:'Aggressive (Full digital + Hub B1)' };
+  if (!confirm(`You have selected: ${NAMES[state.scenarioSelected] || state.scenarioSelected}.\n\nThis recommendation will be locked and cannot be changed. Confirm?`)) return;
+  state.scenarioLocked = true;
+  saveScenario(state.scenarioSelected);
+  renderEmailView();
+}
+
 // ── Init ───────────────────────────────────────────────────────
+const _savedCode = localStorage.getItem('teafellas_team_code');
+if (_savedCode) {
+  document.getElementById('tc-saved-display').textContent = _savedCode;
+  document.getElementById('tc-continue').style.display = 'block';
+  document.getElementById('tc-new-entry').style.display = 'none';
+}
 renderLandingCards();
 renderSidebar();
 </script>

@@ -2,5 +2,10 @@ name = "teafellas-proxy"
 main = "worker.js"
 compatibility_date = "2024-01-01"
 
-# Your API key is stored as a secret (never in this file).
+# Anthropic API key stored as a secret — never in this file.
 # Run: wrangler secret put ANTHROPIC_API_KEY
+
+[[d1_databases]]
+binding = "DB"
+database_name = "teafellas-sessions"
+database_id = "770f4370-9591-45cc-9eac-deef35e707c4"
