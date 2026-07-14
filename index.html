@@ -33,7 +33,7 @@
     background: var(--tea-card); border-radius: 14px; padding: 28px 32px;
     max-width: 520px; width: 90%; border: 1px solid var(--tea-border);
   }
-  .ov-logo { font-size: 32px; margin-bottom: 6px; }
+  .ov-logo { margin-bottom: 6px; }
   .ov-title { font-size: 20px; font-weight: 600; color: var(--tea-green); margin-bottom: 4px; }
   .ov-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 20px; }
   .ov-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
@@ -256,7 +256,7 @@
   #team-code-overlay { position: fixed; inset: 0; background: var(--tea-bg); display: flex; align-items: center; justify-content: center; z-index: 200; }
   #team-code-overlay.hidden { display: none; }
   .tc-box { background: var(--tea-card); border-radius: 16px; padding: 36px 40px; max-width: 420px; width: 90%; border: 1px solid var(--tea-border); text-align: center; box-shadow: 0 8px 32px rgba(45,90,39,0.12); }
-  .tc-logo { font-size: 44px; margin-bottom: 10px; }
+  .tc-logo { margin-bottom: 10px; }
   .tc-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
   .tc-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 24px; line-height: 1.6; }
   .tc-input-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -384,8 +384,10 @@
   .bg-challenge-body { font-size: 13px; color: var(--tea-text); line-height: 1.8; }
   .bg-challenge-body strong { color: var(--tea-text); }
   .sidebar-section-toggle.active { background: rgba(255,255,255,0.15) !important; color: #fff !important; border-left: 3px solid var(--tea-amber-light); }
-  .bg-shop-img { width: 100%; border-radius: 10px; object-fit: cover; display: block; margin-bottom: 14px; border: 1px solid var(--tea-border); }
-  .bg-img-caption { font-size: 11px; color: var(--tea-muted); text-align: center; margin-top: -8px; margin-bottom: 14px; font-style: italic; }
+  .bg-shop-img { width: 100%; height: 260px; border-radius: 10px; object-fit: cover; object-position: center; display: block; margin-bottom: 6px; border: 1px solid var(--tea-border); }
+  .bg-shop-img.short { height: 190px; }
+  .bg-img-caption { font-size: 11px; color: var(--tea-muted); text-align: center; margin-bottom: 14px; font-style: italic; }
+  .tf-logo-img { display: block; margin: 0 auto 10px; width: 110px; height: auto; }
 </style>
 </head>
 <body>
@@ -393,7 +395,7 @@
 <!-- Team code overlay -->
 <div id="team-code-overlay">
   <div class="tc-box">
-    <div class="tc-logo">🍵</div>
+    <div class="tc-logo"><img src="tf-logo.jpg" class="tf-logo-img" alt="Tea Fellas"></div>
     <div class="tc-title">Tea Fellas</div>
     <div class="tc-sub">Enter your group's team code to begin. All devices in your group should use the same code — your session will stay in sync across devices.</div>
     <div id="tc-continue">
@@ -415,7 +417,7 @@
 <!-- Instruction overlay -->
 <div id="overlay">
   <div class="ov-box">
-    <div class="ov-logo">🍵</div>
+    <div class="ov-logo"><img src="tf-logo.jpg" class="tf-logo-img" alt="Tea Fellas"></div>
     <div class="ov-title">Tea Fellas — Discovery Simulation</div>
     <div class="ov-sub">A product discovery exercise for HDB TPO Workshop</div>
     <div class="ov-steps">
@@ -496,7 +498,7 @@
     <!-- Landing -->
     <div id="landing">
       <div class="landing-header">
-        <div style="font-size:36px;margin-bottom:10px;">🍵</div>
+        <img src="tf-logo.jpg" class="tf-logo-img" alt="Tea Fellas" style="width:130px;">
         <h2>Tea Fellas — Discovery Interviews</h2>
         <p>Meet the people behind Tea Fellas. Select a persona to begin your 15-minute interview. Ask about their daily experience, frustrations, and hopes for the shop.</p>
       </div>
@@ -821,7 +823,7 @@ function renderBackground() {
     <div class="bg-wrapper">
 
       <div class="bg-hero">
-        <div style="font-size:38px;margin-bottom:10px;">🍵</div>
+        <img src="tf-logo.jpg" style="width:130px;height:auto;display:block;margin:0 auto 12px;border-radius:8px;" alt="Tea Fellas">
         <div class="bg-hero-title">Tea Fellas</div>
         <div class="bg-hero-sub">Good Tea. Good Day. &nbsp;·&nbsp; Est. 2008 &nbsp;·&nbsp; #01-08, Block 190 Toa Payoh Lorong 6, Singapore 310190</div>
         <div class="bg-hero-tags">
@@ -956,11 +958,11 @@ function renderBackground() {
         <div class="bg-section-title">How The Shop Operates Today</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
           <div>
-            <img src="tf-collection.jpg" alt="Collection area with rows of completed drinks" class="bg-shop-img" style="margin-bottom:4px;">
+            <img src="tf-collection.jpg" alt="Collection area with rows of completed drinks" class="bg-shop-img short">
             <div class="bg-img-caption" style="margin-bottom:0;">Completed drinks waiting at the collection counter</div>
           </div>
           <div>
-            <img src="tf-queue.jpg" alt="Customers queuing inside the shop" class="bg-shop-img" style="margin-bottom:4px;">
+            <img src="tf-queue.jpg" alt="Customers queuing inside the shop" class="bg-shop-img short">
             <div class="bg-img-caption" style="margin-bottom:0;">The queue inside — menu boards visible in the background</div>
           </div>
         </div>
