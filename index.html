@@ -56,11 +56,29 @@
   #app { display: flex; height: 100vh; overflow: hidden; }
 
   /* ── Sidebar ── */
-  #sidebar { width: 210px; min-width: 210px; background: var(--tea-green); display: flex; flex-direction: column; }
+  #sidebar { width: 220px; min-width: 220px; background: var(--tea-green); display: flex; flex-direction: column; }
   #sidebar-header { padding: 16px 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.15); }
   #sidebar-logo { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
   #sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; letter-spacing: 0.8px; text-transform: uppercase; }
-  #persona-list { flex: 1; padding: 8px 0; overflow-y: auto; }
+
+  /* ── Sidebar story section ── */
+  #sidebar-story-section { border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .sidebar-section-toggle { width: 100%; background: none; border: none; cursor: pointer;
+    padding: 9px 14px; text-align: left; display: flex; align-items: center; justify-content: space-between;
+    color: rgba(255,255,255,0.75); font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.7px; transition: background 0.15s; }
+  .sidebar-section-toggle:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .sidebar-section-toggle .toggle-arrow { font-size: 9px; transition: transform 0.2s; }
+  .sidebar-section-toggle.open .toggle-arrow { transform: rotate(180deg); }
+  #sidebar-story-body { display: none; padding: 0 14px 12px; }
+  #sidebar-story-body.open { display: block; }
+  #sidebar-story-body p { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.65; margin-bottom: 8px; }
+  #sidebar-story-body p:last-child { margin-bottom: 0; }
+
+  /* ── Sidebar interviewees section ── */
+  .sidebar-section-label { padding: 9px 14px 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.7px; color: rgba(255,255,255,0.5); }
+  #persona-list { flex: 1; padding: 0 0 8px; overflow-y: auto; }
   .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 10px 14px;
     text-align: left; display: flex; flex-direction: column; gap: 3px;
     border-left: 3px solid transparent; transition: background 0.15s; }
@@ -73,13 +91,18 @@
   .pb-timer.warn { color: #F39C12; }
   .pb-timer.expired { color: #E74C3C; }
   .pb-timer.done { color: rgba(255,255,255,0.4); }
-  #sidebar-footer { border-top: 1px solid rgba(255,255,255,0.15); padding: 6px 0; }
+  #sidebar-footer { border-top: 1px solid rgba(255,255,255,0.15); padding: 6px 0 0; }
   .sidebar-nav-btn { width: 100%; background: none; border: none; cursor: pointer;
     padding: 9px 14px; text-align: left; display: flex; align-items: center; gap: 8px;
     color: rgba(255,255,255,0.75); font-size: 13px; border-left: 3px solid transparent; transition: background 0.15s; }
   .sidebar-nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
   .sidebar-nav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
   .sidebar-nav-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .sidebar-logout-btn { width: 100%; background: none; border: none; border-top: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+    padding: 10px 14px; text-align: left; display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.45); font-size: 12px; transition: background 0.15s; margin-top: 2px; }
+  .sidebar-logout-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
+  .sidebar-logout-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
 
   /* ── Main area ── */
   #main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
@@ -387,6 +410,19 @@
         <div id="sidebar-team-code" style="font-size:13px;font-weight:700;color:#fff;font-family:'Courier New',monospace;letter-spacing:1px;"></div>
       </div>
     </div>
+    <!-- Background story -->
+    <div id="sidebar-story-section">
+      <button class="sidebar-section-toggle" id="story-toggle" onclick="toggleStory()">
+        Background story <span class="toggle-arrow">▼</span>
+      </button>
+      <div id="sidebar-story-body">
+        <p>Tea Fellas was founded in 2008 by <strong style="color:#fff">John DeSouza</strong> at #01-08, Block 190 Toa Payoh Lorong 6. After 25 years in corporate life, John was retrenched in his early 50s — and decided to build something of his own.</p>
+        <p>His wife <strong style="color:#fff">Mary</strong> quit her job to run the shop alongside him. Their nephew <strong style="color:#fff">Darren</strong>, a fresh SMU Business Administration graduate, now works as the main barista — crafting their signature <strong style="color:#fff">Brown Sugar Pearl Milk Tea</strong> fresh each morning.</p>
+        <p>Open Monday to Friday, Tea Fellas has built a loyal community following in Toa Payoh. But rising ingredient costs and growing operational strain are pushing John to ask: stay the same, go digital, or expand?</p>
+      </div>
+    </div>
+
+    <!-- Interviewees -->
     <div id="persona-list"></div>
     <div id="sidebar-footer">
       <button class="sidebar-nav-btn" id="nav-synthesis" onclick="showSynthesis()">
@@ -408,6 +444,10 @@
       <button class="sidebar-nav-btn" id="nav-help" onclick="showOverlay()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
         How to use
+      </button>
+      <button class="sidebar-logout-btn" onclick="logoutTeamCode()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sign out
       </button>
     </div>
   </div>
@@ -723,9 +763,26 @@ function showView(name) {
 }
 
 // ── Sidebar ────────────────────────────────────────────────────
+function toggleStory() {
+  const body = document.getElementById('sidebar-story-body');
+  const toggle = document.getElementById('story-toggle');
+  const open = body.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+}
+
+function logoutTeamCode() {
+  if (!confirm('Sign out of this team session? Your progress is saved — just enter the same team code to return.')) return;
+  localStorage.removeItem('teafellas_team_code');
+  state.teamCode = null;
+  document.getElementById('team-code-overlay').classList.remove('hidden');
+  document.getElementById('tc-continue').style.display = 'none';
+  document.getElementById('tc-new-entry').style.display = 'block';
+  document.getElementById('tc-input').value = '';
+}
+
 function renderSidebar() {
   const list = document.getElementById('persona-list');
-  list.innerHTML = '';
+  list.innerHTML = '<div class="sidebar-section-label">Interviewees</div>';
   PERSONAS.forEach(p => {
     const t = state.timers[p.id];
     const isActive = state.currentPersona === p.id && (state.view === 'chat' || state.view === 'summary');
