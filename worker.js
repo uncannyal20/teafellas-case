@@ -243,6 +243,19 @@ export default {
       }
     }
 
+    // ── POST /reset-team ───────────────────────────────────────
+    if (url.pathname === '/reset-team' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const { team_code } = body;
+        if (!team_code) return json({ error: 'team_code is required' }, 400);
+        await env.DB.prepare('DELETE FROM sessions WHERE team_code = ?').bind(team_code).run();
+        return json({ ok: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
     return json({ error: 'Not found' }, 404);
   },
 };

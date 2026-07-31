@@ -769,13 +769,22 @@ PERSONAS.forEach(p => {
   state.summaries[p.id] = null;
 });
 
+let syncInterval = null;
+
 // ── Overlay ────────────────────────────────────────────────────
 function closeOverlay() { document.getElementById('overlay').classList.add('hidden'); }
 function showOverlay() { document.getElementById('overlay').classList.remove('hidden'); }
 
 // ── Reset ──────────────────────────────────────────────────────
 function confirmReset() {
-  if (!confirm('Reset the entire session? All interview history, summaries, synthesis, declaration, and scenario data will be cleared on this device.')) return;
+  if (!confirm('Reset the entire session? All interview history, summaries, synthesis, declaration, and scenario data will be cleared for all devices on this team.')) return;
+  if (state.teamCode) {
+    fetch(`${API_URL}/reset-team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: state.teamCode })
+    }).catch(() => {});
+  }
   PERSONAS.forEach(p => {
     state.histories[p.id] = [];
     if (state.timerIntervals[p.id]) clearInterval(state.timerIntervals[p.id]);
@@ -1028,7 +1037,7 @@ function renderSidebar() {
     const btn = document.createElement('button');
     btn.className = 'persona-btn' + (isActive ? ' active' : '');
     let timerHtml = '';
-    if (state.summaries[p.id]) {
+    if (state.summaries[p.id]?.confirmed) {
       timerHtml = '<span class="pb-timer done">✓ Done</span>';
     } else if (t.running || t.seconds < 15 * 60) {
       const cls = t.seconds <= 0 ? 'expired' : t.seconds <= 120 ? 'warn' : 'running';
@@ -1101,7 +1110,7 @@ function renderLandingCards() {
   if (!cont) return;
   cont.innerHTML = '';
   PERSONAS.forEach(p => {
-    const done = !!state.summaries[p.id];
+    const done = !!(state.summaries[p.id]?.confirmed);
     const profile = PROFILE_DATA[p.id];
     const tags = profile.tags.map(t => `<span class="pc-tag">${t}</span>`).join('');
     const c = document.createElement('div');
@@ -1382,10 +1391,10 @@ function showSynthesis() {
 
 function renderSynthesis() {
   const syn = document.getElementById('synthesis-area');
-  const completed = PERSONAS.filter(p => state.summaries[p.id]);
+  const completed = PERSONAS.filter(p => state.summaries[p.id]?.confirmed);
 
   const progress = PERSONAS.map(p => {
-    const done = !!state.summaries[p.id];
+    const done = !!(state.summaries[p.id]?.confirmed);
     return `<div class="syn-prog-card ${done ? 'done' : ''}">
       <div class="syn-prog-emoji">${p.emoji}</div>
       <div class="syn-prog-name">${p.name}</div>
@@ -1418,7 +1427,7 @@ function renderSynthesis() {
       <textarea id="syn-vision" placeholder="What is the compelling future state Tea Fellas is moving towards?" ${state.synConfirmed || state.declarationDone ? 'readonly' : ''}>${state.synVision}</textarea>
     </div>
     <div class="syn-actions">
-      <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 || state.synConfirmed || state.declarationDone ? 'disabled' : ''}>Generate synthesis ↗</button>
+      <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 || state.synPain || state.synConfirmed || state.declarationDone ? 'disabled' : ''}>${state.synPain ? '✓ Synthesis generated' : 'Generate synthesis ↗'}</button>
       ${!state.synConfirmed && !state.declarationDone ? `<button class="syn-confirm-btn" onclick="confirmSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Confirm synthesis →</button>` : ''}
       ${state.synConfirmed && !state.declarationDone ? `<span class="syn-confirmed-badge">✓ Synthesis confirmed</span><button class="syn-proceed-btn" onclick="showDeclaration()">Proceed to declaration →</button>` : ''}
       ${state.declarationDone ? `<span class="syn-confirmed-badge">✓ Declaration complete — see John's email</span>` : ''}
@@ -1467,12 +1476,14 @@ Return ONLY valid JSON, no markdown:
     document.getElementById('syn-pain').value = state.synPain;
     document.getElementById('syn-problem').value = state.synProblem;
     document.getElementById('syn-vision').value = state.synVision;
+    saveSynthesisState();
+    btn.disabled = true;
+    btn.textContent = '✓ Synthesis generated';
   } catch (e) {
     console.error(e);
+    btn.disabled = false;
+    btn.textContent = 'Generate synthesis ↗';
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Regenerate synthesis ↗';
 }
 
 function copySynthesis() {
@@ -1496,6 +1507,7 @@ function selectTeamCode(code) {
     renderLandingCards();
     renderSidebar();
     document.getElementById('overlay').classList.remove('hidden');
+    startSync();
   });
 }
 
@@ -1507,6 +1519,7 @@ function resumeTeamCode() {
   loadTeamSession().then(() => {
     renderLandingCards();
     renderSidebar();
+    startSync();
     if (state.declarationDone) {
       showEmail();
     } else if (state.synConfirmed) {
@@ -1522,35 +1535,107 @@ function changeTeamCode() {
 }
 
 // ── D1 helpers ────────────────────────────────────────────────
+function resetTeamState() {
+  PERSONAS.forEach(p => {
+    state.histories[p.id] = [];
+    state.summaries[p.id] = null;
+  });
+  state.synPain = ''; state.synProblem = ''; state.synVision = '';
+  state.synConfirmed = false;
+  state.declarationDone = false;
+  state.scenarioSelected = null;
+  state.scenarioLocked = false;
+}
+
+function applySessionRows(rows) {
+  rows.forEach(row => {
+    if (row.persona_id === '_synthesis') {
+      if (row.synthesis) {
+        state.synPain = row.synthesis.synPain || '';
+        state.synProblem = row.synthesis.synProblem || '';
+        state.synVision = row.synthesis.synVision || '';
+      }
+      state.synConfirmed = row.synthesis_confirmed || false;
+    } else if (row.persona_id === 'group') {
+      state.declarationDone = row.declaration_done || false;
+      state.scenarioSelected = row.scenario_selected || null;
+      state.scenarioLocked = !!row.scenario_selected;
+    } else if (PERSONAS.find(p => p.id === row.persona_id)) {
+      if (row.messages && row.messages.length) state.histories[row.persona_id] = row.messages;
+      if (row.summary && row.summary_confirmed) {
+        state.summaries[row.persona_id] = { ...row.summary, confirmed: true };
+      }
+    }
+  });
+}
+
 async function loadTeamSession() {
   if (!state.teamCode) return;
+  resetTeamState();
   try {
     const resp = await fetch(`${API_URL}/load-session?team_code=${encodeURIComponent(state.teamCode)}`);
     if (!resp.ok) return;
     const { rows } = await resp.json();
     if (!rows || !rows.length) return;
-    rows.forEach(row => {
-      if (row.persona_id === '_synthesis') {
-        if (row.synthesis) {
-          state.synPain = row.synthesis.synPain || '';
-          state.synProblem = row.synthesis.synProblem || '';
-          state.synVision = row.synthesis.synVision || '';
-        }
-        state.synConfirmed = row.synthesis_confirmed || false;
-      } else if (row.persona_id === 'group') {
-        state.declarationDone = row.declaration_done || false;
-        state.scenarioSelected = row.scenario_selected || null;
-        state.scenarioLocked = !!row.scenario_selected;
-      } else if (PERSONAS.find(p => p.id === row.persona_id)) {
-        if (row.messages && row.messages.length) state.histories[row.persona_id] = row.messages;
-        if (row.summary && row.summary_confirmed) {
-          state.summaries[row.persona_id] = row.summary;
-        }
-      }
-    });
+    applySessionRows(rows);
   } catch (e) {
     console.warn('Could not load session:', e);
   }
+}
+
+async function syncTeamProgress() {
+  if (!state.teamCode) return;
+  try {
+    const resp = await fetch(`${API_URL}/load-session?team_code=${encodeURIComponent(state.teamCode)}`);
+    if (!resp.ok) return;
+    const { rows } = await resp.json();
+    if (!rows) return;
+    let changed = false;
+    rows.forEach(row => {
+      if (row.persona_id === '_synthesis') {
+        if (row.synthesis_confirmed && !state.synConfirmed) {
+          if (row.synthesis) {
+            state.synPain = row.synthesis.synPain || state.synPain;
+            state.synProblem = row.synthesis.synProblem || state.synProblem;
+            state.synVision = row.synthesis.synVision || state.synVision;
+          }
+          state.synConfirmed = true;
+          changed = true;
+        }
+      } else if (row.persona_id === 'group') {
+        if (row.declaration_done && !state.declarationDone) {
+          state.declarationDone = true;
+          state.scenarioSelected = row.scenario_selected || state.scenarioSelected;
+          state.scenarioLocked = true;
+          changed = true;
+        }
+      } else if (PERSONAS.find(p => p.id === row.persona_id)) {
+        if (row.summary && row.summary_confirmed && !state.summaries[row.persona_id]?.confirmed) {
+          state.summaries[row.persona_id] = { ...row.summary, confirmed: true };
+          if (row.messages?.length && !state.histories[row.persona_id]?.length) {
+            state.histories[row.persona_id] = row.messages;
+          }
+          changed = true;
+        }
+      }
+    });
+    if (changed) {
+      renderSidebar();
+      if (state.view === 'landing') renderLandingCards();
+      if (state.view === 'synthesis') renderSynthesis();
+    }
+  } catch (e) { /* silent */ }
+}
+
+function startSync() {
+  if (syncInterval) return;
+  syncInterval = setInterval(() => {
+    if (state.view !== 'chat') syncTeamProgress();
+  }, 30000);
+}
+
+function stopSync() {
+  if (syncInterval) { clearInterval(syncInterval); syncInterval = null; }
 }
 
 function saveSession(personaId) {
