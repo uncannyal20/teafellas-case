@@ -1,0 +1,149 @@
+{
+  "simulation": "Tea Fellas Product Discovery Simulation",
+  "workshop": "HDB TPO Product Workshop",
+  "date": "July 2026",
+  "total_artefacts": 24,
+  "notes": {
+    "participant": "Blank fillable templates \u2014 amber badge. For participant groups.",
+    "facilitator": "Model answer reference sheets \u2014 dark green badge. For facilitators only.",
+    "formats": "A3 Landscape artefacts should be printed on A3 or scaled to A4. A4 artefacts print directly."
+  },
+  "phases": [
+    {
+      "phase_id": "phase1",
+      "phase_name": "Phase 1 \u2014 Research",
+      "folder": "Phase1_Research",
+      "artefacts": [
+        {
+          "id": "1.1",
+          "name": "As-Is Process Map",
+          "format": "A3 Landscape",
+          "pages": 1,
+          "description": "Current 13-step paper-based order fulfilment process across 5 swimlanes",
+          "participant_file": "Phase1_Research/1.1_As-Is_Process_Map_Participant.pdf",
+          "facilitator_file": "Phase1_Research/1.1_As-Is_Process_Map_Facilitator.pdf"
+        },
+        {
+          "id": "1.2",
+          "name": "Research Findings Brief",
+          "format": "A4 Portrait",
+          "pages": 3,
+          "description": "Stakeholder interview outputs \u2014 persona cards, pain point table, opportunity areas",
+          "participant_file": "Phase1_Research/1.2_Research_Findings_Brief_Participant.pdf",
+          "facilitator_file": "Phase1_Research/1.2_Research_Findings_Brief_Facilitator.pdf"
+        }
+      ]
+    },
+    {
+      "phase_id": "phase2",
+      "phase_name": "Phase 2 \u2014 Define",
+      "folder": "Phase2_Define",
+      "artefacts": [
+        {
+          "id": "2.1",
+          "name": "Problem Statement",
+          "format": "A4 Portrait",
+          "pages": 1,
+          "description": "Structured articulation of the core operational and customer experience problem",
+          "participant_file": "Phase2_Define/2.1_Problem_Statement_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.1_Problem_Statement_Facilitator.pdf"
+        },
+        {
+          "id": "2.2",
+          "name": "Product Vision",
+          "format": "A4 Portrait",
+          "pages": 1,
+          "description": "Future state vision \u2014 3 outcome pillars and scope constraints",
+          "participant_file": "Phase2_Define/2.2_Product_Vision_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.2_Product_Vision_Facilitator.pdf"
+        },
+        {
+          "id": "2.3",
+          "name": "Problem Prioritisation",
+          "format": "A4 Landscape",
+          "pages": 1,
+          "description": "9 pain points ranked on a 2\u00d72 Severity vs Frequency matrix",
+          "participant_file": "Phase2_Define/2.3_Problem_Prioritisation_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.3_Problem_Prioritisation_Facilitator.pdf"
+        },
+        {
+          "id": "2.4",
+          "name": "BPR Opportunities \u2014 CARE",
+          "format": "A4 Landscape",
+          "pages": 1,
+          "description": "Process redesign using Consolidate, Automate, Reduce, Eliminate",
+          "participant_file": "Phase2_Define/2.4_BPR_Opportunities_CARE_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.4_BPR_Opportunities_CARE_Facilitator.pdf"
+        }
+      ]
+    },
+    {
+      "phase_id": "phase3",
+      "phase_name": "Phase 3 \u2014 Ideate",
+      "folder": "Phase3_Ideate",
+      "artefacts": [
+        {
+          "id": "3.1",
+          "name": "Solution Concept Canvas",
+          "format": "A3 Landscape",
+          "pages": 1,
+          "description": "Customer needs, OKRs, roadmap and risks in one A3 view",
+          "participant_file": "Phase3_Ideate/3.1_Solution_Concept_Canvas_Participant.pdf",
+          "facilitator_file": "Phase3_Ideate/3.1_Solution_Concept_Canvas_Facilitator.pdf"
+        },
+        {
+          "id": "3.2",
+          "name": "To-Be Process Map",
+          "format": "A3 Landscape",
+          "pages": 1,
+          "description": "Redesigned 10-step digital order flow across 5 swimlanes",
+          "participant_file": "Phase3_Ideate/3.2_To-Be_Process_Map_Participant.pdf",
+          "facilitator_file": "Phase3_Ideate/3.2_To-Be_Process_Map_Facilitator.pdf"
+        },
+        {
+          "id": "3.3",
+          "name": "Product Roadmap",
+          "format": "A3 Landscape",
+          "pages": 1,
+          "description": "18-month delivery plan across 5 phases with milestone reviews",
+          "participant_file": "Phase3_Ideate/3.3_Product_Roadmap_Participant.pdf",
+          "facilitator_file": "Phase3_Ideate/3.3_Product_Roadmap_Facilitator.pdf"
+        },
+        {
+          "id": "3.4",
+          "name": "Risk Assessment",
+          "format": "A4 Landscape",
+          "pages": 1,
+          "description": "9 risks rated on a 5\u00d75 Probability \u00d7 Impact matrix with mitigations",
+          "participant_file": "Phase3_Ideate/3.4_Risk_Assessment_Participant.pdf",
+          "facilitator_file": "Phase3_Ideate/3.4_Risk_Assessment_Facilitator.pdf"
+        }
+      ]
+    },
+    {
+      "phase_id": "phase4",
+      "phase_name": "Phase 4 \u2014 Validate",
+      "folder": "Phase4_Validate",
+      "artefacts": [
+        {
+          "id": "4.1",
+          "name": "Cost-Benefit Analysis",
+          "format": "A4 Portrait",
+          "pages": 2,
+          "description": "Full investment, benefits, AMK projections and BCR (~2.7\u00d7) for Scenario C1",
+          "participant_file": "Phase4_Validate/4.1_Cost-Benefit_Analysis_Participant.pdf",
+          "facilitator_file": "Phase4_Validate/4.1_Cost-Benefit_Analysis_Facilitator.pdf"
+        },
+        {
+          "id": "4.2",
+          "name": "VCR Assessment",
+          "format": "A4 Landscape",
+          "pages": 1,
+          "description": "All 6 investment scenarios compared on Value, Cost and Risk",
+          "participant_file": "Phase4_Validate/4.2_VCR_Assessment_Participant.pdf",
+          "facilitator_file": "Phase4_Validate/4.2_VCR_Assessment_Facilitator.pdf"
+        }
+      ]
+    }
+  ]
+}
