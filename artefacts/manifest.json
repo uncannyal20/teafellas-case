@@ -41,30 +41,30 @@
       "artefacts": [
         {
           "id": "2.1",
+          "name": "Problem Prioritisation",
+          "format": "A4 Landscape",
+          "pages": 1,
+          "description": "9 pain points prioritised using the RICE framework (Reach, Impact, Confidence, Effort)",
+          "participant_file": "Phase2_Define/2.1_Problem_Prioritisation_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.1_Problem_Prioritisation_Facilitator.pdf"
+        },
+        {
+          "id": "2.2",
           "name": "Problem Statement",
           "format": "A4 Portrait",
           "pages": 1,
           "description": "Structured articulation of the core operational and customer experience problem",
-          "participant_file": "Phase2_Define/2.1_Problem_Statement_Participant.pdf",
-          "facilitator_file": "Phase2_Define/2.1_Problem_Statement_Facilitator.pdf"
+          "participant_file": "Phase2_Define/2.2_Problem_Statement_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.2_Problem_Statement_Facilitator.pdf"
         },
         {
-          "id": "2.2",
+          "id": "2.3",
           "name": "Product Vision",
           "format": "A4 Portrait",
           "pages": 1,
           "description": "Future state vision \u2014 3 outcome pillars and scope constraints",
-          "participant_file": "Phase2_Define/2.2_Product_Vision_Participant.pdf",
-          "facilitator_file": "Phase2_Define/2.2_Product_Vision_Facilitator.pdf"
-        },
-        {
-          "id": "2.3",
-          "name": "Problem Prioritisation",
-          "format": "A4 Landscape",
-          "pages": 1,
-          "description": "9 pain points ranked on a 2\u00d72 Severity vs Frequency matrix",
-          "participant_file": "Phase2_Define/2.3_Problem_Prioritisation_Participant.pdf",
-          "facilitator_file": "Phase2_Define/2.3_Problem_Prioritisation_Facilitator.pdf"
+          "participant_file": "Phase2_Define/2.3_Product_Vision_Participant.pdf",
+          "facilitator_file": "Phase2_Define/2.3_Product_Vision_Facilitator.pdf"
         },
         {
           "id": "2.4",

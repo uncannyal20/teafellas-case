@@ -346,6 +346,8 @@
   /* ── Background view ── */
   #background-area { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
   #background-area.visible { display: flex; }
+  #brief-area { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+  #brief-area.visible { display: flex; }
   .bg-wrapper { max-width: 820px; margin: 0 auto; padding: 24px 28px 48px; width: 100%; }
   .bg-hero { background: var(--tea-green); color: #fff; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; }
   .bg-hero-title { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
@@ -462,6 +464,13 @@
         <div id="sidebar-team-code" style="font-size:13px;font-weight:700;color:#fff;font-family:'Courier New',monospace;letter-spacing:1px;"></div>
       </div>
     </div>
+    <!-- Case briefing nav -->
+    <div id="sidebar-brief-section">
+      <button class="sidebar-section-toggle" id="brief-toggle" onclick="showCaseBrief()">
+        Case briefing <span style="font-size:11px;opacity:0.6;float:right;line-height:1.4">›</span>
+      </button>
+    </div>
+
     <!-- Background story nav -->
     <div id="sidebar-story-section">
       <button class="sidebar-section-toggle" id="story-toggle" onclick="showBackground()">
@@ -547,6 +556,9 @@
 
     <!-- Background story full view -->
     <div id="background-area"></div>
+
+    <!-- Case briefing full view -->
+    <div id="brief-area"></div>
   </div>
 </div>
 
@@ -822,6 +834,79 @@ function showView(name) {
   document.getElementById('email-area').className = name === 'email' ? 'visible' : '';
   document.getElementById('background-area').style.display = name === 'background' ? 'flex' : 'none';
   document.getElementById('background-area').className = name === 'background' ? 'visible' : '';
+  document.getElementById('brief-area').style.display = name === 'brief' ? 'flex' : 'none';
+  document.getElementById('brief-area').className = name === 'brief' ? 'visible' : '';
+}
+
+// ── Case briefing ──────────────────────────────────────────────
+function showCaseBrief() {
+  state.view = 'brief';
+  state.currentPersona = null;
+  showView('brief');
+  renderCaseBrief();
+  renderSidebar();
+}
+
+function renderCaseBrief() {
+  document.getElementById('brief-area').innerHTML = `
+    <div class="bg-wrapper">
+
+      <div class="bg-hero">
+        <img src="tf-logo.jpg" style="width:130px;height:auto;display:block;margin:0 auto 12px;border-radius:8px;" alt="Tea Fellas">
+        <div class="bg-hero-title">Case Briefing</div>
+        <div class="bg-hero-sub">Your task for this simulation</div>
+        <div class="bg-hero-tags">
+          <span class="bg-hero-tag">Help John decide the way forward</span>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">Your Task</div>
+        <div class="bg-card">
+          <div class="bg-card-body">
+            Tea Fellas is 17 years old. It has never had more than one outlet, never had a POS system, and never needed one — until now. <strong>Uncle John is quietly trying to figure out what comes next for the shop</strong>, and he doesn't have a clear answer yet.
+            <br><br>
+            Your team has been brought in to help him think it through. Over the course of this simulation, you will talk to the people who live Tea Fellas every day — John, Mary, Darren, and two of the regulars — and use what you learn to <strong>recommend a way forward</strong>. Not a wish list, not a generic "go digital" pitch — a direction that actually fits this shop, grounded in what the people closest to it are really experiencing.
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-section-title">What's On John's Mind</div>
+        <div class="bg-card">
+          <div class="bg-card-body">
+            John hasn't committed to anything. But if you caught him after closing, mulling it over out loud, a few directions keep coming up:
+          </div>
+        </div>
+        <div class="bg-ops-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Fix what's already stretched</div>
+            <div class="bg-ops-value">Some way of making the current shop's day-to-day smoother — how orders are taken, tracked, and handed out — without losing what makes Tea Fellas feel like Tea Fellas.</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">Grow beyond one shop</div>
+            <div class="bg-ops-value">A second outlet somewhere else in or near Toa Payoh, so more of the neighbourhood — and beyond — can be reached.</div>
+          </div>
+          <div class="bg-ops-card">
+            <div class="bg-ops-label">A bit of both, in time</div>
+            <div class="bg-ops-value">Some combination of the two, sequenced in stages rather than all at once.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-section">
+        <div class="bg-challenge">
+          <div class="bg-challenge-title">Keep the options open</div>
+          <div class="bg-challenge-body">
+            These three directions are what's rattling around John's head — <strong>not a shortlist you need to pick from</strong>. He hasn't worked out the specifics, the costs, or whether any of them actually make sense once you dig in. He's shared them so you have some idea of where his mind has been drifting, not so you feel boxed into one of them.
+            <br><br>
+            Your interviews may well point somewhere he hasn't voiced — a smaller fix, a different priority entirely, or a version of one of these ideas that looks nothing like what he first imagined. <strong>Let what you actually discover shape the recommendation.</strong> Start with the people, not the options.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  `;
 }
 
 // ── Sidebar ────────────────────────────────────────────────────
@@ -1051,6 +1136,8 @@ function renderSidebar() {
   document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
   const storyBtn = document.getElementById('story-toggle');
   if (storyBtn) storyBtn.classList.toggle('active', state.view === 'background');
+  const briefBtn = document.getElementById('brief-toggle');
+  if (briefBtn) briefBtn.classList.toggle('active', state.view === 'brief');
   const teamBadge = document.getElementById('sidebar-team');
   const teamCode = document.getElementById('sidebar-team-code');
   if (state.teamCode) {
