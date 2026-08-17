@@ -154,6 +154,33 @@
   .ideate-art-id { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--tea-amber); margin-bottom: 4px; }
   .ideate-art-name { font-size: 14px; font-weight: 600; color: var(--tea-text); margin-bottom: 4px; }
   .ideate-art-desc { font-size: 12px; color: var(--tea-muted); line-height: 1.5; }
+
+  /* ── Scenario cards ── */
+  .scenarios-title { font-size: 15px; font-weight: 700; color: var(--tea-green); margin: 24px 0 14px; }
+  .scenarios-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 16px; margin-top: -10px; }
+  .scenarios-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .scenario-card {
+    background: var(--tea-card); border: 2px solid var(--tea-border); border-radius: 8px;
+    padding: 14px 16px; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative;
+  }
+  .scenario-card:hover { border-color: var(--tea-green-light); background: #F8F4EC; }
+  .scenario-card.selected { border-color: var(--tea-green); background: #EEF5ED; }
+  .scenario-card .sc-check { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px;
+    border-radius: 50%; border: 2px solid var(--tea-border); background: white;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; color: transparent; }
+  .scenario-card.selected .sc-check { background: var(--tea-green); border-color: var(--tea-green); color: white; }
+  .sc-id { font-size: 12px; font-weight: 800; color: var(--tea-amber); letter-spacing: 0.06em; margin-bottom: 4px; }
+  .sc-path { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--tea-muted); margin-bottom: 6px; }
+  .sc-name { font-size: 13px; font-weight: 600; color: var(--tea-text); margin-bottom: 6px; line-height: 1.4; }
+  .sc-cost { font-size: 12px; color: var(--tea-muted); }
+  .sc-cost strong { color: var(--tea-text); }
+  .scenarios-lock-row { margin-top: 16px; display: flex; align-items: center; gap: 14px; }
+  .sc-lock-btn { background: var(--tea-green); color: white; border: none; border-radius: 7px;
+    padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .sc-lock-btn:disabled { background: #A0B89A; cursor: default; }
+  .sc-locked-badge { font-size: 13px; font-weight: 600; color: #2E7D32; display: none; }
+  .sc-locked-badge.visible { display: inline; }
 </style>
 </head>
 <body>
@@ -272,6 +299,67 @@
           <div class="ideate-art-desc">9 risks rated on a 5×5 Probability × Impact matrix</div>
         </div>
       </div>
+
+      <div class="scenarios-title">John's Investment Scenarios</div>
+      <div class="scenarios-sub">Review the six options John has put together. Select the scenario your team recommends and lock it in.</div>
+      <div class="scenarios-grid" id="scenario-grid">
+
+        <div class="scenario-card" id="sc-A1" onclick="selectScenario('A1')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">A1</div>
+          <div class="sc-path">Digital only</div>
+          <div class="sc-name">Basic digital ($25K)</div>
+          <div class="sc-cost"><strong>$25,000</strong> setup · <strong>+$300</strong>/month<br>QR ordering + digital loyalty. Lower risk, faster payback.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-A2" onclick="selectScenario('A2')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">A2</div>
+          <div class="sc-path">Digital only</div>
+          <div class="sc-name">Full integrated digital + supply chain ($150K)</div>
+          <div class="sc-cost"><strong>$150,000</strong> setup · <strong>+$1,000</strong>/month<br>A1 + kitchen display, inventory, supplier ordering. Only scenario that fully resolves supply chain.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-B1" onclick="selectScenario('B1')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">B1</div>
+          <div class="sc-path">Expansion only</div>
+          <div class="sc-name">AMK Food Centre</div>
+          <div class="sc-cost"><strong>$80,000</strong> setup · <strong>+$14,500</strong>/month<br>Second outlet, community heartland format. Lower risk, familiar footfall.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-B2" onclick="selectScenario('B2')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">B2</div>
+          <div class="sc-path">Expansion only</div>
+          <div class="sc-name">AMK Hub B1</div>
+          <div class="sc-cost"><strong>$150,000</strong> setup · <strong>+$20,000</strong>/month<br>Mall unit, high footfall — higher revenue potential, higher risk.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-C1" onclick="selectScenario('C1')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">C1</div>
+          <div class="sc-path">Both — Conservative</div>
+          <div class="sc-name">Basic digital + AMK Food Centre</div>
+          <div class="sc-cost"><strong>~$105,000</strong> setup · <strong>+$15,100</strong>/month<br>Fix operations first, then expand. Sequential, lower total investment.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-C2" onclick="selectScenario('C2')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">C2</div>
+          <div class="sc-path">Both — Aggressive</div>
+          <div class="sc-name">Full digital + AMK Hub B1</div>
+          <div class="sc-cost"><strong>~$300,000</strong> setup · <strong>+$21,000</strong>/month<br>Maximum investment, maximum growth. Requires financing.</div>
+        </div>
+
+      </div>
+
+      <div class="scenarios-lock-row">
+        <button class="sc-lock-btn" id="sc-lock-btn" onclick="lockScenario()" disabled>Lock in our recommendation →</button>
+        <span class="sc-locked-badge" id="sc-locked-badge"></span>
+      </div>
+
+      <div style="height:32px"></div>
     </div>
 
   </div><!-- /main -->
@@ -476,8 +564,40 @@ function showIdeateView() {
   document.getElementById('phase-step').textContent = '· Solution Design';
 }
 
+let selectedScenario = null;
+let scenarioLocked = false;
+
+function selectScenario(id) {
+  if (scenarioLocked) return;
+  selectedScenario = id;
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('sc-' + id).classList.add('selected');
+  document.getElementById('sc-lock-btn').disabled = false;
+}
+
+function lockScenario() {
+  if (!selectedScenario || scenarioLocked) return;
+  const names = {
+    A1: 'Basic digital ($25K)',
+    A2: 'Full integrated digital + supply chain ($150K)',
+    B1: 'AMK Food Centre expansion',
+    B2: 'AMK Hub B1 expansion',
+    C1: 'Conservative — Basic digital + AMK Food Centre',
+    C2: 'Aggressive — Full digital + AMK Hub B1'
+  };
+  scenarioLocked = true;
+  document.getElementById('sc-lock-btn').disabled = true;
+  document.getElementById('sc-lock-btn').textContent = '✓ Recommendation locked';
+  const badge = document.getElementById('sc-locked-badge');
+  badge.textContent = `Your recommendation: ${selectedScenario} — ${names[selectedScenario]}`;
+  badge.classList.add('visible');
+  document.querySelectorAll('.scenario-card').forEach(c => c.style.cursor = 'default');
+}
+
 function resetDemo() {
   demoState = 'ready';
+  selectedScenario = null;
+  scenarioLocked = false;
 
   // Clear textareas
   ['syn-pain','syn-problem','syn-vision'].forEach(id => {
@@ -486,11 +606,23 @@ function resetDemo() {
     el.removeAttribute('readonly');
   });
 
-  // Reset buttons
+  // Reset synthesis buttons
   const genBtn = document.getElementById('gen-btn');
   genBtn.textContent = 'Generate synthesis ↗';
   genBtn.disabled = false;
   document.getElementById('confirm-btn').disabled = true;
+
+  // Reset scenario cards
+  document.querySelectorAll('.scenario-card').forEach(c => {
+    c.classList.remove('selected');
+    c.style.cursor = 'pointer';
+  });
+  const lockBtn = document.getElementById('sc-lock-btn');
+  lockBtn.disabled = true;
+  lockBtn.textContent = 'Lock in our recommendation →';
+  const badge = document.getElementById('sc-locked-badge');
+  badge.textContent = '';
+  badge.classList.remove('visible');
 
   showSynthesisView();
 }
