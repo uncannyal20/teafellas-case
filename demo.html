@@ -96,6 +96,40 @@
   .syn-confirm-btn:disabled { background: #C9A97A; cursor: default; }
   .syn-confirmed-badge { font-size: 13px; font-weight: 600; color: #2E7D32; }
 
+  /* ── Persona modal ── */
+  #persona-modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  #persona-modal-overlay.open { display: flex; }
+  #persona-modal {
+    background: var(--tea-card); border-radius: 12px; width: 90%; max-width: 560px;
+    max-height: 80vh; display: flex; flex-direction: column;
+    border: 1px solid var(--tea-border); box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  #modal-header {
+    padding: 18px 22px 14px; border-bottom: 1px solid var(--tea-border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+  #modal-emoji { font-size: 28px; margin-right: 4px; }
+  #modal-name { font-size: 17px; font-weight: 700; color: var(--tea-green); }
+  #modal-role { font-size: 12px; color: var(--tea-muted); margin-top: 2px; }
+  #modal-close { background: none; border: none; font-size: 20px; cursor: pointer;
+    color: var(--tea-muted); line-height: 1; padding: 2px 4px; flex-shrink: 0; }
+  #modal-close:hover { color: var(--tea-text); }
+  #modal-body { padding: 18px 22px 22px; overflow-y: auto; }
+  .modal-section { margin-bottom: 18px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--tea-muted); margin-bottom: 8px; }
+  .modal-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .modal-bullets li { font-size: 13px; color: var(--tea-text); line-height: 1.6;
+    padding-left: 16px; position: relative; }
+  .modal-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--tea-green); font-weight: 700; }
+  .modal-quote { background: var(--tea-cream); border-left: 3px solid var(--tea-amber);
+    border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13px; font-style: italic;
+    color: var(--tea-text); line-height: 1.65; }
+
   /* ── Phase 3 (Ideate) view ── */
   .ideate-hero { background: var(--tea-green); color: white; border-radius: 12px; padding: 28px 32px; margin-bottom: 28px; }
   .ideate-phase-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
@@ -167,11 +201,16 @@
       <div class="syn-sub">Aggregated insights across all interviews. Use this as the foundation for your product strategy discussion.</div>
 
       <div class="syn-progress">
-        <div class="syn-prog-card done"><div class="syn-prog-emoji">👵</div><div class="syn-prog-name">Aunty Mary</div><div class="syn-prog-status">✓ Summarised</div></div>
-        <div class="syn-prog-card done"><div class="syn-prog-emoji">👴</div><div class="syn-prog-name">Uncle John</div><div class="syn-prog-status">✓ Summarised</div></div>
-        <div class="syn-prog-card done"><div class="syn-prog-emoji">🧑‍🦳</div><div class="syn-prog-name">Mrs Selva</div><div class="syn-prog-status">✓ Summarised</div></div>
-        <div class="syn-prog-card done"><div class="syn-prog-emoji">👨‍💼</div><div class="syn-prog-name">Jacky</div><div class="syn-prog-status">✓ Summarised</div></div>
-        <div class="syn-prog-card done"><div class="syn-prog-emoji">👨‍🍳</div><div class="syn-prog-name">Darren</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('mary')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👵</div><div class="syn-prog-name">Aunty Mary</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('john')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👴</div><div class="syn-prog-name">Uncle John</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('selva')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">🧑‍🦳</div><div class="syn-prog-name">Mrs Selva</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('jacky')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👨‍💼</div><div class="syn-prog-name">Jacky</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('darren')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👨‍🍳</div><div class="syn-prog-name">Darren</div><div class="syn-prog-status">✓ Summarised</div></div>
       </div>
 
       <div class="syn-card">
@@ -238,7 +277,147 @@
   </div><!-- /main -->
 </div><!-- /app -->
 
+<!-- Persona summary modal -->
+<div id="persona-modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div id="persona-modal">
+    <div id="modal-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span id="modal-emoji"></span>
+          <div>
+            <div id="modal-name"></div>
+            <div id="modal-role"></div>
+          </div>
+        </div>
+      </div>
+      <button id="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
 <script>
+// ── Persona summaries ─────────────────────────────────────────
+const PERSONAS = {
+  mary: {
+    emoji: '👵', name: 'Aunty Mary', role: 'Cashier',
+    insights: [
+      'Handles all verbal orders, handwrites chits, passes to Salmiah — the first link in every order chain',
+      'Handwriting deteriorates noticeably under peak-hour pressure; she is aware it causes downstream errors but has no practical way to fix it without a tool change',
+      'Manages the paper loyalty stamp card system single-handedly — customers frequently lose cards, forget them, or argue about missing stamps',
+      'Deeply proud of knowing regulars by name and order; sees this personal touch as what differentiates Tea Fellas from a chain',
+      'Not tech-resistant — open to a tablet or digital system if someone trains her: "If got tablet, I can try. As long as someone shows me."',
+      'Quietly worried about rising ingredient costs; John has not raised prices yet but she can see the pressure building'
+    ],
+    pains: [
+      'Chit handwriting degrades under rush — errors propagate to Darren and reach customers as wrong drinks',
+      'Stamp card disputes are a daily drain on her attention during the busiest periods',
+      'No way for customers to pre-order; everyone must queue at her counter even for a single drink'
+    ],
+    quote: '"If got tablet, I can try. As long as someone shows me."'
+  },
+  john: {
+    emoji: '👴', name: 'Uncle John', role: 'Owner / Collection',
+    insights: [
+      'Manages the collection counter entirely from memory — no ticket numbers, no display system, no notifications',
+      'Handles all supply ordering himself: calls Lim Teck Seng Trading every Monday, delivery arrives Wednesday. Same order, every week, for 18 years',
+      'Has deep loyalty to his supplier — a church friend referral — and would not switch even for a cheaper price',
+      'Ingredient costs have been rising due to fuel price pass-throughs from the supplier; he is absorbing it quietly and has not raised prices to customers',
+      'Treats Darren as his informal successor and is privately hoping he can run a second outlet one day',
+      'Privately aware that the supply chain cannot scale to a second outlet but does not raise this unless asked directly about expansion'
+    ],
+    pains: [
+      'Drinks pile up at the collection counter during peak hours — wrong drinks handed to wrong customers daily',
+      'Shouting customer names across a noisy shop feels unprofessional and often does not work',
+      'No notification system means customers hover, wander off, or crowd the counter',
+      'Expansion dream is stalled by operational reality — one supplier call on Monday morning will not support two outlets'
+    ],
+    quote: '"If we open a second outlet, calling one supplier on Monday morning will not work anymore. I have no system to track what is at which location."'
+  },
+  selva: {
+    emoji: '🧑‍🦳', name: 'Mrs Selva', role: 'Loyal Customer',
+    insights: [
+      'Has been coming 3–4 times per week since Tea Fellas opened in 2008 — one of their very first regulars',
+      'Aunty Mary knows her name and her usual order (taro milk tea, less sweet, with pearl) — this personal recognition is the main reason she keeps coming back',
+      'Already uses the Kopitiam app for other F&B purchases and sees no reason Tea Fellas cannot offer the same',
+      'Has recommended Tea Fellas to her community WhatsApp group and introduced her husband Raj, who now visits occasionally',
+      'Candid about frustrations when asked directly, but would not complain unprompted — she is loyal first'
+    ],
+    pains: [
+      'Has been late to work due to the morning queue; once gave up and left without her tea',
+      'Has missed at least 4–5 free drinks because of lost or forgotten stamp cards',
+      'No way to pre-order; must join the queue in person even as a daily regular',
+      'Occasionally received the wrong sweetness level or had her order lost entirely during peak hours'
+    ],
+    quote: '"I use Kopitiam app already — so easy. Why not Tea Fellas?"'
+  },
+  jacky: {
+    emoji: '👨‍💼', name: 'Jacky Chan', role: 'HDB Senior Manager / Regular',
+    insights: [
+      'Orders 5–6 drinks for his team almost every morning — Tea Fellas\' highest-volume daily customer',
+      'Arrives at 7:15am specifically to beat the queue; still waits 15+ minutes. A normal 8am arrival means a 25–30 minute wait',
+      'Has tried calling ahead to place an order — Tea Fellas does not take phone orders. He understood, but noted the lost time',
+      'From his HDB work, sees many small businesses resist digitalisation not because they do not want it, but because they fear complexity — he believes Tea Fellas is ready',
+      'Respects the family-run charm and does not want it lost in the process of modernising'
+    ],
+    pains: [
+      'Ordering 5–6 different customised drinks verbally is error-prone — Mary occasionally misses one or gets a customisation wrong',
+      'Collecting 6 drinks with unclear or missing labels means he regularly hands the wrong drink to a colleague',
+      'No receipt or order summary; his team sometimes argues about who ordered what',
+      'Once tried calling ahead — not possible. Pre-ordering would save him significant time every day'
+    ],
+    quote: '"Just a QR code or a web form — scan, order, pay, collect when ready. Nothing fancy."'
+  },
+  darren: {
+    emoji: '👨‍🍳', name: 'Darren DeSouza', role: 'Main Barista',
+    insights: [
+      'Makes every single drink — including the signature Brown Sugar Pearl Milk Tea, with tapioca pearls handmade fresh before 6am daily',
+      'SMU Business Administration graduate (2025) — chose Tea Fellas over a corporate job to gain real-world experience and support his uncle',
+      'Has already researched digital ordering solutions and built a rough proposal for Uncle John — John listened but has not moved on it yet',
+      'Has a strong instinct for the business: cost structures, customer experience, scalability. Careful not to come across as the know-it-all grad',
+      'Sees himself as John\'s informal successor; dreams of running a second outlet — but insists operations must be fixed first'
+    ],
+    pains: [
+      'Unclear chits from Mary force him to stop mid-preparation and clarify — brief but costly interruptions during peak hours',
+      'Single-barista bottleneck: all drink preparation relies on him alone; no capacity buffer during peak volume',
+      'Occasional wrong drinks going out (wrong sweetness, wrong topping) frustrate him even when the error originated upstream',
+      'No kitchen display means he works from paper labels only — one source of truth that can be misread or lost'
+    ],
+    quote: '"Fix the operations first. A second outlet with the current process would just be chaos times two."'
+  }
+};
+
+function openModal(id) {
+  const p = PERSONAS[id];
+  document.getElementById('modal-emoji').textContent = p.emoji;
+  document.getElementById('modal-name').textContent = p.name;
+  document.getElementById('modal-role').textContent = p.role;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-section">
+      <div class="modal-section-title">Key insights from interview</div>
+      <ul class="modal-bullets">${p.insights.map(i => `<li>${i}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Pain points raised</div>
+      <ul class="modal-bullets">${p.pains.map(i => `<li>${i}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Notable quote</div>
+      <div class="modal-quote">${p.quote}</div>
+    </div>`;
+
+  document.getElementById('persona-modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('persona-modal-overlay').classList.remove('open');
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('persona-modal-overlay')) closeModal();
+}
+
 // ── Pre-canned synthesis content ──────────────────────────────
 const CANNED = {
   pain: `• Order entry friction: Mary's handwritten chits become illegible under peak-hour pressure, causing a cascade of downstream errors — Salmiah misreads and re-keys orders, Darren stops mid-flow to clarify, and wrong drinks reach customers daily.
