@@ -58,6 +58,132 @@ export default {
       return pw === FACILITATOR_PASSWORD;
     };
 
+    // ── POST /register-team ────────────────────────────────────
+    // Idempotent — safe to call on every login attempt.
+    if (url.pathname === '/register-team' && request.method === 'POST') {
+      try {
+        const { team_code } = await request.json();
+        if (!team_code) return json({ error: 'team_code is required' }, 400);
+        await env.DB.prepare(
+          'INSERT OR IGNORE INTO teams (team_code) VALUES (?)'
+        ).bind(team_code).run();
+        return json({ ok: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── GET /phase-gates ──────────────────────────────────────
+    if (url.pathname === '/phase-gates' && request.method === 'GET') {
+      try {
+        const team_code = url.searchParams.get('team_code');
+        if (!team_code) return json({ error: 'team_code is required' }, 400);
+        const { results } = await env.DB.prepare(
+          'SELECT phase, completed, completed_at FROM phase_gates WHERE team_code = ?'
+        ).bind(team_code).all();
+        // Return an object keyed by phase number for easy front-end lookup
+        const gates = { 1: false, 2: false, 3: false, 4: false };
+        for (const r of (results || [])) {
+          gates[r.phase] = r.completed === 1;
+        }
+        return json({ gates });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── POST /phase-gates ─────────────────────────────────────
+    if (url.pathname === '/phase-gates' && request.method === 'POST') {
+      try {
+        const { team_code, phase } = await request.json();
+        if (!team_code || !phase) return json({ error: 'team_code and phase are required' }, 400);
+        await env.DB.prepare(`
+          INSERT INTO phase_gates (team_code, phase, completed, completed_at)
+          VALUES (?, ?, 1, datetime('now'))
+          ON CONFLICT(team_code, phase) DO UPDATE SET
+            completed    = 1,
+            completed_at = datetime('now')
+        `).bind(team_code, phase).run();
+        return json({ ok: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── GET /deliverables ─────────────────────────────────────
+    if (url.pathname === '/deliverables' && request.method === 'GET') {
+      try {
+        const team_code      = url.searchParams.get('team_code');
+        const deliverable_id = url.searchParams.get('deliverable_id');
+        if (!team_code) return json({ error: 'team_code is required' }, 400);
+        const { results } = deliverable_id
+          ? await env.DB.prepare(
+              'SELECT deliverable_id, content, updated_at FROM deliverables WHERE team_code = ? AND deliverable_id = ?'
+            ).bind(team_code, deliverable_id).all()
+          : await env.DB.prepare(
+              'SELECT deliverable_id, content, updated_at FROM deliverables WHERE team_code = ?'
+            ).bind(team_code).all();
+        const deliverables = {};
+        for (const r of (results || [])) {
+          deliverables[r.deliverable_id] = {
+            content:    safeParseJson(r.content, null),
+            updated_at: r.updated_at,
+          };
+        }
+        return json({ deliverables });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── POST /deliverables ────────────────────────────────────
+    if (url.pathname === '/deliverables' && request.method === 'POST') {
+      try {
+        const { team_code, deliverable_id, content } = await request.json();
+        if (!team_code || !deliverable_id) return json({ error: 'team_code and deliverable_id are required' }, 400);
+        await env.DB.prepare(`
+          INSERT INTO deliverables (team_code, deliverable_id, content, updated_at)
+          VALUES (?, ?, ?, datetime('now'))
+          ON CONFLICT(team_code, deliverable_id) DO UPDATE SET
+            content    = excluded.content,
+            updated_at = datetime('now')
+        `).bind(team_code, deliverable_id, JSON.stringify(content ?? null)).run();
+        return json({ ok: true });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
+    // ── GET /all-teams — facilitator auth ─────────────────────
+    // Returns all teams with phase gate status and deliverable count.
+    if (url.pathname === '/all-teams' && request.method === 'GET') {
+      if (!authFacilitator()) return json({ error: 'Unauthorised' }, 401);
+      try {
+        const { results: teamRows } = await env.DB.prepare('SELECT team_code, created_at FROM teams ORDER BY team_code').all();
+        const { results: gateRows } = await env.DB.prepare('SELECT team_code, phase, completed FROM phase_gates').all();
+        const { results: delivRows } = await env.DB.prepare('SELECT team_code, COUNT(*) as cnt FROM deliverables GROUP BY team_code').all();
+        const { results: sessRows  } = await env.DB.prepare('SELECT team_code, COUNT(*) as cnt FROM sessions GROUP BY team_code').all();
+
+        const gateMap  = {};
+        const delivMap = {};
+        const sessMap  = {};
+        for (const r of (gateRows  || [])) { if (!gateMap[r.team_code])  gateMap[r.team_code]  = {}; gateMap[r.team_code][r.phase] = r.completed === 1; }
+        for (const r of (delivRows || [])) delivMap[r.team_code] = r.cnt;
+        for (const r of (sessRows  || [])) sessMap[r.team_code]  = r.cnt;
+
+        const teams = (teamRows || []).map(t => ({
+          team_code:      t.team_code,
+          created_at:     t.created_at,
+          phases:         { 1: !!(gateMap[t.team_code]||{})[1], 2: !!(gateMap[t.team_code]||{})[2], 3: !!(gateMap[t.team_code]||{})[3], 4: !!(gateMap[t.team_code]||{})[4] },
+          deliverable_count: delivMap[t.team_code] || 0,
+          interview_count:   sessMap[t.team_code]  || 0,
+        }));
+        return json({ teams });
+      } catch (err) {
+        return json({ error: err.message }, 500);
+      }
+    }
+
     // ── POST / — Anthropic API proxy ───────────────────────────
     if (url.pathname === '/' && request.method === 'POST') {
       try {
