@@ -262,7 +262,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
         <thead><tr>
           <th style="width:145px">Value Dimension</th>
           <th style="width:145px">Sub-Dimension</th>
-          <th style="width:115px">Benefit Type</th>
+          <th style="width:155px">Unit of Measure</th>
           <th>Description / Workings</th>
           <th style="width:85px">Y1 ($)</th>
           <th style="width:85px">Y2 ($)</th>
@@ -485,23 +485,41 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
 
 <script>
 // ── Value Dimensions ──────────────────────────────────────────
+// subs: { 'Sub-Dimension Name': ['Unit of Measure 1', ...] }
 const DIMS = {
-  cs:  { label:'Customer Satisfaction',             cls:'dim-cs',  color:'#880E4F',
-         subs:['Ease of Transaction','Clarity and Accuracy','Quality of Service'] },
-  ep:  { label:'Employee Productivity',             cls:'dim-ep',  color:'#E65100',
-         subs:['Task Efficiency','Output Quality','Self Sufficiency'] },
-  sm:  { label:'System Maintainability',            cls:'dim-sm',  color:'#1565C0',
-         subs:['Incident & Recovery Performance','Overall Technical Debt','Total Cost of Ownership (TCO)','System Scalability'] },
-  cts: { label:'Cost to Serve',                     cls:'dim-cts', color:'#4A148C',
-         subs:['Cost per Transaction'] },
-  ra:  { label:'Reusability & Design Accelerators', cls:'dim-ra',  color:'#00695C',
-         subs:['Asset Reusability','Speed of Delivery'] },
-  re:  { label:'Revenue / Market Expansion',        cls:'dim-re',  color:'#C17A2A',
-         subs:['Digital Revenue Growth','New Market / Outlet Revenue'] },
+  cs: { label:'Customer Satisfaction', cls:'dim-cs', color:'#880E4F', subs:{
+    'Ease of Transaction':  ['Customer Effort Score','Self Completion Rate','Abandonment Rate','Task Success Rate'],
+    'Clarity and Accuracy': ['First Contact Resolution Rate','Time to Resolve'],
+    'Quality of Service':   ['Channel Satisfaction Rating','Service Utilisation Rate','Channel Quality Score'],
+  }},
+  ep: { label:'Employee Productivity', cls:'dim-ep', color:'#E65100', subs:{
+    'Task Efficiency':  ['Average Handling Time','Time to Complete (TTC) a Transaction','Throughput Rate (cases per day)'],
+    'Output Quality':   ['Error Rate per Transaction','Rework Rate','First-Time Right Rate'],
+    'Self Sufficiency': ['Escalation Rate','Average Supervisor Resolution Time per Escalation','Total Supervisor Hours Saved from Reduced Escalations'],
+  }},
+  sm: { label:'System Maintainability', cls:'dim-sm', color:'#1565C0', subs:{
+    'Incident & Recovery Performance': ['Mean Time to Recover (MTTR)','Incident Frequency Rate','Service Availability'],
+    'Overall Technical Debt':          ['% Engineering Time on Legacy vs. New Development','Technical Debt Ratio','% Sprint Capacity on Debt Retirement'],
+    'Total Cost of Ownership (TCO)':   ['Infrastructure Cost Trend','Licensing Cost per Product','Ops Headcount per System Supported'],
+    'System Scalability':              ['Integration Lead Time for New System Connections','Engineering Hours Avoided from Not Redesigning for Scale','System Capacity Head Room'],
+  }},
+  cts: { label:'Cost to Serve', cls:'dim-cts', color:'#4A148C', subs:{
+    'Cost per Transaction': ['Cost per Transaction (as-is vs. to-be)','Automation Rate (% fully automated end-to-end)','Digital vs. Assisted Channel Ratio'],
+  }},
+  ra: { label:'Reusability & Design Accelerators', cls:'dim-ra', color:'#00695C', subs:{
+    'Asset Reusability':  ['Reusability Index Ratio','No. of Services Consuming Shared Component','Development Hours Avoided through Reuse'],
+    'Speed of Delivery':  ['Feature Delivery Lead Time (with vs. without accelerators)','Time to Integration for Reused Components'],
+  }},
+  re: { label:'Revenue / Market Expansion', cls:'dim-re', color:'#C17A2A', subs:{
+    'Digital Revenue Growth':        ['Revenue Uplift (%)','Monthly Revenue Increase ($)','Customer Transaction Value ($)'],
+    'New Market / Outlet Revenue':   ['Outlet Gross Revenue ($)','Customer Count Growth','Revenue per Customer ($)'],
+  }},
 };
 
 const COST_TYPES = ['One-Time Cost','Recurrent Cost','External Cost','Others'];
-const BEN_TYPES  = ['Revenue Uplift','Cost Savings','Time Savings','Headcount Savings','Headcount Avoidance','Others'];
+
+function dimSubKeys(dk) { return Object.keys((DIMS[dk]||DIMS.cs).subs); }
+function dimUnits(dk, sub) { return ((DIMS[dk]||DIMS.cs).subs[sub]) || []; }
 
 // ── State ─────────────────────────────────────────────────────
 let costs = [], bens = [], nid = 1;
@@ -517,22 +535,22 @@ const MODEL_COSTS = [
   { type:'Recurrent Cost', desc:'AMK outlet utilities, supplies & misc — $1,500/month × 12 (B1)',                y0:0,     y1:18000, y2:18000, y3:18000 },
 ];
 const MODEL_BENS = [
-  { dim:'cs',  sub:'Ease of Transaction',         btype:'Revenue Uplift',
+  { dim:'cs',  sub:'Ease of Transaction',         btype:'Self Completion Rate',
     desc:'QR ordering reduces friction — 60% of 9% revenue uplift on $27,500/month baseline ($27,500×9%×60%×12)',
     y1:17820,  y2:17820,  y3:17820 },
-  { dim:'cs',  sub:'Quality of Service',          btype:'Revenue Uplift',
+  { dim:'cs',  sub:'Quality of Service',          btype:'Channel Satisfaction Rating',
     desc:'Service speed improvement & reduced wait time — 40% of digital revenue uplift ($27,500×9%×40%×12)',
     y1:11880,  y2:11880,  y3:11880 },
-  { dim:'ep',  sub:'Task Efficiency',             btype:'Time Savings',
+  { dim:'ep',  sub:'Task Efficiency',             btype:'Average Handling Time',
     desc:'Order processing time saved — 3 staff × 1hr/day × 250 working days × $15/hr',
     y1:11250,  y2:11250,  y3:11250 },
-  { dim:'ep',  sub:'Output Quality',              btype:'Cost Savings',
+  { dim:'ep',  sub:'Output Quality',              btype:'Error Rate per Transaction',
     desc:'Order error & ingredient waste reduction from digital accuracy vs. handwritten forms',
     y1:2700,   y2:2700,   y3:2700 },
-  { dim:'cts', sub:'Cost per Transaction',        btype:'Cost Savings',
+  { dim:'cts', sub:'Cost per Transaction',        btype:'Cost per Transaction (as-is vs. to-be)',
     desc:'Paper-based order form elimination — printing, storage, manual filing cost avoided',
     y1:1050,   y2:1050,   y3:1050 },
-  { dim:'re',  sub:'New Market / Outlet Revenue', btype:'Revenue Uplift',
+  { dim:'re',  sub:'New Market / Outlet Revenue', btype:'Outlet Gross Revenue ($)',
     desc:'AMK Food Centre gross revenue — ~150 customers/day × $5 avg × 22 days × 12 months (Y2/Y3 growth to 180/220 customers)',
     y1:198000, y2:244200, y3:290400 },
 ];
@@ -605,24 +623,26 @@ function delCost(id) {
 // ── Benefits ──────────────────────────────────────────────────
 function addBenRow(data) {
   const id = nid++;
-  const d = data || { dim:'cs', sub:'Ease of Transaction', btype:'Revenue Uplift', desc:'', y1:0, y2:0, y3:0 };
+  const d = data || { dim:'cs', sub:'Ease of Transaction', btype:'Self Completion Rate', desc:'', y1:0, y2:0, y3:0 };
   bens.push({ id, ...d });
   const tbody = document.getElementById('bens-body');
   const tr = document.createElement('tr');
   tr.id = 'br-'+id;
   const dimOpts = Object.entries(DIMS).map(([k,v])=>
     `<option value="${k}"${k===d.dim?' selected':''}>${v.label}</option>`).join('');
-  const subOpts = (DIMS[d.dim]||DIMS.cs).subs.map(s=>
+  const subOpts = dimSubKeys(d.dim).map(s=>
     `<option${s===d.sub?' selected':''}>${s}</option>`).join('');
+  const unitOpts = dimUnits(d.dim, d.sub).map(u=>
+    `<option${u===d.btype?' selected':''}>${u}</option>`).join('');
   tr.innerHTML = `
     <td><select class="td-sel" id="ds-${id}" onchange="updateBenDim(${id},this.value)">
       ${dimOpts}
     </select></td>
-    <td><select class="td-sel" id="ss-${id}" onchange="updateBen(${id},'sub',this.value)">
+    <td><select class="td-sel" id="ss-${id}" onchange="updateBenSub(${id},this.value)">
       ${subOpts}
     </select></td>
-    <td><select class="td-sel" onchange="updateBen(${id},'btype',this.value)">
-      ${BEN_TYPES.map(t=>`<option${t===d.btype?' selected':''}>${t}</option>`).join('')}
+    <td><select class="td-sel" id="us-${id}" onchange="updateBen(${id},'btype',this.value)">
+      ${unitOpts}
     </select></td>
     <td><input class="td-inp" value="${escH(d.desc)}" placeholder="Description, workings"
       oninput="updateBen(${id},'desc',this.value)"></td>
@@ -636,9 +656,20 @@ function addBenRow(data) {
 
 function updateBenDim(id, dim) {
   const b = bens.find(x=>x.id===id);
-  if (b) { b.dim=dim; b.sub=(DIMS[dim]||DIMS.cs).subs[0]; }
+  const firstSub = dimSubKeys(dim)[0] || '';
+  if (b) { b.dim=dim; b.sub=firstSub; b.btype=dimUnits(dim,firstSub)[0]||''; }
   const ss = document.getElementById('ss-'+id);
-  if (ss) ss.innerHTML = (DIMS[dim]||DIMS.cs).subs.map(s=>`<option>${s}</option>`).join('');
+  if (ss) ss.innerHTML = dimSubKeys(dim).map(s=>`<option>${s}</option>`).join('');
+  const us = document.getElementById('us-'+id);
+  if (us) us.innerHTML = dimUnits(dim, firstSub).map(u=>`<option>${u}</option>`).join('');
+  updateTotals();
+}
+
+function updateBenSub(id, sub) {
+  const b = bens.find(x=>x.id===id);
+  if (b) { b.sub=sub; b.btype=dimUnits(b.dim,sub)[0]||''; }
+  const us = document.getElementById('us-'+id);
+  if (us) us.innerHTML = dimUnits(b?b.dim:'cs', sub).map(u=>`<option>${u}</option>`).join('');
   updateTotals();
 }
 
