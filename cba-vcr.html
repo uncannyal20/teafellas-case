@@ -5,598 +5,830 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tea Fellas — CBA & VCR</title>
 <style>
-  :root {
-    --green:  #2D5A27;
-    --green-l:#4A7C42;
-    --amber:  #C17A2A;
-    --amber-l:#E8A94A;
-    --cream:  #F5F0E8;
-    --card:   #FDFAF4;
-    --border: #D4C4A0;
-    --text:   #2C2416;
-    --muted:  #6B5A3E;
-    --red:    #C0392B;
-    --pos:    #2E7D32;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--cream); color: var(--text); min-height: 100vh; }
+:root {
+  --green:  #2D5A27; --green-l: #4A7C42; --green-xl: #EEF5ED;
+  --amber:  #C17A2A; --amber-l: #E8A94A; --amber-xl: #FFF8E6;
+  --cream:  #F5F0E8; --card:    #FDFAF4; --border:   #D4C4A0;
+  --text:   #2C2416; --muted:   #6B5A3E;
+  --red:    #C0392B; --red-xl:  #FFEBEE;
+  --pos:    #2E7D32; --pos-xl:  #E8F5E9;
+  --blue:   #1565C0; --blue-xl: #E3F2FD;
+  --orange: #E65100; --orange-xl: #FFF3E0;
+  --pink:   #880E4F; --pink-xl: #FCE4EC;
+  --teal:   #00695C; --teal-xl: #E0F2F1;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--cream); color: var(--text); min-height: 100vh; font-size: 14px; }
 
-  /* ── Header ── */
-  .header { background: var(--green); color: white; padding: 20px 40px; display: flex; align-items: baseline; gap: 16px; }
-  .header-logo { font-size: 18px; font-weight: 700; }
-  .header-title { font-size: 14px; opacity: 0.7; }
+.hdr { background: var(--green); color: white; padding: 16px 36px;
+  display: flex; align-items: baseline; gap: 14px; }
+.hdr-logo { font-size: 17px; font-weight: 700; }
+.hdr-sub  { font-size: 13px; opacity: .65; }
 
-  /* ── Tabs ── */
-  .tabs { background: white; border-bottom: 2px solid var(--border); display: flex; padding: 0 40px; }
-  .tab { padding: 14px 24px; font-size: 14px; font-weight: 600; cursor: pointer;
-    border-bottom: 3px solid transparent; color: var(--muted); margin-bottom: -2px; transition: all 0.15s; }
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--green); border-bottom-color: var(--green); }
+.tab-bar { background: white; border-bottom: 2px solid var(--border);
+  display: flex; padding: 0 36px; }
+.tab-btn { padding: 13px 22px; font-size: 14px; font-weight: 600; cursor: pointer;
+  border-bottom: 3px solid transparent; color: var(--muted); margin-bottom: -2px;
+  transition: all .15s; white-space: nowrap; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
 
-  /* ── Main ── */
-  .tab-content { display: none; padding: 32px 40px 60px; max-width: 1000px; margin: 0 auto; }
-  .tab-content.active { display: block; }
+.pane { display: none; padding: 28px 36px 60px; max-width: 1060px; margin: 0 auto; }
+.pane.active { display: block; }
 
-  /* ── Section headings ── */
-  .section-title { font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
-  .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.top-actions { display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+  background: var(--amber-xl); border: 1px solid #E8C97A; border-radius: 10px; padding: 14px 18px; }
+.top-actions p { font-size: 13px; color: var(--muted); flex: 1; }
+.btn-primary { background: var(--amber); color: white; border: none; border-radius: 7px;
+  padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.btn-primary:hover { opacity: .88; }
+.btn-sec { background: white; color: var(--green); border: 2px solid var(--green); border-radius: 7px;
+  padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-sec:hover { background: var(--green-xl); }
+.btn-sm { background: var(--green-xl); color: var(--green); border: 1px solid var(--green-l);
+  border-radius: 5px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-sm:hover { background: var(--green); color: white; }
+.btn-del { background: none; color: #bbb; border: none; cursor: pointer; font-size: 15px; padding: 0 4px; }
+.btn-del:hover { color: var(--red); }
 
-  /* ── Card ── */
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+.sec-hdr { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 3px; }
+.sec-sub  { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
 
-  /* ── Baseline ── */
-  .baseline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .field-group { display: flex; flex-direction: column; gap: 4px; }
-  .field-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
-  .field-input { border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px;
-    font-size: 14px; font-weight: 600; color: var(--text); background: white; font-family: inherit; }
-  .field-input:focus { outline: none; border-color: var(--green); }
-  .field-computed { border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px;
-    font-size: 14px; font-weight: 700; color: var(--green); background: #EEF5ED; }
-  .btn-populate { background: var(--amber); color: white; border: none; border-radius: 7px;
-    padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 16px; }
-  .btn-populate:hover { opacity: 0.88; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 22px; margin-bottom: 22px; }
 
-  /* ── Scenario selector ── */
-  .scenario-select { width: 100%; border: 2px solid var(--green); border-radius: 8px;
-    padding: 10px 14px; font-size: 15px; font-weight: 600; color: var(--text);
-    background: white; cursor: pointer; font-family: inherit; }
-  .scenario-select:focus { outline: none; }
+.dr-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.f-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+.f-inp { border: 1px solid var(--border); border-radius: 6px; padding: 8px 11px;
+  font-size: 14px; font-weight: 600; font-family: inherit; width: 100%; }
+.f-inp:focus { outline: none; border-color: var(--green); }
+.f-comp { border: 1px solid var(--green-l); border-radius: 6px; padding: 8px 11px;
+  font-size: 14px; font-weight: 700; color: var(--green); background: var(--green-xl); }
+.f-note { font-size: 11px; color: var(--muted); }
 
-  /* ── Results grid ── */
-  .results-hero { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-  .metric-card { background: var(--green); color: white; border-radius: 10px; padding: 18px 20px; text-align: center; }
-  .metric-card.warn { background: #E67E22; }
-  .metric-card.danger { background: var(--red); }
-  .metric-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; margin-bottom: 8px; }
-  .metric-value { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-  .metric-sub { font-size: 12px; opacity: 0.8; }
+.tbl-wrap { overflow-x: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 700px; }
+table.data thead th { background: var(--green); color: white; padding: 8px 10px; text-align: left;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+table.data tbody td { padding: 6px 7px; border-bottom: 1px solid #EDE5D3; vertical-align: middle; }
+table.data tbody tr:last-child td { border-bottom: none; }
+table.data tbody tr:nth-child(even) td { background: #FAF6EE; }
+.td-inp { border: 1px solid var(--border); border-radius: 4px; padding: 5px 7px;
+  font-size: 12px; font-family: inherit; width: 100%; background: white; }
+.td-inp:focus { outline: none; border-color: var(--green); }
+.td-sel { border: 1px solid var(--border); border-radius: 4px; padding: 5px 6px;
+  font-size: 12px; font-family: inherit; width: 100%; background: white; }
+.td-sel:focus { outline: none; border-color: var(--green); }
+.td-num { text-align: right; }
+.tfoot-row td { background: var(--green) !important; color: white; font-weight: 700;
+  padding: 9px 10px; font-size: 12px; }
 
-  /* ── Year table ── */
-  .year-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .year-table th { background: var(--green); color: white; padding: 9px 14px; text-align: left;
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
-  .year-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-  .year-table tr:last-child td { border-bottom: none; }
-  .year-table tr:nth-child(even) td { background: #FAF6EE; }
-  .pos { color: var(--pos); font-weight: 700; }
-  .neg { color: var(--red); font-weight: 700; }
-  .payback-row td { background: #FFF8E1 !important; }
+.dim-badge { display: inline-block; padding: 2px 8px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
+.dim-cs  { background: var(--pink-xl);   color: var(--pink); }
+.dim-ep  { background: var(--orange-xl); color: var(--orange); }
+.dim-sm  { background: var(--blue-xl);   color: var(--blue); }
+.dim-cts { background: #F3E5F5;          color: #4A148C; }
+.dim-ra  { background: var(--teal-xl);   color: var(--teal); }
+.dim-re  { background: var(--amber-xl);  color: var(--amber); }
 
-  /* ── Recommendation box ── */
-  .rec-box { border-radius: 10px; padding: 18px 22px; margin-top: 20px; font-size: 14px; line-height: 1.65; }
-  .rec-box.good { background: #E8F5E9; border: 1px solid #A5D6A7; color: #1B5E20; }
-  .rec-box.warn { background: #FFF3E0; border: 1px solid #FFCC80; color: #7F4F00; }
-  .rec-box.bad  { background: #FFEBEE; border: 1px solid #EF9A9A; color: #7F1111; }
-  .rec-box strong { font-weight: 700; }
+/* Results */
+.kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 22px; }
+.kpi { border-radius: 10px; padding: 18px 20px; text-align: center; }
+.kpi-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; opacity: .8; margin-bottom: 8px; }
+.kpi-val { font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.kpi-sub { font-size: 11px; opacity: .85; }
+.kpi-green { background: var(--green);  color: white; }
+.kpi-amber { background: var(--amber);  color: white; }
+.kpi-red   { background: var(--red);    color: white; }
+.kpi-muted { background: #78909C;       color: white; }
 
-  /* ── Inputs section for scenario ── */
-  .inputs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .benefit-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  .benefit-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; text-align: center; }
-  .benefit-year { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; }
-  .benefit-val { font-size: 18px; font-weight: 800; color: var(--green); }
-  .benefit-ann { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .scenario-note { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 10px; }
+.res-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.res-table th { background: var(--green); color: white; padding: 8px 12px; text-align: left;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.res-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+.res-table tr:last-child td { border-bottom: none; }
+.res-table tr:nth-child(even) td { background: #FAF6EE; }
+.res-table .subtotal td { background: var(--green-xl) !important; font-weight: 700; color: var(--green); }
+.res-table .grand td { background: var(--green) !important; color: white; font-weight: 800; font-size: 13px; }
+.pos  { color: var(--pos); font-weight: 700; }
+.neg  { color: var(--red); font-weight: 700; }
+.pb-yr td { background: #FFF8E1 !important; }
 
-  /* ── Divider ── */
-  .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+.rec-box { border-radius: 10px; padding: 16px 20px; margin-top: 18px; font-size: 13px; line-height: 1.7; }
+.rec-good { background: var(--pos-xl);    border: 1px solid #A5D6A7; color: #1B5E20; }
+.rec-warn { background: var(--orange-xl); border: 1px solid #FFCC80; color: #7F4F00; }
+.rec-bad  { background: var(--red-xl);    border: 1px solid #EF9A9A; color: #7F1111; }
 
-  /* ── VCR table ── */
-  .vcr-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
-  .vcr-table th { background: var(--green); color: white; padding: 10px 14px; text-align: left;
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
-  .vcr-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  .vcr-table tr:last-child td { border-bottom: none; }
-  .vcr-table tr.rec-row td { background: #EEF5ED; }
-  .sc-badge { display: inline-block; background: var(--amber); color: white; font-size: 11px;
-    font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-right: 6px; letter-spacing: 0.05em; }
-  .sc-badge.green { background: var(--green); }
-  .stars { color: var(--amber); font-size: 14px; letter-spacing: 1px; }
-  .stars.risk { color: var(--red); }
-  .verdict-chip { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-  .chip-rec  { background: #E8F5E9; color: #1B5E20; border: 1px solid #A5D6A7; }
-  .chip-ok   { background: #E3F2FD; color: #0D47A1; border: 1px solid #90CAF9; }
-  .chip-warn { background: #FFF3E0; color: #7F4F00; border: 1px solid #FFCC80; }
-  .chip-bad  { background: #FFEBEE; color: #7F1111; border: 1px solid #EF9A9A; }
-  .cost-pill { font-weight: 700; font-size: 13px; }
+.dim-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.dim-row { background: white; border: 1px solid var(--border); border-radius: 8px;
+  padding: 11px 14px; display: flex; align-items: center; gap: 12px; }
+.dim-row-name { font-size: 11px; font-weight: 600; width: 170px; flex-shrink: 0; }
+.dim-bar-wrap { flex: 1; background: #EDE5D3; border-radius: 4px; height: 8px; overflow: hidden; }
+.dim-bar { height: 100%; border-radius: 4px; transition: width .4s; }
+.dim-row-val { font-size: 12px; font-weight: 700; color: var(--green); width: 80px; text-align: right; flex-shrink: 0; }
 
-  /* ── VCR narrative cards ── */
-  .vcr-narratives { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
-  .vcr-nar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
-  .vcr-nar.highlight { border-color: var(--green); background: #EEF5ED; }
-  .vcr-nar-id { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: 0.06em; margin-bottom: 4px; }
-  .vcr-nar-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-  .vcr-nar-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+/* VCR */
+.vcr-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.vcr-table th { background: var(--green); color: white; padding: 10px 14px; text-align: left;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.vcr-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.vcr-table tr:last-child td { border-bottom: none; }
+.vcr-table tr.rec-row td { background: var(--green-xl); }
+.sc-bdg { display: inline-block; background: var(--amber); color: white; font-size: 11px;
+  font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-right: 5px; }
+.sc-bdg.g { background: var(--green); }
+.stars   { color: var(--amber); letter-spacing: 1px; }
+.stars.r { color: var(--red); }
+.chip { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.chip-rec  { background: var(--pos-xl);    color: #1B5E20; border: 1px solid #A5D6A7; }
+.chip-ok   { background: var(--blue-xl);   color: var(--blue); border: 1px solid #90CAF9; }
+.chip-warn { background: var(--orange-xl); color: #7F4F00; border: 1px solid #FFCC80; }
+.chip-bad  { background: var(--red-xl);    color: #7F1111; border: 1px solid #EF9A9A; }
+.vcr-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+.vcr-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.vcr-card.hl { border-color: var(--green); background: var(--green-xl); }
+.vcr-id   { font-size: 11px; font-weight: 800; color: var(--amber); letter-spacing: .06em; margin-bottom: 4px; }
+.vcr-nm   { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.vcr-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
 
-  /* ── Placeholder ── */
-  .placeholder { background: white; border: 2px dashed var(--border); border-radius: 10px;
-    padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
+.notice { font-size: 12px; color: var(--muted); background: #F5F0E8;
+  border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px;
+  margin-top: 10px; line-height: 1.65; }
+hr.div { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
 
-  .hidden { display: none; }
-
-  @media (max-width: 680px) {
-    .header { padding: 16px 20px; }
-    .tabs { padding: 0 20px; }
-    .tab-content { padding: 20px 20px 48px; }
-    .results-hero, .baseline-grid, .inputs-row, .benefit-row, .vcr-narratives { grid-template-columns: 1fr; }
-  }
+@media (max-width:720px) {
+  .pane { padding: 16px 14px 48px; }
+  .kpi-row, .dim-breakdown, .vcr-cards, .dr-grid { grid-template-columns: 1fr; }
+  .tab-bar { padding: 0 10px; }
+  .tab-btn { padding: 12px 12px; font-size: 12px; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <span class="header-logo">Tea Fellas</span>
-  <span class="header-title">CBA & VCR Deep Dive · HDB TPO Product Workshop</span>
+<div class="hdr">
+  <span class="hdr-logo">Tea Fellas</span>
+  <span class="hdr-sub">CBA &amp; VCR Deep Dive · HDB TPO Product Workshop</span>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('cba')">Cost-Benefit Analysis (CBA)</div>
-  <div class="tab" onclick="switchTab('vcr')">Value-Cost-Risk (VCR)</div>
+<div class="tab-bar">
+  <div class="tab-btn active" onclick="showTab('inputs')">Inputs</div>
+  <div class="tab-btn"        onclick="showTab('results')">CBA Results</div>
+  <div class="tab-btn"        onclick="showTab('vcr')">Value-Cost-Risk (VCR)</div>
 </div>
 
-<!-- ══════════════════════════════════════════════ CBA TAB ══ -->
-<div id="tab-cba" class="tab-content active">
+<!-- ══════════════════ INPUTS ══ -->
+<div id="pane-inputs" class="pane active">
 
-  <!-- Step 1: Baseline -->
-  <div class="section-title">Step 1 — Baseline (Status Quo)</div>
-  <div class="section-sub">Enter Tea Fellas' current financial position, or auto-populate with the model answer.</div>
+  <div class="top-actions">
+    <p><strong>Model answer: C1 — Conservative (Basic digital + AMK Food Centre).</strong>
+      Click auto-populate to fill all three input sections, then review and discuss with participants.</p>
+    <button class="btn-primary" onclick="autoPopulate()">⚡ Auto-populate C1 model answer</button>
+    <button class="btn-sec" onclick="clearAll()">Clear all</button>
+  </div>
+
+  <!-- A: Discount Rate -->
+  <div class="sec-hdr">A — Discount Rate</div>
+  <div class="sec-sub">WACC and inflation are used to compute the Nominal Discount Rate, which discounts all future cash flows to Present Value (PV).</div>
   <div class="card">
-    <button class="btn-populate" onclick="populateBaseline()">Auto-populate baseline ↗</button>
-    <div class="baseline-grid">
-      <div class="field-group">
-        <div class="field-label">Monthly Revenue</div>
-        <input class="field-input" id="bl-revenue" type="number" placeholder="e.g. 27500" oninput="updateBaseline()">
+    <div class="dr-grid">
+      <div class="field">
+        <div class="f-lbl">WACC (%)</div>
+        <input class="f-inp" id="dr-wacc" type="number" step="0.1" placeholder="e.g. 3.6" oninput="updateDR()">
+        <div class="f-note">FY2026 non-market comparable rate: 3.6%</div>
       </div>
-      <div class="field-group">
-        <div class="field-label">Monthly Operating Costs</div>
-        <input class="field-input" id="bl-ops" type="number" placeholder="e.g. 18400" oninput="updateBaseline()">
+      <div class="field">
+        <div class="f-lbl">Inflation Rate (%)</div>
+        <input class="f-inp" id="dr-inf" type="number" step="0.1" placeholder="e.g. 2.0" oninput="updateDR()">
+        <div class="f-note">Current HDB assumption: 2.0% p.a.</div>
       </div>
-      <div class="field-group">
-        <div class="field-label">Owner Drawings / Month</div>
-        <input class="field-input" id="bl-drawings" type="number" placeholder="e.g. 5000" oninput="updateBaseline()">
-      </div>
-      <div class="field-group">
-        <div class="field-label">Net Monthly Surplus</div>
-        <div class="field-computed" id="bl-net">—</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Annual Surplus</div>
-        <div class="field-computed" id="bl-annual">—</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Daily Customers (Mon–Fri)</div>
-        <input class="field-input" id="bl-customers" type="number" placeholder="e.g. 250" oninput="updateBaseline()">
+      <div class="field">
+        <div class="f-lbl">Nominal Discount Rate (auto-computed)</div>
+        <div class="f-comp" id="dr-nom">—</div>
+        <div class="f-note">= (1 + WACC) × (1 + Inflation) − 1</div>
       </div>
     </div>
   </div>
 
-  <!-- Step 2: Scenario -->
-  <div class="section-title">Step 2 — Select Investment Scenario</div>
-  <div class="section-sub">Choose a scenario to compute the CBA against the baseline above.</div>
-  <div class="card">
-    <select class="scenario-select" id="scenario-select" onchange="onScenarioChange()">
-      <option value="">— Select a scenario —</option>
-      <option value="A1">A1 — Basic digital ($25K)</option>
-      <option value="A2">A2 — Full integrated digital + supply chain ($150K)</option>
-      <option value="B1">B1 — AMK Food Centre expansion ($80K)</option>
-      <option value="B2">B2 — AMK Hub B1 expansion ($150K)</option>
-      <option value="C1">C1 — Conservative: Basic digital + AMK Food Centre (~$105K)</option>
-      <option value="C2">C2 — Aggressive: Full digital + AMK Hub B1 (~$300K)</option>
-    </select>
-  </div>
-
-  <!-- Step 3 + Results (hidden until scenario selected) -->
-  <div id="cba-results" class="hidden">
-
-    <div class="section-title">Step 3 — Investment & Projected Benefits</div>
-    <div class="section-sub" id="scenario-desc-text"></div>
-
-    <div class="card">
-      <div class="inputs-row" style="margin-bottom:16px">
-        <div class="field-group">
-          <div class="field-label">One-time Setup Cost</div>
-          <div class="field-computed" id="res-setup">—</div>
-        </div>
-        <div class="field-group">
-          <div class="field-label">3-Year Total Investment</div>
-          <div class="field-computed" id="res-total-inv">—</div>
-        </div>
-      </div>
-
-      <div class="field-label" style="margin-bottom:8px">Net Monthly Benefit (after all additional costs)</div>
-      <div class="benefit-row">
-        <div class="benefit-card">
-          <div class="benefit-year">Year 1</div>
-          <div class="benefit-val" id="ben-y1">—</div>
-          <div class="benefit-ann" id="ben-y1-ann">—</div>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-year">Year 2</div>
-          <div class="benefit-val" id="ben-y2">—</div>
-          <div class="benefit-ann" id="ben-y2-ann">—</div>
-        </div>
-        <div class="benefit-card">
-          <div class="benefit-year">Year 3</div>
-          <div class="benefit-val" id="ben-y3">—</div>
-          <div class="benefit-ann" id="ben-y3-ann">—</div>
-        </div>
-      </div>
-      <div class="scenario-note" id="scenario-note-text"></div>
-    </div>
-
-    <hr class="divider">
-
-    <!-- Key metrics -->
-    <div class="section-title" style="margin-bottom:14px">CBA Results</div>
-    <div class="results-hero">
-      <div class="metric-card" id="metric-bcr-card">
-        <div class="metric-label">Benefit-Cost Ratio</div>
-        <div class="metric-value" id="metric-bcr">—</div>
-        <div class="metric-sub">3-yr net benefit ÷ setup cost</div>
-      </div>
-      <div class="metric-card" id="metric-pb-card">
-        <div class="metric-label">Payback Period</div>
-        <div class="metric-value" id="metric-pb">—</div>
-        <div class="metric-sub" id="metric-pb-sub">—</div>
-      </div>
-      <div class="metric-card" id="metric-roi-card">
-        <div class="metric-label">3-Year ROI</div>
-        <div class="metric-value" id="metric-roi">—</div>
-        <div class="metric-sub">(net benefit – setup) ÷ setup</div>
-      </div>
-    </div>
-
-    <!-- Year-by-year table -->
-    <div class="card" style="padding:0; overflow:hidden;">
-      <table class="year-table">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Net Monthly Benefit</th>
-            <th>Annual Net Benefit</th>
-            <th>Cumulative Benefit</th>
-            <th>Net Position vs Investment</th>
-          </tr>
-        </thead>
-        <tbody id="year-table-body"></tbody>
+  <!-- B: Costs -->
+  <div class="sec-hdr">B — Costs</div>
+  <div class="sec-sub">Enter all incremental costs for the chosen scenario vs. the status quo. Split one-time setup costs (Y0) from annual recurring costs (Y1–Y3).</div>
+  <div class="card" style="padding:0; overflow:hidden;">
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr>
+          <th style="width:120px">Cost Type</th>
+          <th>Description / Key Assumptions &amp; Workings</th>
+          <th style="width:92px">Y0 Setup ($)</th>
+          <th style="width:85px">Y1 ($)</th>
+          <th style="width:85px">Y2 ($)</th>
+          <th style="width:85px">Y3 ($)</th>
+          <th style="width:28px"></th>
+        </tr></thead>
+        <tbody id="costs-body"></tbody>
+        <tfoot><tr class="tfoot-row">
+          <td colspan="2" style="text-align:right">Total Costs (Nominal)</td>
+          <td class="td-num" id="ct-y0">$0</td>
+          <td class="td-num" id="ct-y1">$0</td>
+          <td class="td-num" id="ct-y2">$0</td>
+          <td class="td-num" id="ct-y3">$0</td>
+          <td></td>
+        </tr></tfoot>
       </table>
     </div>
+    <div style="padding:10px 14px;"><button class="btn-sm" onclick="addCostRow()">+ Add row</button></div>
+  </div>
+  <div class="notice">One-time Y0 costs are not discounted. Y1–Y3 recurring costs are discounted using the nominal rate above to compute Present Value in the Results tab.</div>
 
-    <!-- Recommendation -->
-    <div id="rec-box" class="rec-box"></div>
+  <!-- C: Benefits -->
+  <div class="sec-hdr" style="margin-top:22px">C — Benefits</div>
+  <div class="sec-sub">Map each incremental benefit to an HDB Value Dimension and Sub-Dimension. Y1–Y3 values will be discounted in the Results tab.</div>
 
-  </div><!-- /cba-results -->
-</div><!-- /tab-cba -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+    <span class="dim-badge dim-cs">Customer Satisfaction</span>
+    <span class="dim-badge dim-ep">Employee Productivity</span>
+    <span class="dim-badge dim-sm">System Maintainability</span>
+    <span class="dim-badge dim-cts">Cost to Serve</span>
+    <span class="dim-badge dim-ra">Reusability &amp; Design</span>
+    <span class="dim-badge dim-re">Revenue / Market Expansion</span>
+  </div>
 
-<!-- ══════════════════════════════════════════════ VCR TAB ══ -->
-<div id="tab-vcr" class="tab-content">
+  <div class="card" style="padding:0; overflow:hidden;">
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr>
+          <th style="width:145px">Value Dimension</th>
+          <th style="width:145px">Sub-Dimension</th>
+          <th style="width:115px">Benefit Type</th>
+          <th>Description / Workings</th>
+          <th style="width:85px">Y1 ($)</th>
+          <th style="width:85px">Y2 ($)</th>
+          <th style="width:85px">Y3 ($)</th>
+          <th style="width:28px"></th>
+        </tr></thead>
+        <tbody id="bens-body"></tbody>
+        <tfoot><tr class="tfoot-row">
+          <td colspan="4" style="text-align:right">Total Benefits (Nominal)</td>
+          <td class="td-num" id="bt-y1">$0</td>
+          <td class="td-num" id="bt-y2">$0</td>
+          <td class="td-num" id="bt-y3">$0</td>
+          <td></td>
+        </tr></tfoot>
+      </table>
+    </div>
+    <div style="padding:10px 14px;"><button class="btn-sm" onclick="addBenRow()">+ Add row</button></div>
+  </div>
+  <div class="notice">
+    <strong>Value Dimensions</strong> come from the HDB TPO Value Dimensions framework (5 pillars). "Revenue / Market Expansion" is added for the Tea Fellas context to capture outlet revenue and digital revenue uplift.
+    <br><strong>Benefit types:</strong> <em>Revenue Uplift</em> (direct top-line), <em>Cost Savings</em> (avoided spend), <em>Time Savings</em> (hours × hourly rate), <em>Headcount Savings/Avoidance</em> (staff cost freed or avoided).
+  </div>
 
-  <div class="section-title">Value-Cost-Risk Assessment</div>
-  <div class="section-sub">All 6 scenarios compared across three dimensions. Use this to defend or challenge your scenario recommendation.</div>
+</div>
 
-  <div class="card" style="padding:0; overflow:hidden; margin-bottom:24px;">
+<!-- ══════════════════ RESULTS ══ -->
+<div id="pane-results" class="pane">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+    <div>
+      <div class="sec-hdr" style="margin-bottom:2px">CBA Results — Present Value Analysis</div>
+      <div class="sec-sub" style="margin-bottom:0">All figures discounted to PV using the nominal rate set in Inputs → Section A.</div>
+    </div>
+    <button class="btn-primary" onclick="showTab('inputs');autoPopulate()">⚡ Auto-populate C1</button>
+  </div>
+
+  <div class="card" style="padding:11px 18px;margin-bottom:18px;background:var(--green-xl);border-color:var(--green-l);">
+    <span style="font-size:12px;color:var(--green);font-weight:700;">Discount assumptions: </span>
+    <span id="res-dr-summary" style="font-size:12px;color:var(--text);">—</span>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi kpi-muted" id="kpi-bcr-card">
+      <div class="kpi-lbl">Benefit-Cost Ratio</div>
+      <div class="kpi-val" id="kpi-bcr">—</div>
+      <div class="kpi-sub">Total Benefits PV ÷ Total Costs PV</div>
+    </div>
+    <div class="kpi kpi-muted" id="kpi-pb-card">
+      <div class="kpi-lbl">Payback Period</div>
+      <div class="kpi-val" id="kpi-pb">—</div>
+      <div class="kpi-sub" id="kpi-pb-sub">First year cumulative NPV ≥ 0</div>
+    </div>
+    <div class="kpi kpi-muted" id="kpi-roi-card">
+      <div class="kpi-lbl">3-Year ROI</div>
+      <div class="kpi-val" id="kpi-roi">—</div>
+      <div class="kpi-sub">Net Benefit PV ÷ Total Costs PV</div>
+    </div>
+  </div>
+
+  <div class="sec-hdr" style="margin-bottom:8px">Present Value Summary</div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px;">
+    <table class="res-table">
+      <thead><tr>
+        <th>Item</th>
+        <th style="text-align:right">Y0</th>
+        <th style="text-align:right">Y1 (PV)</th>
+        <th style="text-align:right">Y2 (PV)</th>
+        <th style="text-align:right">Y3 (PV)</th>
+        <th style="text-align:right">3-Yr Total PV</th>
+      </tr></thead>
+      <tbody id="res-pv-body"><tr><td colspan="6" style="color:var(--muted);text-align:center;padding:20px;">Enter inputs to see results.</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="sec-hdr" style="margin-bottom:8px">Year-by-Year Net Cashflow (Discounted)</div>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px;">
+    <table class="res-table">
+      <thead><tr>
+        <th>Year</th>
+        <th style="text-align:right">Benefits PV</th>
+        <th style="text-align:right">Costs PV</th>
+        <th style="text-align:right">Net (A−B)</th>
+        <th style="text-align:right">Cumulative</th>
+      </tr></thead>
+      <tbody id="res-yr-body"><tr><td colspan="5" style="color:var(--muted);text-align:center;padding:20px;">Enter inputs to see results.</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="sec-hdr" style="margin-bottom:4px">3-Year Benefits by Value Dimension</div>
+  <div class="sec-sub">Breakdown of total Present Value of benefits across HDB Value Dimensions.</div>
+  <div class="card" style="margin-bottom:20px;">
+    <div class="dim-breakdown" id="res-dim-breakdown">
+      <div style="color:var(--muted);font-size:13px;grid-column:span 2">No benefits entered yet.</div>
+    </div>
+  </div>
+
+  <div id="res-rec" style="display:none;"></div>
+
+</div>
+
+<!-- ══════════════════ VCR ══ -->
+<div id="pane-vcr" class="pane">
+
+  <div class="sec-hdr">Value-Cost-Risk Assessment</div>
+  <div class="sec-sub">All 6 scenarios compared across three dimensions. Use this to defend or challenge your recommendation.</div>
+
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;">
     <table class="vcr-table">
-      <thead>
-        <tr>
-          <th>Scenario</th>
-          <th>Value <span style="font-weight:400;opacity:0.7">(pain points + growth)</span></th>
-          <th>Setup Cost</th>
-          <th>Risk <span style="font-weight:400;opacity:0.7">(implementation + financial)</span></th>
-          <th>BCR (3yr)</th>
-          <th>Verdict</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th>Scenario</th>
+        <th>Value <span style="font-weight:400;opacity:.7">(pain points + growth)</span></th>
+        <th>Setup Cost</th>
+        <th>Risk <span style="font-weight:400;opacity:.7">(impl. + financial)</span></th>
+        <th>BCR*</th>
+        <th>Verdict</th>
+      </tr></thead>
       <tbody>
         <tr>
-          <td><span class="sc-badge">A1</span><strong>Basic digital</strong><br><small style="color:var(--muted)">Digital only</small></td>
-          <td><span class="stars">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">Fixes 8/9 pain points. No expansion, no supply chain.</small></td>
-          <td><span class="cost-pill">$25,000</span><br><small style="color:var(--pos)">Low</small></td>
-          <td><span class="stars risk">★★</span><span style="color:#ddd">★★★</span><br><small style="color:var(--muted)">Small investment, easy to reverse.</small></td>
+          <td><span class="sc-bdg">A1</span><strong>Basic digital</strong><br><small style="color:var(--muted)">Digital only</small></td>
+          <td><span class="stars">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">Fixes 8/9 pain points. No expansion or supply chain.</small></td>
+          <td><strong>$25,000</strong><br><small style="color:var(--pos)">Low</small></td>
+          <td><span class="stars r">★★</span><span style="color:#ddd">★★★</span><br><small style="color:var(--muted)">Small investment, easy to reverse.</small></td>
           <td><strong>3.1×</strong></td>
-          <td><span class="verdict-chip chip-ok">✓ Solid MVP</span></td>
+          <td><span class="chip chip-ok">✓ Solid MVP</span></td>
         </tr>
         <tr>
-          <td><span class="sc-badge">A2</span><strong>Full integrated + supply chain</strong><br><small style="color:var(--muted)">Digital only</small></td>
+          <td><span class="sc-bdg">A2</span><strong>Full integrated + supply chain</strong><br><small style="color:var(--muted)">Digital only</small></td>
           <td><span class="stars">★★★★★</span><br><small style="color:var(--muted)">Fixes all 9 pain points incl. supply chain.</small></td>
-          <td><span class="cost-pill">$150,000</span><br><small style="color:var(--red)">Very High</small></td>
-          <td><span class="stars risk">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">37× monthly surplus. Needs grant or loan.</small></td>
+          <td><strong>$150,000</strong><br><small style="color:var(--red)">Very High</small></td>
+          <td><span class="stars r">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">37× monthly surplus. Needs grant or loan.</small></td>
           <td><strong style="color:var(--red)">0.85×</strong></td>
-          <td><span class="verdict-chip chip-warn">💡 Only if grant-funded</span></td>
+          <td><span class="chip chip-warn">💡 Grant-funded only</span></td>
         </tr>
         <tr>
-          <td><span class="sc-badge">B1</span><strong>AMK Food Centre</strong><br><small style="color:var(--muted)">Expansion only</small></td>
+          <td><span class="sc-bdg">B1</span><strong>AMK Food Centre</strong><br><small style="color:var(--muted)">Expansion only</small></td>
           <td><span class="stars">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">Revenue growth. Toa Payoh ops not fixed.</small></td>
-          <td><span class="cost-pill">$80,000</span><br><small style="color:var(--amber)">Medium</small></td>
-          <td><span class="stars risk">★★★★</span><span style="color:#ddd">★</span><br><small style="color:var(--muted)">Exports current chaos to a second location.</small></td>
+          <td><strong>$80,000</strong><br><small style="color:var(--amber)">Medium</small></td>
+          <td><span class="stars r">★★★★</span><span style="color:#ddd">★</span><br><small style="color:var(--muted)">Exports current chaos to a second location.</small></td>
           <td><strong>2.6×</strong></td>
-          <td><span class="verdict-chip chip-warn">⚠ Risky without ops fix</span></td>
+          <td><span class="chip chip-warn">⚠ Risky without ops fix</span></td>
         </tr>
         <tr>
-          <td><span class="sc-badge">B2</span><strong>AMK Hub B1</strong><br><small style="color:var(--muted)">Expansion only</small></td>
+          <td><span class="sc-bdg">B2</span><strong>AMK Hub B1</strong><br><small style="color:var(--muted)">Expansion only</small></td>
           <td><span class="stars">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">High footfall, higher revenue potential.</small></td>
-          <td><span class="cost-pill">$150,000</span><br><small style="color:var(--red)">Very High</small></td>
-          <td><span class="stars risk">★★★★★</span><br><small style="color:var(--muted)">$20K/month commitment on $4,100 surplus. Existential risk.</small></td>
+          <td><strong>$150,000</strong><br><small style="color:var(--red)">Very High</small></td>
+          <td><span class="stars r">★★★★★</span><br><small style="color:var(--muted)">$20K/month commitment on $4,100 surplus.</small></td>
           <td><strong>2.1×</strong></td>
-          <td><span class="verdict-chip chip-bad">✗ Not recommended</span></td>
+          <td><span class="chip chip-bad">✗ Not recommended</span></td>
         </tr>
         <tr class="rec-row">
-          <td><span class="sc-badge green">C1</span><strong>Basic digital + Food Centre</strong><br><small style="color:var(--green)">Both — Conservative ⭐</small></td>
-          <td><span class="stars">★★★★</span><span style="color:#ddd">★</span><br><small style="color:var(--muted)">Fixes ops first, then expands. Sequential approach.</small></td>
-          <td><span class="cost-pill">$105,000</span><br><small style="color:var(--amber)">Medium-High</small></td>
-          <td><span class="stars risk">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">Digital first de-risks the expansion. Manageable.</small></td>
-          <td><strong style="color:var(--green)">2.75×</strong></td>
-          <td><span class="verdict-chip chip-rec">⭐ Recommended</span></td>
+          <td><span class="sc-bdg g">C1</span><strong>Basic digital + Food Centre</strong><br><small style="color:var(--green)">Both — Conservative ⭐</small></td>
+          <td><span class="stars">★★★★</span><span style="color:#ddd">★</span><br><small style="color:var(--muted)">Fixes ops first, then expands at Month 12.</small></td>
+          <td><strong>$105,000</strong><br><small style="color:var(--amber)">Medium-High</small></td>
+          <td><span class="stars r">★★★</span><span style="color:#ddd">★★</span><br><small style="color:var(--muted)">Digital first de-risks the expansion.</small></td>
+          <td><strong style="color:var(--green)">1.33×</strong></td>
+          <td><span class="chip chip-rec">⭐ Recommended</span></td>
         </tr>
         <tr>
-          <td><span class="sc-badge">C2</span><strong>Full digital + Hub B1</strong><br><small style="color:var(--muted)">Both — Aggressive</small></td>
+          <td><span class="sc-bdg">C2</span><strong>Full digital + Hub B1</strong><br><small style="color:var(--muted)">Both — Aggressive</small></td>
           <td><span class="stars">★★★★★</span><br><small style="color:var(--muted)">Maximum value — all pain points + max growth.</small></td>
-          <td><span class="cost-pill">$300,000</span><br><small style="color:var(--red)">Very High</small></td>
-          <td><span class="stars risk">★★★★★</span><br><small style="color:var(--muted)">$300K on $4,100 surplus. Not financeable without major loan.</small></td>
+          <td><strong>$300,000</strong><br><small style="color:var(--red)">Very High</small></td>
+          <td><span class="stars r">★★★★★</span><br><small style="color:var(--muted)">$300K on $4,100 surplus. Not financeable.</small></td>
           <td><strong>1.4×</strong></td>
-          <td><span class="verdict-chip chip-bad">✗ Not financeable</span></td>
+          <td><span class="chip chip-bad">✗ Not financeable</span></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- VCR narratives -->
-  <div class="section-title" style="margin-bottom:4px">Scenario narratives</div>
-  <div class="section-sub">Why each scenario is or isn't the right call for Tea Fellas.</div>
-  <div class="vcr-narratives">
-    <div class="vcr-nar">
-      <div class="vcr-nar-id">A1</div>
-      <div class="vcr-nar-name">Basic digital — Solid MVP, limited upside</div>
-      <div class="vcr-nar-body">Strong BCR (3.1×) and low risk make A1 an attractive first step. Fixes 8 of 9 pain points and pays back in under 14 months. The gap: no expansion, no supply chain resolution, and no growth story. Recommended only if budget is extremely constrained.</div>
+  <div class="notice" style="margin-bottom:22px">
+    * BCR uses the <strong>rigorous PV method</strong> (Total Benefits PV ÷ Total Costs PV, including all recurring costs) consistent with the HDB CBA framework. The simpler "net benefit ÷ setup cost only" method gives higher apparent BCR values (e.g. C1 = 2.75×) but understates the total cost base.
+  </div>
+
+  <div class="sec-hdr" style="margin-bottom:4px">Scenario narratives</div>
+  <div class="sec-sub">Why each scenario is or isn't the right call.</div>
+  <div class="vcr-cards">
+    <div class="vcr-card">
+      <div class="vcr-id">A1</div>
+      <div class="vcr-nm">Basic digital — Solid MVP, limited upside</div>
+      <div class="vcr-body">Strong BCR (3.1×) and low risk make A1 an attractive first step. Fixes 8/9 pain points, pays back within Year 2. The gap: no expansion, no supply chain, no growth story. Recommended only if budget is extremely constrained.</div>
     </div>
-    <div class="vcr-nar">
-      <div class="vcr-nar-id">A2</div>
-      <div class="vcr-nar-name">Full integrated — Maximum ops value, not standalone viable</div>
-      <div class="vcr-nar-body">A2 solves every operational pain point including supply chain — the only scenario that does. But at $150K against a $4,100 monthly surplus, it takes over 4 years to pay back and has a negative 3-year ROI. Only viable with significant grant or loan funding (&gt;40% offset).</div>
+    <div class="vcr-card">
+      <div class="vcr-id">A2</div>
+      <div class="vcr-nm">Full integrated — Maximum ops value, not standalone viable</div>
+      <div class="vcr-body">A2 is the only scenario resolving all 9 pain points including supply chain. But at $150K vs. a $4,100 monthly surplus, the 3-year ROI is negative on a standalone basis. Only viable with &gt;40% grant or loan cost offset.</div>
     </div>
-    <div class="vcr-nar">
-      <div class="vcr-nar-id">B1</div>
-      <div class="vcr-nar-name">AMK Food Centre — Revenue growth, operational risk</div>
-      <div class="vcr-nar-body">Expanding without fixing operations exports current chaos to a second location. Darren is clear: "Two chaotic shops instead of one." B1 is a viable expansion format (lower rent, familiar customer profile) but should never precede A1. On its own, not recommended.</div>
+    <div class="vcr-card">
+      <div class="vcr-id">B1</div>
+      <div class="vcr-nm">AMK Food Centre — Revenue growth, operational risk</div>
+      <div class="vcr-body">Expanding without fixing operations exports current chaos to a second location. As Darren notes: "Two chaotic shops instead of one." B1 is viable as an expansion format but should never precede A1.</div>
     </div>
-    <div class="vcr-nar">
-      <div class="vcr-nar-id">B2</div>
-      <div class="vcr-nar-name">AMK Hub B1 — High potential, existential financial risk</div>
-      <div class="vcr-nar-body">$20,000 per month in additional costs against a $4,100 monthly surplus is an existential commitment. Even with strong Year 3 revenue projections, a slow ramp-up at the Hub puts the entire business at risk. Not recommended without a clear external funding source.</div>
+    <div class="vcr-card">
+      <div class="vcr-id">B2</div>
+      <div class="vcr-nm">AMK Hub B1 — High potential, existential financial risk</div>
+      <div class="vcr-body">$20,000 per month in additional costs against a $4,100 monthly surplus is an existential commitment. Even with strong Year 3 projections, a slow ramp-up at the Hub puts the entire business at risk.</div>
     </div>
-    <div class="vcr-nar highlight">
-      <div class="vcr-nar-id">C1 ⭐ Recommended</div>
-      <div class="vcr-nar-name">Conservative — The right balance of value, cost, and risk</div>
-      <div class="vcr-nar-body">C1 fixes operations first (A1), proves the digital model over 6 months, then expands to AMK Food Centre at Month 12. BCR of 2.75×, payback in Year 2, and a Year 3 combined surplus of ~$16,250/month. The sequential approach converts B1's risk into a managed milestone. Accepted trade-off: supply chain (#9) deferred to Year 2 upgrade.</div>
+    <div class="vcr-card hl">
+      <div class="vcr-id">C1 ⭐ Recommended</div>
+      <div class="vcr-nm">Conservative — Right balance of value, cost, and risk</div>
+      <div class="vcr-body">Fixes operations first (A1), proves the digital model over 6 months, then expands to AMK Food Centre at Month 12. BCR 1.33×, payback in Year 2, 3-year net PV of ~$190K. Sequential approach converts B1's risk into a managed milestone. Accepted trade-off: supply chain (#9) deferred to a Year 2 A1→A2 upgrade.</div>
     </div>
-    <div class="vcr-nar">
-      <div class="vcr-nar-id">C2</div>
-      <div class="vcr-nar-name">Aggressive — Correct direction, wrong financials</div>
-      <div class="vcr-nar-body">C2 would be the ideal solution in a well-funded context — it resolves all 9 pain points and maximises long-term revenue. But $300,000 upfront on a $4,100 monthly surplus requires a $300K business loan, which is not realistic for a family-run heartland shop without external investors or grant support.</div>
+    <div class="vcr-card">
+      <div class="vcr-id">C2</div>
+      <div class="vcr-nm">Aggressive — Correct direction, wrong financials</div>
+      <div class="vcr-body">C2 would be ideal in a well-funded context — resolves all 9 pain points and maximises long-term revenue. But $300,000 upfront requires a business loan not realistic for a family-run heartland shop without investors or grant support.</div>
     </div>
   </div>
 
-  <!-- VCR framework note -->
-  <div class="card" style="margin-top:24px; background: #EEF5ED; border-color: #A5D6A7;">
-    <div class="section-title" style="margin-bottom:6px">How to read VCR</div>
-    <div style="font-size:13px; color:var(--text); line-height:1.7">
+  <div class="card" style="margin-top:22px;background:var(--green-xl);border-color:var(--green-l);">
+    <div class="sec-hdr" style="margin-bottom:6px">How to read VCR</div>
+    <div style="font-size:13px;line-height:1.7">
       <strong>Value</strong> — How much does this scenario improve operations, customer experience, and growth potential?<br>
       <strong>Cost</strong> — What is the total financial commitment relative to Tea Fellas' $4,100/month surplus?<br>
-      <strong>Risk</strong> — How likely is implementation to fail, and how severe would failure be for the business?<br><br>
-      The <strong>recommended scenario</strong> is the one that maximises Value while keeping Cost and Risk within what a small family business can absorb. That is <strong>C1</strong>.
+      <strong>Risk</strong> — How likely is implementation failure, and how severe would it be for the business?<br><br>
+      The <strong>recommended scenario</strong> maximises Value while keeping Cost and Risk within what a small family business can absorb. That is <strong>C1</strong>.
     </div>
   </div>
 
-</div><!-- /tab-vcr -->
+</div>
 
 <script>
-// ── Data ─────────────────────────────────────────────────────
-const SCENARIOS_DATA = {
-  A1: {
-    name: 'Basic digital',
-    desc: 'QR ordering, digital loyalty, and basic collection notifications for Toa Payoh.',
-    note: 'Revenue uplift: 9% midpoint (8–10% range) on $27,500 monthly revenue, net of $300/month maintenance.',
-    setupCost: 25000,
-    netMonthly: { y1: 2175, y2: 2175, y3: 2175 }
-  },
-  A2: {
-    name: 'Full integrated digital + supply chain',
-    desc: 'Everything in A1 plus kitchen display, inventory tracking, and digital supplier ordering for Toa Payoh.',
-    note: 'Revenue uplift: 16.5% midpoint (15–18% range) on $27,500 monthly revenue, net of $1,000/month maintenance.',
-    setupCost: 150000,
-    netMonthly: { y1: 3538, y2: 3538, y3: 3538 }
-  },
-  B1: {
-    name: 'AMK Food Centre expansion',
-    desc: 'Second outlet at AMK Food Centre — heartland format, lower rent, ~150 customers/day in Year 1.',
-    note: 'Net outlet profit: Y1 $16,500 – $14,500 costs = $2,000. Y2 interpolated ~$5,850. Y3 $24,200 – $14,500 = $9,700.',
-    setupCost: 80000,
-    netMonthly: { y1: 2000, y2: 5850, y3: 9700 }
-  },
-  B2: {
-    name: 'AMK Hub B1 expansion',
-    desc: 'Second outlet at AMK Hub — mall format, higher footfall, ~200 customers/day in Year 1.',
-    note: 'Net outlet profit: Y1 $22,000 – $20,000 costs = $2,000. Y2 interpolated ~$8,600. Y3 $35,200 – $20,000 = $15,200.',
-    setupCost: 150000,
-    netMonthly: { y1: 2000, y2: 8600, y3: 15200 }
-  },
-  C1: {
-    name: 'Conservative — Basic digital + AMK Food Centre',
-    desc: 'A1 digital solution for Toa Payoh, then AMK Food Centre expansion at Month 12.',
-    note: 'Combined: A1 uplift ($2,175/month) + B1 net contribution (Y1 $2,000, Y2 $5,850, Y3 $9,700).',
-    setupCost: 105000,
-    netMonthly: { y1: 4175, y2: 8025, y3: 11875 },
-    recommended: true
-  },
-  C2: {
-    name: 'Aggressive — Full digital + AMK Hub B1',
-    desc: 'A2 full digital solution for Toa Payoh, plus AMK Hub B1 expansion simultaneously.',
-    note: 'Combined: A2 uplift ($3,538/month) + B2 net contribution (Y1 $2,000, Y2 $8,600, Y3 $15,200).',
-    setupCost: 300000,
-    netMonthly: { y1: 5538, y2: 12138, y3: 18738 }
-  }
+// ── Value Dimensions ──────────────────────────────────────────
+const DIMS = {
+  cs:  { label:'Customer Satisfaction',             cls:'dim-cs',  color:'#880E4F',
+         subs:['Ease of Transaction','Clarity and Accuracy','Quality of Service'] },
+  ep:  { label:'Employee Productivity',             cls:'dim-ep',  color:'#E65100',
+         subs:['Task Efficiency','Output Quality','Self Sufficiency'] },
+  sm:  { label:'System Maintainability',            cls:'dim-sm',  color:'#1565C0',
+         subs:['Incident & Recovery Performance','Overall Technical Debt','Total Cost of Ownership (TCO)','System Scalability'] },
+  cts: { label:'Cost to Serve',                     cls:'dim-cts', color:'#4A148C',
+         subs:['Cost per Transaction'] },
+  ra:  { label:'Reusability & Design Accelerators', cls:'dim-ra',  color:'#00695C',
+         subs:['Asset Reusability','Speed of Delivery'] },
+  re:  { label:'Revenue / Market Expansion',        cls:'dim-re',  color:'#C17A2A',
+         subs:['Digital Revenue Growth','New Market / Outlet Revenue'] },
 };
+
+const COST_TYPES = ['One-Time Cost','Recurrent Cost','External Cost','Others'];
+const BEN_TYPES  = ['Revenue Uplift','Cost Savings','Time Savings','Headcount Savings','Headcount Avoidance','Others'];
+
+// ── State ─────────────────────────────────────────────────────
+let costs = [], bens = [], nid = 1;
+
+// ── Model answer data ─────────────────────────────────────────
+const MODEL_DR = { wacc:3.6, inflation:2.0 };
+const MODEL_COSTS = [
+  { type:'One-Time Cost',  desc:'A1 — Digital system setup (QR ordering, loyalty app, kitchen display system)',  y0:25000, y1:0,     y2:0,     y3:0 },
+  { type:'One-Time Cost',  desc:'B1 — AMK Food Centre fit-out, equipment & deposits',                           y0:80000, y1:0,     y2:0,     y3:0 },
+  { type:'Recurrent Cost', desc:'Digital system annual maintenance — $300/month × 12 (A1)',                      y0:0,     y1:3600,  y2:3600,  y3:3600 },
+  { type:'Recurrent Cost', desc:'AMK outlet rent — $5,500/month × 12 (B1)',                                      y0:0,     y1:66000, y2:66000, y3:66000 },
+  { type:'Recurrent Cost', desc:'AMK outlet additional staff — $7,500/month × 12 (B1)',                          y0:0,     y1:90000, y2:90000, y3:90000 },
+  { type:'Recurrent Cost', desc:'AMK outlet utilities, supplies & misc — $1,500/month × 12 (B1)',                y0:0,     y1:18000, y2:18000, y3:18000 },
+];
+const MODEL_BENS = [
+  { dim:'cs',  sub:'Ease of Transaction',         btype:'Revenue Uplift',
+    desc:'QR ordering reduces friction — 60% of 9% revenue uplift on $27,500/month baseline ($27,500×9%×60%×12)',
+    y1:17820,  y2:17820,  y3:17820 },
+  { dim:'cs',  sub:'Quality of Service',          btype:'Revenue Uplift',
+    desc:'Service speed improvement & reduced wait time — 40% of digital revenue uplift ($27,500×9%×40%×12)',
+    y1:11880,  y2:11880,  y3:11880 },
+  { dim:'ep',  sub:'Task Efficiency',             btype:'Time Savings',
+    desc:'Order processing time saved — 3 staff × 1hr/day × 250 working days × $15/hr',
+    y1:11250,  y2:11250,  y3:11250 },
+  { dim:'ep',  sub:'Output Quality',              btype:'Cost Savings',
+    desc:'Order error & ingredient waste reduction from digital accuracy vs. handwritten forms',
+    y1:2700,   y2:2700,   y3:2700 },
+  { dim:'cts', sub:'Cost per Transaction',        btype:'Cost Savings',
+    desc:'Paper-based order form elimination — printing, storage, manual filing cost avoided',
+    y1:1050,   y2:1050,   y3:1050 },
+  { dim:'re',  sub:'New Market / Outlet Revenue', btype:'Revenue Uplift',
+    desc:'AMK Food Centre gross revenue — ~150 customers/day × $5 avg × 22 days × 12 months (Y2/Y3 growth to 180/220 customers)',
+    y1:198000, y2:244200, y3:290400 },
+];
 
 // ── Helpers ───────────────────────────────────────────────────
 const fm = n => '$' + Math.round(n).toLocaleString();
 const fp = n => (n >= 0 ? '+' : '') + fm(n);
 
-// ── Baseline ─────────────────────────────────────────────────
-function populateBaseline() {
-  document.getElementById('bl-revenue').value   = 27500;
-  document.getElementById('bl-ops').value       = 18400;
-  document.getElementById('bl-drawings').value  = 5000;
-  document.getElementById('bl-customers').value = 250;
-  updateBaseline();
-}
-
-function updateBaseline() {
-  const rev  = parseFloat(document.getElementById('bl-revenue').value)   || 0;
-  const ops  = parseFloat(document.getElementById('bl-ops').value)       || 0;
-  const draw = parseFloat(document.getElementById('bl-drawings').value)  || 0;
-  const net  = rev - ops - draw;
-  document.getElementById('bl-net').textContent    = rev || ops || draw ? fm(net) + '/month' : '—';
-  document.getElementById('bl-annual').textContent = rev || ops || draw ? fm(net * 12) + '/year' : '—';
-}
-
-// ── Scenario compute ─────────────────────────────────────────
-function onScenarioChange() {
-  const id = document.getElementById('scenario-select').value;
-  if (!id) { document.getElementById('cba-results').classList.add('hidden'); return; }
-  document.getElementById('cba-results').classList.remove('hidden');
-  renderCBA(id);
-}
-
-function renderCBA(id) {
-  const s = SCENARIOS_DATA[id];
-  const { setupCost, netMonthly } = s;
-  const y1a = netMonthly.y1 * 12;
-  const y2a = netMonthly.y2 * 12;
-  const y3a = netMonthly.y3 * 12;
-  const total3yr = y1a + y2a + y3a;
-
-  // BCR
-  const bcr = total3yr / setupCost;
-  // Payback (month-by-month)
-  let paybackMonth = null, cumulative = 0;
-  for (let m = 1; m <= 36; m++) {
-    const mn = m <= 12 ? netMonthly.y1 : m <= 24 ? netMonthly.y2 : netMonthly.y3;
-    cumulative += mn;
-    if (cumulative >= setupCost && paybackMonth === null) paybackMonth = m;
-  }
-  // ROI
-  const roi = ((total3yr - setupCost) / setupCost) * 100;
-
-  // Fill desc
-  document.getElementById('scenario-desc-text').textContent = s.desc;
-  document.getElementById('scenario-note-text').textContent = s.note;
-
-  // Setup cost fields
-  document.getElementById('res-setup').textContent    = fm(setupCost);
-  document.getElementById('res-total-inv').textContent = fm(setupCost) + ' (setup only — ongoing costs already netted in benefit)';
-
-  // Benefit cards
-  document.getElementById('ben-y1').textContent     = fm(netMonthly.y1) + '/mo';
-  document.getElementById('ben-y1-ann').textContent = fm(y1a) + ' annual';
-  document.getElementById('ben-y2').textContent     = fm(netMonthly.y2) + '/mo';
-  document.getElementById('ben-y2-ann').textContent = fm(y2a) + ' annual';
-  document.getElementById('ben-y3').textContent     = fm(netMonthly.y3) + '/mo';
-  document.getElementById('ben-y3-ann').textContent = fm(y3a) + ' annual';
-
-  // Metric cards
-  const bcrCard = document.getElementById('metric-bcr-card');
-  bcrCard.className = 'metric-card' + (bcr < 1 ? ' danger' : bcr < 2 ? ' warn' : '');
-  document.getElementById('metric-bcr').textContent = bcr.toFixed(2) + '×';
-
-  const pbCard = document.getElementById('metric-pb-card');
-  if (paybackMonth === null) {
-    pbCard.className = 'metric-card danger';
-    document.getElementById('metric-pb').textContent = '> 3 yrs';
-    document.getElementById('metric-pb-sub').textContent = 'Does not pay back within 3 years';
-  } else {
-    const pbYear = Math.ceil(paybackMonth / 12);
-    pbCard.className = 'metric-card' + (pbYear > 2 ? ' warn' : '');
-    document.getElementById('metric-pb').textContent = `Month ${paybackMonth}`;
-    document.getElementById('metric-pb-sub').textContent = `Year ${pbYear} · ~${paybackMonth} months`;
-  }
-
-  const roiCard = document.getElementById('metric-roi-card');
-  roiCard.className = 'metric-card' + (roi < 0 ? ' danger' : roi < 50 ? ' warn' : '');
-  document.getElementById('metric-roi').textContent = roi.toFixed(0) + '%';
-
-  // Year table
-  const tbody = document.getElementById('year-table-body');
-  let cum = 0; let rows = '';
-  [[1, netMonthly.y1, y1a], [2, netMonthly.y2, y2a], [3, netMonthly.y3, y3a]].forEach(([yr, mn, ann]) => {
-    cum += ann;
-    const net = cum - setupCost;
-    const isPb = paybackMonth !== null && Math.ceil(paybackMonth / 12) === yr;
-    const posClass = net >= 0 ? 'pos' : 'neg';
-    rows += `<tr${isPb ? ' class="payback-row"' : ''}>
-      <td><strong>Year ${yr}</strong>${isPb ? ' <small style="color:var(--amber)">← payback</small>' : ''}</td>
-      <td>${fm(mn)}/month</td>
-      <td>${fm(ann)}</td>
-      <td>${fm(cum)}</td>
-      <td class="${posClass}">${fp(net)}</td>
-    </tr>`;
+// ── Tabs ──────────────────────────────────────────────────────
+function showTab(t) {
+  ['inputs','results','vcr'].forEach(id => {
+    document.getElementById('pane-'+id).classList.toggle('active', id===t);
   });
-  // Total row
-  const netTotal = total3yr - setupCost;
-  rows += `<tr style="background:#F5F0E8; font-weight:700">
-    <td>3-Year Total</td>
-    <td>—</td>
-    <td>${fm(total3yr)}</td>
-    <td>${fm(total3yr)}</td>
-    <td class="${netTotal >= 0 ? 'pos' : 'neg'}">${fp(netTotal)}</td>
-  </tr>`;
-  tbody.innerHTML = rows;
+  document.querySelectorAll('.tab-btn').forEach((btn,i) => {
+    btn.classList.toggle('active', ['inputs','results','vcr'][i]===t);
+  });
+  if (t==='results') renderResults();
+}
+
+// ── Discount rate ─────────────────────────────────────────────
+function updateDR() {
+  const wacc = parseFloat(document.getElementById('dr-wacc').value)||0;
+  const inf  = parseFloat(document.getElementById('dr-inf').value)||0;
+  const nom  = ((1+wacc/100)*(1+inf/100)-1)*100;
+  document.getElementById('dr-nom').textContent = (wacc||inf) ? nom.toFixed(3)+'%' : '—';
+  updateTotals();
+}
+
+function getNominalRate() {
+  const wacc = parseFloat(document.getElementById('dr-wacc').value)||0;
+  const inf  = parseFloat(document.getElementById('dr-inf').value)||0;
+  return (1+wacc/100)*(1+inf/100)-1;
+}
+
+// ── Costs ─────────────────────────────────────────────────────
+function addCostRow(data) {
+  const id = nid++;
+  const d = data || { type:'One-Time Cost', desc:'', y0:0, y1:0, y2:0, y3:0 };
+  costs.push({ id, ...d });
+  const tbody = document.getElementById('costs-body');
+  const tr = document.createElement('tr');
+  tr.id = 'cr-'+id;
+  tr.innerHTML = `
+    <td><select class="td-sel" onchange="updateCost(${id},'type',this.value)">
+      ${COST_TYPES.map(t=>`<option${t===d.type?' selected':''}>${t}</option>`).join('')}
+    </select></td>
+    <td><input class="td-inp" value="${escH(d.desc)}" placeholder="Description, workings, assumptions"
+      oninput="updateCost(${id},'desc',this.value)"></td>
+    ${['y0','y1','y2','y3'].map(k=>`<td><input class="td-inp td-num" type="number" min="0"
+      value="${d[k]||''}" placeholder="0"
+      oninput="updateCost(${id},'${k}',this.value)"></td>`).join('')}
+    <td><button class="btn-del" onclick="delCost(${id})">✕</button></td>`;
+  tbody.appendChild(tr);
+  updateTotals();
+}
+
+function updateCost(id, key, val) {
+  const c = costs.find(x=>x.id===id);
+  if (c) c[key] = key.startsWith('y') ? (parseFloat(val)||0) : val;
+  updateTotals();
+}
+
+function delCost(id) {
+  costs = costs.filter(x=>x.id!==id);
+  const el = document.getElementById('cr-'+id);
+  if (el) el.remove();
+  updateTotals();
+}
+
+// ── Benefits ──────────────────────────────────────────────────
+function addBenRow(data) {
+  const id = nid++;
+  const d = data || { dim:'cs', sub:'Ease of Transaction', btype:'Revenue Uplift', desc:'', y1:0, y2:0, y3:0 };
+  bens.push({ id, ...d });
+  const tbody = document.getElementById('bens-body');
+  const tr = document.createElement('tr');
+  tr.id = 'br-'+id;
+  const dimOpts = Object.entries(DIMS).map(([k,v])=>
+    `<option value="${k}"${k===d.dim?' selected':''}>${v.label}</option>`).join('');
+  const subOpts = (DIMS[d.dim]||DIMS.cs).subs.map(s=>
+    `<option${s===d.sub?' selected':''}>${s}</option>`).join('');
+  tr.innerHTML = `
+    <td><select class="td-sel" id="ds-${id}" onchange="updateBenDim(${id},this.value)">
+      ${dimOpts}
+    </select></td>
+    <td><select class="td-sel" id="ss-${id}" onchange="updateBen(${id},'sub',this.value)">
+      ${subOpts}
+    </select></td>
+    <td><select class="td-sel" onchange="updateBen(${id},'btype',this.value)">
+      ${BEN_TYPES.map(t=>`<option${t===d.btype?' selected':''}>${t}</option>`).join('')}
+    </select></td>
+    <td><input class="td-inp" value="${escH(d.desc)}" placeholder="Description, workings"
+      oninput="updateBen(${id},'desc',this.value)"></td>
+    ${['y1','y2','y3'].map(k=>`<td><input class="td-inp td-num" type="number" min="0"
+      value="${d[k]||''}" placeholder="0"
+      oninput="updateBen(${id},'${k}',this.value)"></td>`).join('')}
+    <td><button class="btn-del" onclick="delBen(${id})">✕</button></td>`;
+  tbody.appendChild(tr);
+  updateTotals();
+}
+
+function updateBenDim(id, dim) {
+  const b = bens.find(x=>x.id===id);
+  if (b) { b.dim=dim; b.sub=(DIMS[dim]||DIMS.cs).subs[0]; }
+  const ss = document.getElementById('ss-'+id);
+  if (ss) ss.innerHTML = (DIMS[dim]||DIMS.cs).subs.map(s=>`<option>${s}</option>`).join('');
+  updateTotals();
+}
+
+function updateBen(id, key, val) {
+  const b = bens.find(x=>x.id===id);
+  if (b) b[key] = key.startsWith('y') ? (parseFloat(val)||0) : val;
+  updateTotals();
+}
+
+function delBen(id) {
+  bens = bens.filter(x=>x.id!==id);
+  const el = document.getElementById('br-'+id);
+  if (el) el.remove();
+  updateTotals();
+}
+
+// ── Running totals ────────────────────────────────────────────
+function updateTotals() {
+  const cT = {y0:0,y1:0,y2:0,y3:0};
+  costs.forEach(c=>{ ['y0','y1','y2','y3'].forEach(k=>cT[k]+=(c[k]||0)); });
+  ['y0','y1','y2','y3'].forEach(k=>document.getElementById('ct-'+k).textContent=fm(cT[k]));
+  const bT = {y1:0,y2:0,y3:0};
+  bens.forEach(b=>{ ['y1','y2','y3'].forEach(k=>bT[k]+=(b[k]||0)); });
+  ['y1','y2','y3'].forEach(k=>document.getElementById('bt-'+k).textContent=fm(bT[k]));
+}
+
+// ── Compute ───────────────────────────────────────────────────
+function computeResults() {
+  const rate = getNominalRate();
+  const wacc = parseFloat(document.getElementById('dr-wacc').value)||0;
+  const inf  = parseFloat(document.getElementById('dr-inf').value)||0;
+  const df   = [1, 1/(1+rate), 1/Math.pow(1+rate,2), 1/Math.pow(1+rate,3)];
+
+  const cY = [0,0,0,0];
+  costs.forEach(c=>{ cY[0]+=c.y0||0; cY[1]+=c.y1||0; cY[2]+=c.y2||0; cY[3]+=c.y3||0; });
+  const bY = [0,0,0,0];
+  bens.forEach(b=>{  bY[1]+=b.y1||0; bY[2]+=b.y2||0; bY[3]+=b.y3||0; });
+
+  const cPV = [cY[0]*df[0], cY[1]*df[1], cY[2]*df[2], cY[3]*df[3]];
+  const bPV = [0,            bY[1]*df[1], bY[2]*df[2], bY[3]*df[3]];
+  const totalCostPV = cPV[0]+cPV[1]+cPV[2]+cPV[3];
+  const totalBenPV  = bPV[1]+bPV[2]+bPV[3];
+  const netBenPV    = totalBenPV - totalCostPV;
+  const bcr = totalCostPV>0 ? totalBenPV/totalCostPV : null;
+  const roi = totalCostPV>0 ? netBenPV/totalCostPV   : null;
+
+  let cum = -cPV[0], paybackYr = cum>=0 ? 0 : null;
+  const cumByYr = [cum];
+  for (let y=1; y<=3; y++) {
+    cum += (bPV[y]-cPV[y]);
+    cumByYr.push(cum);
+    if (cum>=0 && paybackYr===null) paybackYr=y;
+  }
+
+  const dimPV = {};
+  bens.forEach(b=>{
+    const v = (b.y1||0)*df[1]+(b.y2||0)*df[2]+(b.y3||0)*df[3];
+    dimPV[b.dim] = (dimPV[b.dim]||0)+v;
+  });
+
+  return { rate, wacc, inf, df, cY, bY, cPV, bPV, totalCostPV, totalBenPV, netBenPV, bcr, roi, paybackYr, cumByYr, dimPV };
+}
+
+// ── Render results ────────────────────────────────────────────
+function renderResults() {
+  const r = computeResults();
+  const hasData = costs.length>0 || bens.length>0;
+
+  document.getElementById('res-dr-summary').textContent = r.wacc
+    ? `WACC ${r.wacc}%  ·  Inflation ${r.inf}%  ·  Nominal Discount Rate ${(r.rate*100).toFixed(3)}%  ·  Discount factors: Y1 ${r.df[1].toFixed(4)}, Y2 ${r.df[2].toFixed(4)}, Y3 ${r.df[3].toFixed(4)}`
+    : 'No discount rate set — go to Inputs tab, Section A.';
+
+  function setKpi(cid, vid, val, sid, sub, cls) {
+    document.getElementById(cid).className='kpi '+cls;
+    document.getElementById(vid).textContent=val;
+    if (sid) document.getElementById(sid).textContent=sub;
+  }
+
+  if (!hasData) {
+    setKpi('kpi-bcr-card','kpi-bcr','—',null,null,'kpi-muted');
+    setKpi('kpi-pb-card','kpi-pb','—','kpi-pb-sub','Enter inputs to compute','kpi-muted');
+    setKpi('kpi-roi-card','kpi-roi','—',null,null,'kpi-muted');
+    document.getElementById('res-rec').style.display='none';
+    return;
+  }
+
+  const bcrCls = !r.bcr ? 'kpi-muted' : r.bcr<1 ? 'kpi-red' : r.bcr<1.3 ? 'kpi-amber' : 'kpi-green';
+  setKpi('kpi-bcr-card','kpi-bcr', r.bcr ? r.bcr.toFixed(2)+'×':'N/A', null,null, bcrCls);
+
+  const pbCls = r.paybackYr===null ? 'kpi-red' : r.paybackYr>2 ? 'kpi-amber' : 'kpi-green';
+  const pbVal = r.paybackYr===null ? '> 3 yrs' : `Year ${r.paybackYr}`;
+  const pbSub = r.paybackYr===null ? 'Does not pay back within 3 years' : `Cumulative NPV turns positive in Year ${r.paybackYr}`;
+  setKpi('kpi-pb-card','kpi-pb',pbVal,'kpi-pb-sub',pbSub,pbCls);
+
+  const roiCls = !r.roi ? 'kpi-muted' : r.roi<0 ? 'kpi-red' : r.roi<0.25 ? 'kpi-amber' : 'kpi-green';
+  setKpi('kpi-roi-card','kpi-roi', r.roi!=null ? (r.roi*100).toFixed(0)+'%':'N/A', null,null, roiCls);
+
+  // PV summary
+  document.getElementById('res-pv-body').innerHTML = `
+    <tr><td>Total Costs</td>
+      <td class="td-num">${fm(r.cPV[0])}</td><td class="td-num">${fm(r.cPV[1])}</td>
+      <td class="td-num">${fm(r.cPV[2])}</td><td class="td-num">${fm(r.cPV[3])}</td>
+      <td class="td-num" style="font-weight:700">${fm(r.totalCostPV)}</td></tr>
+    <tr><td>Total Benefits</td>
+      <td class="td-num">—</td><td class="td-num">${fm(r.bPV[1])}</td>
+      <td class="td-num">${fm(r.bPV[2])}</td><td class="td-num">${fm(r.bPV[3])}</td>
+      <td class="td-num" style="font-weight:700">${fm(r.totalBenPV)}</td></tr>
+    <tr class="subtotal"><td>Net Benefit (Benefits − Costs)</td>
+      <td class="td-num">—</td>
+      <td class="td-num ${r.bPV[1]-r.cPV[1]>=0?'pos':'neg'}">${fp(r.bPV[1]-r.cPV[1])}</td>
+      <td class="td-num ${r.bPV[2]-r.cPV[2]>=0?'pos':'neg'}">${fp(r.bPV[2]-r.cPV[2])}</td>
+      <td class="td-num ${r.bPV[3]-r.cPV[3]>=0?'pos':'neg'}">${fp(r.bPV[3]-r.cPV[3])}</td>
+      <td class="td-num ${r.netBenPV>=0?'pos':'neg'}" style="font-weight:800">${fp(r.netBenPV)}</td></tr>`;
+
+  // Year-by-year
+  let yrRows = `<tr${r.paybackYr===0?' class="pb-yr"':''}><td><strong>Y0 — Setup</strong></td>
+    <td class="td-num">—</td><td class="td-num">${fm(r.cPV[0])}</td>
+    <td class="td-num neg">${fp(-r.cPV[0])}</td>
+    <td class="td-num neg">${fp(r.cumByYr[0])}</td></tr>`;
+  for (let y=1;y<=3;y++) {
+    const net=r.bPV[y]-r.cPV[y], isPb=r.paybackYr===y;
+    yrRows += `<tr${isPb?' class="pb-yr"':''}><td><strong>Year ${y}</strong>${isPb?' <small style="color:var(--amber)">← payback</small>':''}</td>
+      <td class="td-num">${fm(r.bPV[y])}</td><td class="td-num">${fm(r.cPV[y])}</td>
+      <td class="td-num ${net>=0?'pos':'neg'}">${fp(net)}</td>
+      <td class="td-num ${r.cumByYr[y]>=0?'pos':'neg'}">${fp(r.cumByYr[y])}</td></tr>`;
+  }
+  yrRows += `<tr class="grand"><td>3-Year Total</td>
+    <td class="td-num">${fm(r.totalBenPV)}</td><td class="td-num">${fm(r.totalCostPV)}</td>
+    <td class="td-num ${r.netBenPV>=0?'pos':'neg'}">${fp(r.netBenPV)}</td>
+    <td class="td-num ${r.cumByYr[3]>=0?'pos':'neg'}">${fp(r.cumByYr[3])}</td></tr>`;
+  document.getElementById('res-yr-body').innerHTML = yrRows;
+
+  // Dimension breakdown
+  const dimEntries = Object.entries(r.dimPV).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const maxV = dimEntries.length>0 ? dimEntries[0][1] : 1;
+  document.getElementById('res-dim-breakdown').innerHTML = dimEntries.length>0
+    ? dimEntries.map(([dk,v])=>{
+        const d = DIMS[dk]||{ label:dk, cls:'dim-re', color:'#888' };
+        return `<div class="dim-row">
+          <div class="dim-row-name"><span class="dim-badge ${d.cls}">${d.label}</span></div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:${(v/maxV*100).toFixed(1)}%;background:${d.color}"></div></div>
+          <div class="dim-row-val">${fm(v)}</div>
+        </div>`;
+      }).join('')
+    : '<div style="color:var(--muted);font-size:13px;grid-column:span 2">No benefits entered yet.</div>';
 
   // Recommendation
-  const recBox = document.getElementById('rec-box');
-  if (s.recommended) {
-    recBox.className = 'rec-box good';
-    recBox.innerHTML = `<strong>⭐ C1 is the model answer recommendation.</strong> BCR of ${bcr.toFixed(2)}× with payback in Year 2 and a 3-year net position of ${fm(netTotal)}. The sequential approach (digital first, expand at Month 12) manages risk while addressing both the operational crisis and the growth aspiration. Accepted trade-off: supply chain pain point (#9) deferred to a Year 2 upgrade from A1 to A2.`;
-  } else if (bcr < 1) {
-    recBox.className = 'rec-box bad';
-    recBox.innerHTML = `<strong>⚠ Not financially viable as a standalone scenario.</strong> A BCR below 1.0 means the 3-year net benefit does not cover the upfront investment. ${id === 'A2' ? 'A2 makes sense only as part of a combination scenario (C2) or if &gt;40% of the setup cost is covered by SME Go Digital grants or equivalent funding.' : 'Consider pairing this with other scenarios.'}`;
-  } else if (roi < 50 || paybackMonth === null) {
-    recBox.className = 'rec-box warn';
-    recBox.innerHTML = `<strong>Viable but not optimal.</strong> BCR of ${bcr.toFixed(2)}× is acceptable, but ${paybackMonth === null ? 'this scenario does not pay back within 3 years' : `ROI of ${roi.toFixed(0)}% is low relative to the financial risk for a business with a $4,100 monthly surplus`}. Compare against C1 (BCR 2.75×, payback Year 2) before recommending this scenario.`;
-  } else if (id === 'B1' || id === 'B2') {
-    recBox.className = 'rec-box warn';
-    recBox.innerHTML = `<strong>⚠ Expansion without operational fixes is high-risk.</strong> This scenario generates strong revenue but does not resolve Toa Payoh's paper-based process. As Darren notes: <em>"A second outlet with the current process would just be chaos times two."</em> Consider C1 — the same expansion with A1 digital fixes applied first.`;
+  const recEl = document.getElementById('res-rec');
+  recEl.style.display = 'block';
+  const topDim = dimEntries.length>0 ? (DIMS[dimEntries[0][0]]||{label:'—'}).label : '—';
+  if (!r.bcr) {
+    recEl.className='rec-box rec-warn';
+    recEl.innerHTML='<strong>Enter both costs and benefits</strong> in the Inputs tab to generate a recommendation.';
+  } else if (r.bcr>=1.3 && r.paybackYr!==null && r.paybackYr<=2) {
+    recEl.className='rec-box rec-good';
+    recEl.innerHTML=`<strong>⭐ Financially viable — meets the BCR and payback thresholds.</strong> BCR of ${r.bcr.toFixed(2)}× with payback in Year ${r.paybackYr} and a 3-year net positive of ${fm(r.netBenPV)} (PV). The investment returns ${r.bcr.toFixed(2)}× for every $1 spent across all costs. Largest value driver: <strong>${topDim}</strong>.`;
+  } else if (r.bcr<1) {
+    recEl.className='rec-box rec-bad';
+    recEl.innerHTML=`<strong>⚠ Not financially viable on a standalone basis.</strong> BCR of ${r.bcr.toFixed(2)}× means 3-year discounted benefits do not recover total costs. Consider reducing setup cost, securing grant funding, or revisiting the benefit assumptions in the Inputs tab.`;
   } else {
-    recBox.className = 'rec-box good';
-    recBox.innerHTML = `<strong>BCR of ${bcr.toFixed(2)}× with ${roi.toFixed(0)}% ROI.</strong> This scenario is financially viable and pays back ${paybackMonth !== null ? `by Month ${paybackMonth} (Year ${Math.ceil(paybackMonth/12)})` : 'within the analysis window'}. Compare the full scope of pain points resolved and growth potential before locking in your recommendation.`;
+    recEl.className='rec-box rec-warn';
+    recEl.innerHTML=`<strong>Viable but below the strong-return threshold.</strong> BCR of ${r.bcr.toFixed(2)}× and ROI of ${(r.roi*100).toFixed(0)}%. ${r.paybackYr===null?'Cumulative NPV does not turn positive within 3 years — consider extending the analysis horizon.':(`Payback in Year ${r.paybackYr}.`)} Compare against C1 model answer (BCR 1.33×, payback Year 2) for context.`;
   }
 }
 
-// ── Tabs ─────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['cba','vcr'][i] === tab));
-  document.getElementById('tab-cba').classList.toggle('active', tab === 'cba');
-  document.getElementById('tab-vcr').classList.toggle('active', tab === 'vcr');
+// ── Auto-populate / Clear ─────────────────────────────────────
+function autoPopulate() {
+  clearAll(true);
+  document.getElementById('dr-wacc').value = MODEL_DR.wacc;
+  document.getElementById('dr-inf').value  = MODEL_DR.inflation;
+  updateDR();
+  MODEL_COSTS.forEach(c => addCostRow({...c}));
+  MODEL_BENS.forEach(b  => addBenRow({...b}));
+  updateTotals();
+}
+
+function clearAll(silent) {
+  costs=[]; bens=[]; nid=1;
+  document.getElementById('costs-body').innerHTML='';
+  document.getElementById('bens-body').innerHTML='';
+  if (!silent) {
+    document.getElementById('dr-wacc').value='';
+    document.getElementById('dr-inf').value='';
+    updateDR();
+  }
+  updateTotals();
+}
+
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 </script>
 </body>
