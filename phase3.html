@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Phase 3: Ideate</title>
+<style>
+:root {
+  --green: #2D5A27; --green-l: #4A7C42; --green-xl: #EEF5ED;
+  --amber: #C17A2A; --amber-l: #E8A94A; --amber-xl: #FFF8E6;
+  --cream: #F5F0E8; --card:   #FDFAF4; --border: #D4C4A0;
+  --text:  #2C2416; --muted:  #6B5A3E; --red: #C0392B;
+  --blue:  #1565C0; --blue-xl: #E3F2FD;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--cream); color: var(--text); }
+body.has-phase-nav { padding-top: 46px; }
+
+/* ── Phase nav bar (shared) ── */
+#phase-nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
+  background: #1E3D1A; display: flex; align-items: center;
+  padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+#phase-nav-bar.pnb-hidden { display: none; }
+.pnb-brand { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); white-space: nowrap; margin-right: 18px; }
+.pnb-team  { font-size: 11px; font-weight: 700; color: #E8A94A; background: rgba(193,122,42,0.25);
+  border-radius: 4px; padding: 2px 7px; margin-left: 8px; }
+.pnb-phases { display: flex; align-items: center; flex: 1; }
+.pnb-phase { display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 46px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.38); cursor: default;
+  white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.15s; text-decoration: none; }
+.pnb-phase.pnb-active { color: white; border-bottom-color: #E8A94A; }
+.pnb-phase.pnb-done   { color: rgba(255,255,255,0.75); border-bottom-color: #4CAF50; cursor: pointer; }
+.pnb-phase.pnb-done:hover { background: rgba(255,255,255,0.07); }
+.pnb-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pnb-phase.pnb-locked .pnb-num { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+.pnb-phase.pnb-active .pnb-num { background: #C17A2A; color: white; }
+.pnb-phase.pnb-done   .pnb-num { background: #4CAF50; color: white; }
+.pnb-sep { color: rgba(255,255,255,0.2); font-size: 14px; padding: 0 2px; }
+.pnb-right { margin-left: auto; }
+.pnb-logout { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: none;
+  cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+.pnb-logout:hover { color: white; background: rgba(255,255,255,0.1); }
+
+/* ── Lock screen ── */
+#lock-screen { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 46px); }
+.lock-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 48px 40px; text-align: center; max-width: 460px; width: 90%; }
+.lock-icon { font-size: 48px; margin-bottom: 16px; }
+.lock-title { font-size: 22px; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+.lock-sub   { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+.lock-btn   { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 11px 22px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+.lock-btn:hover { opacity: .88; }
+
+/* ── Main content ── */
+#phase-content { display: none; max-width: 960px; margin: 0 auto; padding: 32px 36px 80px; }
+.phase-header { margin-bottom: 24px; }
+.phase-tag   { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--amber); margin-bottom: 6px; }
+.phase-title { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+.phase-desc  { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 720px; }
+
+/* ── Darren note ── */
+.darren-note { background: white; border-left: 4px solid var(--blue);
+  border-radius: 0 10px 10px 0; padding: 18px 22px; margin-bottom: 28px;
+  display: flex; gap: 16px; align-items: flex-start; }
+.darren-avatar { font-size: 32px; flex-shrink: 0; }
+.darren-body { flex: 1; }
+.darren-name { font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase;
+  letter-spacing: .07em; margin-bottom: 6px; }
+.darren-text { font-size: 14px; line-height: 1.75; font-style: italic; }
+
+/* ── Section heading ── */
+.section-heading { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--muted); margin: 28px 0 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+
+/* ── Step cards ── */
+.step-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 10px; }
+.step-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.step-card-hdr { background: var(--green); color: white; padding: 10px 14px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.step-card-hdr.amber { background: var(--amber); }
+.step-card-hdr.blue  { background: var(--blue); }
+.step-card-body { padding: 14px; }
+.step-card-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 12px; }
+.step-btn { background: var(--amber); color: white; border: none; border-radius: 7px;
+  padding: 8px 14px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none;
+  display: inline-block; }
+.step-btn.green { background: var(--green); }
+.step-btn.blue  { background: var(--blue); }
+.step-btn:hover { opacity: .88; }
+.step-status { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  display: inline-block; margin-bottom: 9px; }
+.st-todo   { background: #F5F5F5; color: #9E9E9E; }
+.st-active { background: var(--amber-xl); color: var(--amber); }
+.st-done   { background: #E8F5E9; color: #2E7D32; }
+
+/* ── CBA callout ── */
+.cba-callout { background: var(--blue-xl); border: 1px solid #90CAF9; border-left: 4px solid var(--blue);
+  border-radius: 8px; padding: 16px 20px; margin-bottom: 28px; display: flex; gap: 16px; align-items: center; }
+.cba-callout-text { flex: 1; font-size: 14px; line-height: 1.65; color: var(--text); }
+.cba-callout-text strong { color: var(--blue); }
+.cba-callout-btn { background: var(--blue); color: white; border: none; border-radius: 7px;
+  padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none;
+  white-space: nowrap; display: inline-block; }
+.cba-callout-btn:hover { opacity: .88; }
+
+/* ── Phase gate ── */
+.phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
+  padding: 24px 28px; margin-top: 40px; }
+.phase-gate-title { font-size: 15px; font-weight: 800; color: var(--green); margin-bottom: 12px; }
+.gate-checks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.gate-check { display: flex; align-items: flex-start; gap: 10px; }
+.gate-check input { margin-top: 3px; accent-color: var(--green); width: 16px; height: 16px; flex-shrink: 0; }
+.gate-check label { font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer; }
+.gate-declare-btn { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.gate-declare-btn:disabled { background: #aaa; cursor: not-allowed; }
+.gate-done-banner { background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 8px;
+  padding: 14px 18px; font-size: 14px; font-weight: 700; color: #2E7D32; display: none; }
+.gate-done-banner.show { display: block; }
+
+@media (max-width: 780px) {
+  #phase-content { padding: 20px 14px 60px; }
+  .step-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Phase 3 — Ideate</div>
+    <div class="lock-sub" id="lock-msg">Loading your team's progress…</div>
+    <a href="index.html" class="lock-btn" id="lock-action">Go to Phase 1 →</a>
+  </div>
+</div>
+
+<div id="phase-content">
+  <div class="phase-header">
+    <div class="phase-tag">Phase 3</div>
+    <div class="phase-title">Ideate</div>
+    <div class="phase-desc">You have a clear problem and a vision. Now design the solution. Evaluate the six scenarios, build your business case, and produce the solution canvas and roadmap that will anchor your final presentation.</div>
+  </div>
+
+  <!-- Darren's note -->
+  <div class="darren-note">
+    <div class="darren-avatar">👨🏻</div>
+    <div class="darren-body">
+      <div class="darren-name">Darren DeSouza — Main Barista, Tea Fellas</div>
+      <div class="darren-text">"Before you pick a solution, make sure you understand the numbers. Uncle John's net monthly surplus is only $4,100 — that's what we have left after everything. Any option you recommend has to be one we can actually afford, not just one that sounds good on paper. My advice: look at each option carefully, compare the startup cost and the monthly commitment, and ask yourself — if we have one slow month, can we still pay our Toa Payoh rent? Start with what's real. Then build up from there."</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Evaluate scenarios -->
+  <div class="section-heading">Step 1 — Evaluate your options</div>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-card-hdr">A — Digital only</div>
+      <div class="step-card-body">
+        <div class="step-status st-active">Start here</div>
+        <div class="step-card-desc">Two options: Basic digital ($25K) or Full integrated system ($150K). No expansion — fix Toa Payoh first.</div>
+        <a href="scenario-brief.html?sc=A1" class="step-btn" target="_blank">Read A1 briefing ↗</a>&nbsp;
+        <a href="scenario-brief.html?sc=A2" class="step-btn" target="_blank">Read A2 ↗</a>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-card-hdr amber">B — Expansion only</div>
+      <div class="step-card-body">
+        <div class="step-status st-todo">Compare</div>
+        <div class="step-card-desc">Two options: AMK Food Centre ($80K) or AMK Hub B1 ($150K). No digital fix at Toa Payoh.</div>
+        <a href="scenario-brief.html?sc=B1" class="step-btn" target="_blank">Read B1 briefing ↗</a>&nbsp;
+        <a href="scenario-brief.html?sc=B2" class="step-btn" target="_blank">Read B2 ↗</a>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-card-hdr blue">C — Both</div>
+      <div class="step-card-body">
+        <div class="step-status st-todo">Compare</div>
+        <div class="step-card-desc">Two options combining digital + expansion. C1 is sequential (conservative), C2 is simultaneous (aggressive).</div>
+        <a href="scenario-brief.html?sc=C1" class="step-btn blue" target="_blank">Read C1 briefing ↗</a>&nbsp;
+        <a href="scenario-brief.html?sc=C2" class="step-btn blue" target="_blank">Read C2 ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: CBA -->
+  <div class="section-heading">Step 2 — Build your cost-benefit analysis</div>
+  <div class="cba-callout">
+    <div class="cba-callout-text">Use the <strong>CBA Calculator</strong> to model your chosen scenario. Select your option from the dropdown, click "Auto-populate", then review the discounted BCR, payback period, and ROI in the Results tab. Your team's CBA inputs are saved automatically.</div>
+    <a href="cba-vcr.html" class="cba-callout-btn" target="_blank">Open CBA Calculator ↗</a>
+  </div>
+
+  <!-- Step 3: Design deliverables -->
+  <div class="section-heading">Step 3 — Design your solution</div>
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-card-hdr">3.1 — Risk Assessment</div>
+      <div class="step-card-body">
+        <div class="step-status st-todo">Not started</div>
+        <div class="step-card-desc">Assess the key risks of your recommended scenario using a Probability × Impact matrix.</div>
+        <a href="phase3-risk.html" class="step-btn green">Open →</a>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-card-hdr">3.2 — Product Roadmap</div>
+      <div class="step-card-body">
+        <div class="step-status st-todo">Not started</div>
+        <div class="step-card-desc">Build an 18-month delivery roadmap for your recommended scenario. When does what happen, and in what order?</div>
+        <a href="phase3-roadmap.html" class="step-btn green">Open →</a>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-card-hdr">3.3 — Solution Concept Canvas</div>
+      <div class="step-card-body">
+        <div class="step-status st-todo">Not started</div>
+        <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
+        <a href="phase3-canvas.html" class="step-btn green">Open →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase gate -->
+  <div class="phase-gate">
+    <div class="phase-gate-title">Declare Phase 3 — Ideate complete</div>
+    <div class="gate-checks">
+      <div class="gate-check"><input type="checkbox" id="gc3-1" onchange="checkGate3()"><label for="gc3-1">We have reviewed all 6 scenario briefings and selected our recommended option</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc3-2" onchange="checkGate3()"><label for="gc3-2">We have completed the CBA analysis for our chosen scenario</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc3-3" onchange="checkGate3()"><label for="gc3-3">We have produced a Risk Assessment, Product Roadmap, and Solution Canvas</label></div>
+    </div>
+    <button class="gate-declare-btn" id="gate3-btn" disabled onclick="declarePhase3()">Complete Phase 3 — Move to Validate →</button>
+    <div class="gate-done-banner" id="gate3-done">✓ Phase 3 complete — <a href="phase4.html" style="color:inherit;font-weight:800;">Open Phase 4: Validate →</a></div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE = 3;
+const PHASE_PAGES  = { 1: 'index.html', 2: 'phase2.html', 3: 'phase3.html', 4: 'phase4.html' };
+const PHASE_LABELS = { 1: 'Research', 2: 'Define', 3: 'Ideate', 4: 'Validate' };
+
+let teamCode  = localStorage.getItem('teafellas_team_code') || null;
+let phaseGates = { 1: false, 2: false, 3: false, 4: false };
+
+function renderPhaseNav() {
+  const bar = document.getElementById('phase-nav-bar');
+  if (!teamCode) { bar.classList.add('pnb-hidden'); return; }
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases = [1,2,3,4].map((p, i, arr) => {
+    const done   = phaseGates[p];
+    const active = p === CURRENT_PHASE;
+    const cls    = done ? 'pnb-done' : active ? 'pnb-active' : 'pnb-locked';
+    const icon   = done ? '✓' : active ? p : '🔒';
+    const href   = (done && p !== CURRENT_PHASE) ? ` href="${PHASE_PAGES[p]}"` : '';
+    const tag    = (done && p !== CURRENT_PHASE) ? 'a' : 'span';
+    const sep    = i < arr.length - 1 ? '<span class="pnb-sep">›</span>' : '';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML = `<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
+    <div class="pnb-phases">${phases}</div>
+    <div class="pnb-right"><button class="pnb-logout" onclick="signOut()">Sign out</button></div>`;
+}
+
+async function loadPhaseGates() {
+  if (!teamCode) return;
+  try {
+    const r = await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    if (d.gates) phaseGates = { ...phaseGates, ...d.gates };
+  } catch (_) {}
+}
+
+async function markPhaseComplete(phase) {
+  phaseGates[phase] = true;
+  renderPhaseNav();
+  try {
+    await fetch(`${API_URL}/phase-gates`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: teamCode, phase }),
+    });
+  } catch (_) {}
+}
+
+function checkGate3() {
+  const all = ['gc3-1','gc3-2','gc3-3'].every(id => document.getElementById(id).checked);
+  document.getElementById('gate3-btn').disabled = !all || phaseGates[3];
+}
+
+async function declarePhase3() {
+  if (!confirm('Declare Phase 3 — Ideate complete? Your team is ready to present.')) return;
+  await markPhaseComplete(3);
+  document.getElementById('gate3-btn').disabled = true;
+  document.getElementById('gate3-done').classList.add('show');
+}
+
+function signOut() {
+  localStorage.removeItem('teafellas_team_code');
+  location.href = 'index.html';
+}
+
+async function init() {
+  if (!teamCode) {
+    document.getElementById('lock-msg').textContent = 'Please log in with your team first.';
+    document.getElementById('lock-action').textContent = 'Log in →';
+    document.getElementById('lock-action').href = 'index.html';
+    return;
+  }
+  await loadPhaseGates();
+  renderPhaseNav();
+
+  if (!phaseGates[2]) {
+    const prevDone = phaseGates[1];
+    document.getElementById('lock-msg').textContent = prevDone
+      ? 'Your team must complete Phase 2 — Define before moving to Ideate.'
+      : 'Your team must complete Phase 1 — Research and Phase 2 — Define first.';
+    document.getElementById('lock-action').textContent = prevDone ? 'Go to Phase 2 →' : 'Back to Phase 1 →';
+    document.getElementById('lock-action').href = prevDone ? 'phase2.html' : 'index.html';
+    return;
+  }
+
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('phase-content').style.display = 'block';
+
+  if (phaseGates[3]) {
+    document.getElementById('gate3-btn').disabled = true;
+    document.getElementById('gate3-done').classList.add('show');
+    ['gc3-1','gc3-2','gc3-3'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
+  }
+}
+
+init();
+</script>
+</body>
+</html>

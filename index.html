@@ -390,9 +390,53 @@
   .bg-shop-img.short { height: 190px; }
   .bg-img-caption { font-size: 11px; color: var(--tea-muted); text-align: center; margin-bottom: 14px; font-style: italic; }
   .tf-logo-img { display: block; margin: 0 auto 10px; width: 110px; height: auto; }
+
+  /* ── Phase navigation bar ── */
+  #phase-nav-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
+    background: #1E3D1A; display: flex; align-items: center;
+    padding: 0 18px; gap: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  #phase-nav-bar.pnb-hidden { display: none; }
+  .pnb-brand { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9);
+    letter-spacing: 0.3px; white-space: nowrap; margin-right: 18px; }
+  .pnb-team  { font-size: 11px; font-weight: 700; color: var(--tea-amber-light);
+    background: rgba(193,122,42,0.25); border-radius: 4px; padding: 2px 7px;
+    margin-left: 8px; letter-spacing: 0.5px; }
+  .pnb-phases { display: flex; align-items: center; gap: 0; flex: 1; }
+  .pnb-phase {
+    display: flex; align-items: center; gap: 7px;
+    padding: 0 14px; height: 46px; font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.38); cursor: default; white-space: nowrap;
+    border-bottom: 3px solid transparent; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .pnb-phase.pnb-active {
+    color: white; border-bottom-color: var(--tea-amber-light); cursor: pointer; }
+  .pnb-phase.pnb-done {
+    color: rgba(255,255,255,0.75); border-bottom-color: #4CAF50; cursor: pointer; }
+  .pnb-phase.pnb-done:hover, .pnb-phase.pnb-active:hover { background: rgba(255,255,255,0.07); }
+  .pnb-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pnb-phase.pnb-locked .pnb-num { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+  .pnb-phase.pnb-active .pnb-num { background: var(--tea-amber); color: white; }
+  .pnb-phase.pnb-done   .pnb-num { background: #4CAF50; color: white; }
+  .pnb-sep { color: rgba(255,255,255,0.2); font-size: 14px; padding: 0 2px; }
+  .pnb-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .pnb-logout { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: none;
+    cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+  .pnb-logout:hover { color: white; background: rgba(255,255,255,0.1); }
+
+  /* Shift body down so content isn't hidden under the fixed bar */
+  body.has-phase-nav #team-code-overlay,
+  body.has-phase-nav #overlay { top: 46px; }
+  body.has-phase-nav #app { padding-top: 46px; }
 </style>
 </head>
 <body>
+
+<!-- Phase navigation bar (rendered by JS after team login) -->
+<div id="phase-nav-bar" class="pnb-hidden"></div>
 
 <!-- Team code overlay -->
 <div id="team-code-overlay">
@@ -770,6 +814,7 @@ const state = {
   synConfirmed: false,
   teamCode: null,
   declarationDone: false,
+  phaseGates: { 1: false, 2: false, 3: false, 4: false },
   scenarioSelected: null,
   scenarioLocked: false,
   config: null
@@ -1612,12 +1657,98 @@ function copySynthesis() {
   });
 }
 
+// ── Phase navigation ──────────────────────────────────────────
+
+const PHASE_PAGES = {
+  1: 'index.html',
+  2: 'phase2.html',
+  3: 'phase3.html',
+  4: 'phase4.html',
+};
+
+const PHASE_LABELS = {
+  1: 'Research',
+  2: 'Define',
+  3: 'Ideate',
+  4: 'Validate',
+};
+
+// Determine which phase the current page represents (1 for index.html)
+const CURRENT_PHASE = 1;
+
+async function registerTeam(code) {
+  try {
+    await fetch(`${API_URL}/register-team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: code }),
+    });
+  } catch (_) { /* offline — non-fatal */ }
+}
+
+async function loadPhaseGates() {
+  if (!state.teamCode) return;
+  try {
+    const resp = await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(state.teamCode)}`);
+    const data = await resp.json();
+    if (data.gates) state.phaseGates = { ...state.phaseGates, ...data.gates };
+  } catch (_) { /* offline — keep defaults */ }
+}
+
+async function markPhaseComplete(phase) {
+  if (!state.teamCode) return;
+  state.phaseGates[phase] = true;
+  renderPhaseNav();
+  try {
+    await fetch(`${API_URL}/phase-gates`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: state.teamCode, phase }),
+    });
+  } catch (_) { /* offline — state updated locally */ }
+}
+
+function renderPhaseNav() {
+  const bar = document.getElementById('phase-nav-bar');
+  if (!state.teamCode) { bar.classList.add('pnb-hidden'); document.body.classList.remove('has-phase-nav'); return; }
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+
+  // Phase 1 gate mirrors declarationDone (existing mechanism)
+  if (state.declarationDone) state.phaseGates[1] = true;
+
+  const phases = [1, 2, 3, 4].map((p, i, arr) => {
+    const done   = state.phaseGates[p];
+    const active = p === CURRENT_PHASE;
+    const locked = !done && !active && !state.phaseGates[p - 1];
+    const cls    = done ? 'pnb-done' : active ? 'pnb-active' : 'pnb-locked';
+    const icon   = done ? '✓' : active ? p : '🔒';
+    const page   = PHASE_PAGES[p];
+    const tag    = (done || active) ? 'a' : 'span';
+    const href   = (done || active) && p !== CURRENT_PHASE ? ` href="${page}"` : '';
+    const sep    = i < arr.length - 1 ? '<span class="pnb-sep">›</span>' : '';
+    return `<${tag} class="pnb-phase ${cls}"${href}>
+      <span class="pnb-num">${icon}</span>
+      <span>Phase ${p} — ${PHASE_LABELS[p]}</span>
+    </${tag}>${sep}`;
+  }).join('');
+
+  bar.innerHTML = `
+    <span class="pnb-brand">Tea Fellas <span class="pnb-team">${state.teamCode}</span></span>
+    <div class="pnb-phases">${phases}</div>
+    <div class="pnb-right">
+      <button class="pnb-logout" onclick="logoutTeamCode()">Sign out</button>
+    </div>`;
+}
+
 // ── Team code ─────────────────────────────────────────────────
 function selectTeamCode(code) {
   state.teamCode = code;
   localStorage.setItem('teafellas_team_code', code);
   document.getElementById('team-code-overlay').classList.add('hidden');
-  loadTeamSession().then(() => {
+  registerTeam(code);
+  Promise.all([loadTeamSession(), loadPhaseGates()]).then(() => {
+    renderPhaseNav();
     renderLandingCards();
     renderSidebar();
     document.getElementById('overlay').classList.remove('hidden');
@@ -1630,7 +1761,9 @@ function resumeTeamCode() {
   if (!code) return;
   state.teamCode = code;
   document.getElementById('team-code-overlay').classList.add('hidden');
-  loadTeamSession().then(() => {
+  registerTeam(code);
+  Promise.all([loadTeamSession(), loadPhaseGates()]).then(() => {
+    renderPhaseNav();
     renderLandingCards();
     renderSidebar();
     startSync();
@@ -1860,6 +1993,7 @@ function submitDeclaration() {
   if (!confirm('Once you proceed, your discovery phase is closed. All interviews and synthesis will be read-only. Your group cannot undo this. Are you sure you are ready?')) return;
   state.declarationDone = true;
   saveDeclaration();
+  markPhaseComplete(1);  // unlock Phase 2 in the nav bar and in D1
   renderSidebar();
   showEmail();
 }
