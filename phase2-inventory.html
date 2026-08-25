@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Problem Inventory</title>
+<style>
+:root {
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body.has-phase-nav{padding-top:46px;}
+
+/* Phase nav */
+#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+#phase-nav-bar.pnb-hidden{display:none;}
+.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,0.9);white-space:nowrap;margin-right:18px;}
+.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,0.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
+.pnb-phases{display:flex;align-items:center;flex:1;}
+.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all 0.15s;text-decoration:none;}
+.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
+.pnb-phase.pnb-done{color:rgba(255,255,255,0.75);border-bottom-color:#4CAF50;cursor:pointer;}
+.pnb-phase.pnb-done:hover{background:rgba(255,255,255,0.07);}
+.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);}
+.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
+.pnb-phase.pnb-done .pnb-num{background:#4CAF50;color:white;}
+.pnb-sep{color:rgba(255,255,255,0.2);font-size:14px;padding:0 2px;}
+.pnb-right{margin-left:auto;}
+.pnb-logout{font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.pnb-logout:hover{color:white;background:rgba(255,255,255,0.1);}
+
+/* Layout */
+.page-wrap{max-width:1000px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--green);text-decoration:none;display:inline-block;margin-bottom:20px;}
+.back-link:hover{text-decoration:underline;}
+.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.page-header-left{}
+.phase-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);}
+.save-indicator{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:8px;}
+.save-indicator.saved{background:#E8F5E9;color:#2E7D32;}
+.save-indicator.saving{background:var(--amber-xl);color:var(--amber);}
+.save-indicator.error{background:#FFEBEE;color:var(--red);}
+.save-indicator.hidden{visibility:hidden;}
+
+/* Table */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--green);color:white;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:left;}
+td{padding:9px 12px;border-bottom:1px solid #EDE5D3;vertical-align:middle;font-size:13px;}
+tr:last-child td{border-bottom:none;}
+td.num{width:36px;font-weight:700;color:var(--muted);text-align:center;}
+td.label-cell{font-weight:600;}
+td.label-cell.readonly{color:var(--text);}
+td.who-cell{font-size:12px;color:var(--muted);}
+td.sev-cell,td.freq-cell{width:100px;}
+td.notes-cell{width:220px;}
+
+select.rating{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;background:white;width:100%;cursor:pointer;}
+select.rating:focus{outline:none;border-color:var(--green);}
+select.rating.sev-H{background:#FFEBEE;}
+select.rating.sev-M{background:#FFF8E6;}
+select.rating.sev-L{background:#E8F5E9;}
+select.rating.freq-H{background:#FFEBEE;}
+select.rating.freq-M{background:#FFF8E6;}
+select.rating.freq-L{background:#E8F5E9;}
+
+input.notes-input{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;width:100%;color:var(--text);}
+input.notes-input:focus{outline:none;border-color:var(--green);}
+input.custom-label,input.custom-who{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;width:100%;color:var(--text);}
+input.custom-label:focus,input.custom-who:focus{outline:none;border-color:var(--green);}
+.remove-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:16px;padding:2px 6px;border-radius:4px;}
+.remove-btn:hover{color:var(--red);background:#FFEBEE;}
+
+/* Actions */
+.actions{display:flex;gap:12px;align-items:center;margin-bottom:24px;}
+.add-btn{background:white;border:2px solid var(--green);color:var(--green);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;}
+.add-btn:hover{background:var(--green-xl);}
+.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin-top:24px;}
+.proceed-btn:hover{opacity:.88;}
+</style>
+</head>
+<body>
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div class="page-wrap">
+  <a href="phase2.html" class="back-link">← Back to Phase 2</a>
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="phase-tag">Phase 2.1</div>
+      <div class="page-title">Problem Inventory</div>
+      <div class="page-sub">Catalogue and rate all discovered pain points by severity and frequency.</div>
+    </div>
+    <div class="save-indicator hidden" id="save-ind">Saved ✓</div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="inv-table">
+      <thead>
+        <tr>
+          <th style="width:36px">#</th>
+          <th>Pain Point</th>
+          <th style="width:160px">Who feels it</th>
+          <th style="width:110px">Severity</th>
+          <th style="width:110px">Frequency</th>
+          <th style="width:220px">Notes</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="inv-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="add-btn" onclick="addCustomRow()">+ Add custom pain point</button>
+  </div>
+
+  <a href="phase2-prioritise.html" class="proceed-btn">Proceed to Prioritisation →</a>
+</div>
+
+<script>
+const API_URL='https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE=2;
+const PHASE_PAGES={1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS={1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+
+const teamCode=localStorage.getItem('teafellas_team_code');
+if(!teamCode){location.href='index.html';}
+
+let phaseGates={1:false,2:false,3:false,4:false};
+let saveTimer=null;
+
+const CANONICAL=[
+  {id:1,label:'Handwriting errors → order mistakes (Mary → Darren)',who:'Mary, Darren, Customers'},
+  {id:2,label:'No pre-ordering — all customers must queue in person',who:'Mrs Selva, Jacky, Customers'},
+  {id:3,label:'Memory-based collection → wrong drinks handed out',who:'John, Customers'},
+  {id:4,label:'No customer notification system',who:'John, Customers'},
+  {id:5,label:'Paper loyalty stamp cards — lost or forgotten',who:'Mary, Mrs Selva'},
+  {id:6,label:'Bulk order confusion and mislabelling (Jacky)',who:'Jacky'},
+  {id:7,label:'Single barista bottleneck — Darren alone',who:'Darren'},
+  {id:8,label:'No feedback mechanism',who:'John'},
+  {id:9,label:'Supply chain won\'t scale to a second outlet',who:'John, Darren'},
+];
+
+let items=CANONICAL.map(c=>({...c,severity:'',frequency:'',notes:'',custom:false}));
+let nextCustomId=10;
+
+function sevClass(v,prefix){return v?prefix+'-'+v:'';}
+
+function renderTable(){
+  const tbody=document.getElementById('inv-tbody');
+  tbody.innerHTML='';
+  items.forEach((item,i)=>{
+    const tr=document.createElement('tr');
+    tr.id='row-'+item.id;
+    tr.innerHTML=`
+      <td class="num">${item.id}</td>
+      <td class="label-cell ${item.custom?'':'readonly'}">${item.custom?`<input class="custom-label" value="${escHtml(item.label)}" placeholder="Describe pain point…" onchange="updateItem(${item.id},'label',this.value)">`:`<span>${escHtml(item.label)}</span>`}</td>
+      <td class="who-cell">${item.custom?`<input class="custom-who" value="${escHtml(item.who)}" placeholder="Who feels it…" onchange="updateItem(${item.id},'who',this.value)">`:`<span>${escHtml(item.who)}</span>`}</td>
+      <td class="sev-cell"><select class="rating ${sevClass(item.severity,'sev')}" onchange="updateItem(${item.id},'severity',this.value);applyClass(this,'sev')">
+        <option value="">—</option>
+        <option value="H" ${item.severity==='H'?'selected':''}>High</option>
+        <option value="M" ${item.severity==='M'?'selected':''}>Medium</option>
+        <option value="L" ${item.severity==='L'?'selected':''}>Low</option>
+      </select></td>
+      <td class="freq-cell"><select class="rating ${sevClass(item.frequency,'freq')}" onchange="updateItem(${item.id},'frequency',this.value);applyClass(this,'freq')">
+        <option value="">—</option>
+        <option value="H" ${item.frequency==='H'?'selected':''}>High</option>
+        <option value="M" ${item.frequency==='M'?'selected':''}>Medium</option>
+        <option value="L" ${item.frequency==='L'?'selected':''}>Low</option>
+      </select></td>
+      <td class="notes-cell"><input class="notes-input" value="${escHtml(item.notes)}" placeholder="Optional note…" onchange="updateItem(${item.id},'notes',this.value)"></td>
+      <td>${item.custom?`<button class="remove-btn" onclick="removeItem(${item.id})">✕</button>`:''}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function applyClass(sel,prefix){
+  sel.className='rating';
+  if(sel.value)sel.classList.add(prefix+'-'+sel.value);
+}
+
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function updateItem(id,field,value){
+  const item=items.find(x=>x.id===id);
+  if(item)item[field]=value;
+  scheduleSave();
+}
+
+function addCustomRow(){
+  items.push({id:nextCustomId++,label:'',who:'',severity:'',frequency:'',notes:'',custom:true});
+  renderTable();
+  scheduleSave();
+}
+
+function removeItem(id){
+  items=items.filter(x=>x.id!==id);
+  renderTable();
+  scheduleSave();
+}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  showSave('saving');
+  saveTimer=setTimeout(doSave,1500);
+}
+
+async function doSave(){
+  try{
+    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'problem_inventory',content:{items}})});
+    if(!r.ok)throw new Error();
+    showSave('saved');
+  }catch{showSave('error');}
+}
+
+function showSave(state){
+  const el=document.getElementById('save-ind');
+  el.className='save-indicator '+state;
+  el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
+  if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+async function loadPhaseGates(){
+  try{const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);const d=await r.json();if(d.gates)phaseGates={...phaseGates,...d.gates};}catch{}
+}
+
+function renderPhaseNav(){
+  const bar=document.getElementById('phase-nav-bar');
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases=[1,2,3,4].map((p,i,arr)=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
+    const icon=done?'✓':active?p:'🔒';
+    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:active?` href="${PHASE_PAGES[p]}"`:'';
+    const tag=(done||active)&&p!==CURRENT_PHASE?'a':'span';
+    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span><div class="pnb-phases">${phases}</div><div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+}
+
+async function loadSaved(){
+  try{
+    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_inventory`);
+    const d=await r.json();
+    const saved=d.deliverables?.problem_inventory?.content;
+    if(saved?.items?.length){
+      // Merge saved ratings/notes into canonical; append custom items
+      saved.items.forEach(s=>{
+        const canon=items.find(c=>c.id===s.id&&!s.custom);
+        if(canon){canon.severity=s.severity||'';canon.frequency=s.frequency||'';canon.notes=s.notes||'';}
+        else if(s.custom){items.push({...s,custom:true});if(s.id>=nextCustomId)nextCustomId=s.id+1;}
+      });
+    }
+  }catch{}
+}
+
+async function init(){
+  await Promise.all([loadPhaseGates(),loadSaved()]);
+  renderPhaseNav();
+  renderTable();
+}
+init();
+</script>
+</body>
+</html>

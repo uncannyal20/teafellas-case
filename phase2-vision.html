@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Product Vision</title>
+<style>
+:root{
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body.has-phase-nav{padding-top:46px;}
+
+/* Phase nav */
+#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+#phase-nav-bar.pnb-hidden{display:none;}
+.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,0.9);white-space:nowrap;margin-right:18px;}
+.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,0.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
+.pnb-phases{display:flex;align-items:center;flex:1;}
+.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all 0.15s;text-decoration:none;}
+.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
+.pnb-phase.pnb-done{color:rgba(255,255,255,0.75);border-bottom-color:#4CAF50;cursor:pointer;}
+.pnb-phase.pnb-done:hover{background:rgba(255,255,255,0.07);}
+.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);}
+.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
+.pnb-phase.pnb-done .pnb-num{background:#4CAF50;color:white;}
+.pnb-sep{color:rgba(255,255,255,0.2);font-size:14px;padding:0 2px;}
+.pnb-right{margin-left:auto;}
+.pnb-logout{font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.pnb-logout:hover{color:white;background:rgba(255,255,255,0.1);}
+
+/* Layout */
+.page-wrap{max-width:1000px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--green);text-decoration:none;display:inline-block;margin-bottom:20px;}
+.back-link:hover{text-decoration:underline;}
+.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.phase-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);}
+.save-indicator{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:8px;}
+.save-indicator.saved{background:#E8F5E9;color:#2E7D32;}
+.save-indicator.saving{background:var(--amber-xl);color:var(--amber);}
+.save-indicator.error{background:#FFEBEE;color:var(--red);}
+.save-indicator.hidden{visibility:hidden;}
+
+/* Two-col */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+.full-col{margin-bottom:24px;}
+
+/* Cards */
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+.section-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:14px;}
+.field-group{margin-bottom:14px;}
+.field-group:last-child{margin-bottom:0;}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px;}
+.field-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;resize:vertical;}
+.field-input:focus{outline:none;border-color:var(--green);}
+.field-input.lg{min-height:110px;}
+.field-input.sm{min-height:70px;}
+
+/* AI button */
+.ai-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;margin-top:14px;}
+.ai-btn:hover{opacity:.88;}
+.ai-btn:disabled{background:#ccc;cursor:not-allowed;}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.ai-btn.loading .spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-error{font-size:12px;color:var(--red);margin-top:8px;display:none;}
+
+/* Not sections */
+.not-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* Preview card */
+.preview-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+.preview-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:16px;}
+.preview-inner{background:var(--green);border-radius:10px;padding:24px;color:white;}
+.prev-logo{font-size:13px;font-weight:800;opacity:.7;margin-bottom:14px;letter-spacing:.5px;}
+.prev-vision{font-size:15px;line-height:1.8;font-weight:500;margin-bottom:20px;border-left:3px solid rgba(255,255,255,0.4);padding-left:14px;font-style:italic;}
+.prev-vision.empty{color:rgba(255,255,255,0.4);font-style:italic;}
+.prev-pillars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+.prev-pillar{background:rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;}
+.prev-pillar-label{font-size:10px;font-weight:800;opacity:.7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.prev-pillar-text{font-size:12px;line-height:1.55;}
+.prev-pillar-text.empty{opacity:.35;font-style:italic;}
+.prev-nots{border-top:1px solid rgba(255,255,255,0.15);padding-top:14px;}
+.prev-nots-label{font-size:10px;font-weight:800;opacity:.6;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.prev-not-item{font-size:12px;opacity:.85;margin-bottom:4px;}
+.prev-not-item.empty{opacity:.3;font-style:italic;}
+
+.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.proceed-btn:hover{opacity:.88;}
+
+@media(max-width:780px){
+  .two-col,.not-grid,.prev-pillars{grid-template-columns:1fr;}
+  #phase-content{padding:16px 14px 60px;}
+}
+</style>
+</head>
+<body>
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div class="page-wrap">
+  <a href="phase2.html" class="back-link">← Back to Phase 2</a>
+  <div class="page-header">
+    <div>
+      <div class="phase-tag">Phase 2.4</div>
+      <div class="page-title">Product Vision</div>
+      <div class="page-sub">Define the compelling future state Tea Fellas is designing towards — the North Star for Phase 3.</div>
+    </div>
+    <div class="save-indicator hidden" id="save-ind">Saved ✓</div>
+  </div>
+
+  <div class="two-col">
+    <!-- Vision statement input -->
+    <div class="section-card">
+      <div class="section-title">Vision Statement</div>
+      <div class="field-group">
+        <div class="field-label">What does the future look like if you succeed?</div>
+        <textarea class="field-input lg" id="f-vision" placeholder="Tea Fellas will be…" oninput="onChange()"></textarea>
+      </div>
+      <button class="ai-btn" id="ai-btn" onclick="generateVision()">
+        <span class="spinner"></span>
+        <span id="ai-btn-text">✦ Generate with AI</span>
+      </button>
+      <div class="ai-error" id="ai-error">Could not reach AI — check connection.</div>
+
+      <div style="margin-top:20px;">
+        <div class="section-title" style="font-size:13px;">What "Good" Looks Like — 3 Outcome Pillars</div>
+        <div class="field-group">
+          <div class="field-label">Pillar 1 — Operational accuracy</div>
+          <textarea class="field-input sm" id="f-p1" placeholder="Describe what operational accuracy looks like for Tea Fellas…" oninput="onChange()"></textarea>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Pillar 2 — Customer convenience</div>
+          <textarea class="field-input sm" id="f-p2" placeholder="Describe the customer experience you're designing towards…" oninput="onChange()"></textarea>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Pillar 3 — Scalable foundation</div>
+          <textarea class="field-input sm" id="f-p3" placeholder="What does a scalable Tea Fellas look like?" oninput="onChange()"></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="section-title" style="font-size:13px;">What This Is NOT — 3 Constraints</div>
+        <div class="not-grid">
+          <div class="field-group">
+            <input class="field-input" id="f-not1" placeholder="e.g. This is NOT about making Tea Fellas into a chain" oninput="onChange()">
+          </div>
+          <div class="field-group">
+            <input class="field-input" id="f-not2" placeholder="e.g. This is NOT the most expensive solution — it's the right one" oninput="onChange()">
+          </div>
+          <div class="field-group">
+            <input class="field-input" id="f-not3" placeholder="e.g. This is NOT technology for its own sake" oninput="onChange()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live preview -->
+    <div class="preview-card">
+      <div class="preview-title">Live Preview</div>
+      <div class="preview-inner">
+        <div class="prev-logo">☕ Tea Fellas — Product Vision</div>
+        <div class="prev-vision" id="pv-vision"><span style="opacity:.4;font-style:italic">Vision statement will appear here…</span></div>
+        <div class="prev-pillars">
+          <div class="prev-pillar">
+            <div class="prev-pillar-label">Operational accuracy</div>
+            <div class="prev-pillar-text empty" id="pv-p1">Describe what good looks like…</div>
+          </div>
+          <div class="prev-pillar">
+            <div class="prev-pillar-label">Customer convenience</div>
+            <div class="prev-pillar-text empty" id="pv-p2">Describe the experience…</div>
+          </div>
+          <div class="prev-pillar">
+            <div class="prev-pillar-label">Scalable foundation</div>
+            <div class="prev-pillar-text empty" id="pv-p3">Describe scalability…</div>
+          </div>
+        </div>
+        <div class="prev-nots">
+          <div class="prev-nots-label">This is NOT…</div>
+          <div class="prev-not-item empty" id="pv-not1">Constraint 1</div>
+          <div class="prev-not-item empty" id="pv-not2">Constraint 2</div>
+          <div class="prev-not-item empty" id="pv-not3">Constraint 3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="phase2.html" class="proceed-btn">← Back to Phase 2 overview</a>
+</div>
+
+<script>
+const API_URL='https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE=2;
+const PHASE_PAGES={1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS={1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+
+const teamCode=localStorage.getItem('teafellas_team_code');
+if(!teamCode){location.href='index.html';}
+
+let phaseGates={1:false,2:false,3:false,4:false};
+let saveTimer=null;
+
+function val(id){return document.getElementById(id)?.value||'';}
+function set(id,v){const el=document.getElementById(id);if(el)el.value=v||'';}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function updatePreview(){
+  const v=val('f-vision'),p1=val('f-p1'),p2=val('f-p2'),p3=val('f-p3'),n1=val('f-not1'),n2=val('f-not2'),n3=val('f-not3');
+  const pvv=document.getElementById('pv-vision');
+  pvv.innerHTML=v?escHtml(v):'<span style="opacity:.4;font-style:italic">Vision statement will appear here…</span>';
+  pvv.className='prev-vision'+(v?'':' empty');
+
+  const setP=(id,val,placeholder)=>{const el=document.getElementById(id);el.textContent=val||placeholder;el.className='prev-pillar-text'+(val?'':' empty');};
+  setP('pv-p1',p1,'Describe what good looks like…');
+  setP('pv-p2',p2,'Describe the experience…');
+  setP('pv-p3',p3,'Describe scalability…');
+
+  const setN=(id,val,ph)=>{const el=document.getElementById(id);el.textContent=val||ph;el.className='prev-not-item'+(val?'':' empty');};
+  setN('pv-not1',n1,'Constraint 1');setN('pv-not2',n2,'Constraint 2');setN('pv-not3',n3,'Constraint 3');
+}
+
+function onChange(){updatePreview();scheduleSave();}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);showSave('saving');
+  saveTimer=setTimeout(doSave,1500);
+}
+
+async function doSave(){
+  const content={vision_statement:val('f-vision'),pillar1:val('f-p1'),pillar2:val('f-p2'),pillar3:val('f-p3'),not1:val('f-not1'),not2:val('f-not2'),not3:val('f-not3')};
+  try{
+    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'product_vision',content})});
+    if(!r.ok)throw new Error();
+    showSave('saved');
+  }catch{showSave('error');}
+}
+
+function showSave(state){
+  const el=document.getElementById('save-ind');
+  el.className='save-indicator '+state;
+  el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
+  if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+async function generateVision(){
+  const btn=document.getElementById('ai-btn'),errEl=document.getElementById('ai-error');
+  btn.classList.add('loading');btn.disabled=true;
+  document.getElementById('ai-btn-text').textContent='Generating…';
+  errEl.style.display='none';
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:300,
+      system:'You are helping workshop participants write a product vision for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore, run by John (owner, 61), Mary (cashier, 59), and Darren (barista, 25). The shop has no digital systems. Return ONLY the vision statement text — 2 to 3 sentences, no labels, no formatting, no quotes.',
+      messages:[{role:'user',content:'Write a compelling product vision for Tea Fellas. It should be aspirational but realistic, specific to Tea Fellas (not a generic statement), and end with the idea that a well-run Toa Payoh outlet creates the foundation for expansion. Return ONLY the vision text.'}]
+    })});
+    const data=await resp.json();
+    const text=data?.content?.[0]?.text?.trim()||'';
+    set('f-vision',text);
+    onChange();
+  }catch{errEl.style.display='block';}
+  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('ai-btn-text').textContent='✦ Generate with AI';}
+}
+
+async function loadPhaseGates(){
+  try{const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);const d=await r.json();if(d.gates)phaseGates={...phaseGates,...d.gates};}catch{}
+}
+
+function renderPhaseNav(){
+  const bar=document.getElementById('phase-nav-bar');
+  bar.classList.remove('pnb-hidden');document.body.classList.add('has-phase-nav');
+  const phases=[1,2,3,4].map((p,i,arr)=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
+    const icon=done?'✓':active?p:'🔒';
+    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:active?` href="${PHASE_PAGES[p]}"`:'';
+    const tag=(done||active)&&p!==CURRENT_PHASE?'a':'span';
+    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span><div class="pnb-phases">${phases}</div><div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+}
+
+async function init(){
+  await loadPhaseGates();
+  renderPhaseNav();
+  try{
+    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=product_vision`);
+    const d=await r.json();
+    const c=d.deliverables?.product_vision?.content;
+    if(c){
+      set('f-vision',c.vision_statement);set('f-p1',c.pillar1);set('f-p2',c.pillar2);set('f-p3',c.pillar3);
+      set('f-not1',c.not1);set('f-not2',c.not2);set('f-not3',c.not3);
+    }
+  }catch{}
+  updatePreview();
+}
+init();
+</script>
+</body>
+</html>

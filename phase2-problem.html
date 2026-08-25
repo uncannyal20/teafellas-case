@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Problem Statement</title>
+<style>
+:root{
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body.has-phase-nav{padding-top:46px;}
+
+/* Phase nav */
+#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+#phase-nav-bar.pnb-hidden{display:none;}
+.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,0.9);white-space:nowrap;margin-right:18px;}
+.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,0.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
+.pnb-phases{display:flex;align-items:center;flex:1;}
+.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all 0.15s;text-decoration:none;}
+.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
+.pnb-phase.pnb-done{color:rgba(255,255,255,0.75);border-bottom-color:#4CAF50;cursor:pointer;}
+.pnb-phase.pnb-done:hover{background:rgba(255,255,255,0.07);}
+.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);}
+.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
+.pnb-phase.pnb-done .pnb-num{background:#4CAF50;color:white;}
+.pnb-sep{color:rgba(255,255,255,0.2);font-size:14px;padding:0 2px;}
+.pnb-right{margin-left:auto;}
+.pnb-logout{font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.pnb-logout:hover{color:white;background:rgba(255,255,255,0.1);}
+
+/* Layout */
+.page-wrap{max-width:960px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--green);text-decoration:none;display:inline-block;margin-bottom:20px;}
+.back-link:hover{text-decoration:underline;}
+.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.phase-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);}
+.save-indicator{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:8px;}
+.save-indicator.saved{background:#E8F5E9;color:#2E7D32;}
+.save-indicator.saving{background:var(--amber-xl);color:var(--amber);}
+.save-indicator.error{background:#FFEBEE;color:var(--red);}
+.save-indicator.hidden{visibility:hidden;}
+
+/* Two-column layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+
+/* Builder */
+.builder-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+.builder-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:16px;}
+.field-group{margin-bottom:14px;}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px;}
+.field-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;resize:none;}
+.field-input:focus{outline:none;border-color:var(--green);}
+.ai-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;margin-top:16px;}
+.ai-btn:hover{opacity:.88;}
+.ai-btn:disabled{background:#ccc;cursor:not-allowed;}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.ai-btn.loading .spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-error{font-size:12px;color:var(--red);margin-top:8px;display:none;}
+
+/* Preview */
+.preview-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;}
+.preview-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:16px;}
+.preview-box{border-left:4px solid var(--green);padding:16px 18px;background:var(--green-xl);border-radius:0 8px 8px 0;flex:1;font-size:14px;line-height:1.85;}
+.preview-box .slot{color:var(--green);font-weight:700;}
+.preview-box .empty{color:#ccc;}
+.template-hint{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;}
+
+/* Secondary */
+.secondary-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:28px;}
+.secondary-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:6px;}
+.secondary-desc{font-size:13px;color:var(--muted);margin-bottom:12px;}
+textarea.secondary-ta{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--text);font-family:inherit;min-height:100px;resize:vertical;}
+textarea.secondary-ta:focus{outline:none;border-color:var(--green);}
+
+.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.proceed-btn:hover{opacity:.88;}
+
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div class="page-wrap">
+  <a href="phase2.html" class="back-link">← Back to Phase 2</a>
+  <div class="page-header">
+    <div>
+      <div class="phase-tag">Phase 2.3</div>
+      <div class="page-title">Problem Statement</div>
+      <div class="page-sub">Frame the core problem in a structured, evidence-based statement.</div>
+    </div>
+    <div class="save-indicator hidden" id="save-ind">Saved ✓</div>
+  </div>
+
+  <div class="two-col">
+    <!-- Builder -->
+    <div class="builder-card">
+      <div class="builder-title">Template Builder</div>
+
+      <div class="field-group">
+        <div class="field-label">User with a role</div>
+        <input class="field-input" id="f-user" placeholder="e.g. Aunty Mary, Darren, and Uncle John" oninput="onFieldChange()">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Emotion</div>
+        <input class="field-input" id="f-emotion" placeholder="e.g. frustrated and stretched" oninput="onFieldChange()">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Current method or situation</div>
+        <textarea class="field-input" id="f-situation" rows="2" placeholder="e.g. Tea Fellas' fully paper-based, memory-dependent order fulfilment process" oninput="onFieldChange()"></textarea>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Goal they need to reach</div>
+        <textarea class="field-input" id="f-goal" rows="2" placeholder="e.g. consistently take, prepare, and deliver the right drink to the right customer" oninput="onFieldChange()"></textarea>
+      </div>
+      <div class="field-group">
+        <div class="field-label">The friction or barrier</div>
+        <textarea class="field-input" id="f-barrier" rows="2" placeholder="e.g. there is no digital flow linking the cashier, kitchen, and collection counter" oninput="onFieldChange()"></textarea>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Impact on life or business</div>
+        <textarea class="field-input" id="f-impact" rows="2" placeholder="e.g. daily order errors, a chaotic collection experience, and an operational ceiling that prevents growth" oninput="onFieldChange()"></textarea>
+      </div>
+
+      <button class="ai-btn" id="ai-btn" onclick="generateAI()">
+        <span class="spinner"></span>
+        <span id="ai-btn-text">✦ Generate with AI</span>
+      </button>
+      <div class="ai-error" id="ai-error">Could not reach AI — check connection.</div>
+    </div>
+
+    <!-- Live preview -->
+    <div class="preview-card">
+      <div class="preview-title">Live Preview</div>
+      <div class="preview-box" id="preview-box">
+        <span class="empty">Fill in the fields to see your problem statement build here…</span>
+      </div>
+      <div class="template-hint">Format: A <em>[user]</em> feels <em>[emotion]</em> about <em>[situation]</em> and needs to <em>[goal]</em> but cannot do so because <em>[barrier]</em>, which has <em>[impact]</em>.</div>
+    </div>
+  </div>
+
+  <!-- Secondary statement -->
+  <div class="secondary-card">
+    <div class="secondary-title">Secondary Statement — Customer Perspective (optional)</div>
+    <div class="secondary-desc">Write a second problem statement from the customer's point of view (Mrs Selva, Jacky). Free text — no template required.</div>
+    <textarea class="secondary-ta" id="f-secondary" placeholder="e.g. Regular customers like Mrs Selva and Jacky feel resigned about Tea Fellas' queue-only model…" oninput="onFieldChange()"></textarea>
+  </div>
+
+  <a href="phase2-vision.html" class="proceed-btn">Proceed to Product Vision →</a>
+</div>
+
+<script>
+const API_URL='https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE=2;
+const PHASE_PAGES={1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS={1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+
+const teamCode=localStorage.getItem('teafellas_team_code');
+if(!teamCode){location.href='index.html';}
+
+let phaseGates={1:false,2:false,3:false,4:false};
+let saveTimer=null;
+
+const FIELDS=['f-user','f-emotion','f-situation','f-goal','f-barrier','f-impact','f-secondary'];
+
+function val(id){return document.getElementById(id)?.value||'';}
+function set(id,v){const el=document.getElementById(id);if(el)el.value=v||'';}
+
+function renderPreview(){
+  const u=val('f-user'),e=val('f-emotion'),s=val('f-situation'),g=val('f-goal'),b=val('f-barrier'),i=val('f-impact');
+  if(!u&&!e&&!s&&!g&&!b&&!i){
+    document.getElementById('preview-box').innerHTML='<span class="empty">Fill in the fields to see your problem statement build here…</span>';
+    return;
+  }
+  const ph=t=>`<span class="${t?'slot':'empty'}">${escHtml(t||'…')}</span>`;
+  document.getElementById('preview-box').innerHTML=
+    `A ${ph(u)} feels ${ph(e)} about ${ph(s)} and needs to ${ph(g)} but cannot do so because ${ph(b)}, which has ${ph(i)}.`;
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function onFieldChange(){
+  renderPreview();
+  scheduleSave();
+}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  showSave('saving');
+  saveTimer=setTimeout(doSave,1500);
+}
+
+async function doSave(){
+  const content={user_role:val('f-user'),emotion:val('f-emotion'),situation:val('f-situation'),goal:val('f-goal'),barrier:val('f-barrier'),impact:val('f-impact'),secondary_statement:val('f-secondary')};
+  try{
+    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'problem_statement',content})});
+    if(!r.ok)throw new Error();
+    showSave('saved');
+  }catch{showSave('error');}
+}
+
+function showSave(state){
+  const el=document.getElementById('save-ind');
+  el.className='save-indicator '+state;
+  el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
+  if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+async function generateAI(){
+  const btn=document.getElementById('ai-btn');
+  const errEl=document.getElementById('ai-error');
+  btn.classList.add('loading');btn.disabled=true;
+  document.getElementById('ai-btn-text').textContent='Generating…';
+  errEl.style.display='none';
+  const pains=[
+    '1. Handwriting errors causing wrong orders (Mary to Darren)',
+    '2. No pre-ordering, customers queue in person',
+    '3. Memory-based drink collection, wrong drinks handed out',
+    '4. No customer notification when drink is ready',
+    '5. Paper loyalty stamp cards lost or forgotten',
+    '6. Bulk order confusion and mislabelling',
+    '7. Single barista bottleneck (Darren alone)',
+    '8. No feedback mechanism',
+    '9. Supply chain cannot scale to a second outlet'
+  ].join('\n');
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:600,
+      system:'You are helping workshop participants draft a UX problem statement for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore, run by John (owner, 61), Mary (cashier, 59), and Darren (barista, 25). The shop is fully paper-based with no digital systems. Return ONLY a valid JSON object with keys: user_role, emotion, situation, goal, barrier, impact. No markdown, no explanation.',
+      messages:[{role:'user',content:`The 9 pain points discovered are:\n${pains}\n\nDraft a primary problem statement for the operations staff (Mary, Darren, John). Return ONLY JSON.`}]
+    })});
+    const data=await resp.json();
+    const text=data?.content?.[0]?.text||'';
+    const parsed=JSON.parse(text.replace(/```json\n?|\n?```/g,'').trim());
+    set('f-user',parsed.user_role);set('f-emotion',parsed.emotion);set('f-situation',parsed.situation);
+    set('f-goal',parsed.goal);set('f-barrier',parsed.barrier);set('f-impact',parsed.impact);
+    renderPreview();scheduleSave();
+  }catch{errEl.style.display='block';}
+  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('ai-btn-text').textContent='✦ Generate with AI';}
+}
+
+async function loadPhaseGates(){
+  try{const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);const d=await r.json();if(d.gates)phaseGates={...phaseGates,...d.gates};}catch{}
+}
+
+function renderPhaseNav(){
+  const bar=document.getElementById('phase-nav-bar');
+  bar.classList.remove('pnb-hidden');document.body.classList.add('has-phase-nav');
+  const phases=[1,2,3,4].map((p,i,arr)=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
+    const icon=done?'✓':active?p:'🔒';
+    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:active?` href="${PHASE_PAGES[p]}"`:'';
+    const tag=(done||active)&&p!==CURRENT_PHASE?'a':'span';
+    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span><div class="pnb-phases">${phases}</div><div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+}
+
+async function init(){
+  await loadPhaseGates();
+  renderPhaseNav();
+  try{
+    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_statement`);
+    const d=await r.json();
+    const c=d.deliverables?.problem_statement?.content;
+    if(c){
+      set('f-user',c.user_role);set('f-emotion',c.emotion);set('f-situation',c.situation);
+      set('f-goal',c.goal);set('f-barrier',c.barrier);set('f-impact',c.impact);
+      set('f-secondary',c.secondary_statement);
+    }
+  }catch{}
+  renderPreview();
+}
+init();
+</script>
+</body>
+</html>
