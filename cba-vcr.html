@@ -184,9 +184,19 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
 <div id="pane-inputs" class="pane active">
 
   <div class="top-actions">
-    <p><strong>Model answer: C1 — Conservative (Basic digital + AMK Food Centre).</strong>
-      Click auto-populate to fill all three input sections, then review and discuss with participants.</p>
-    <button class="btn-primary" onclick="autoPopulate()">⚡ Auto-populate C1 model answer</button>
+    <div style="flex:1">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Select scenario to populate</div>
+      <select id="scenario-picker" class="f-inp" style="max-width:420px;font-size:13px;">
+        <option value="">— Choose a scenario —</option>
+        <option value="A1">A1 — Basic digital ($25K)</option>
+        <option value="A2">A2 — Full integrated digital + supply chain ($150K)</option>
+        <option value="B1">B1 — AMK Food Centre expansion ($80K)</option>
+        <option value="B2">B2 — AMK Hub B1 expansion ($150K)</option>
+        <option value="C1">C1 — Conservative: Basic digital + AMK Food Centre (~$105K) ⭐</option>
+        <option value="C2">C2 — Aggressive: Full digital + AMK Hub B1 (~$300K)</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="autoPopulate()">⚡ Auto-populate</button>
     <button class="btn-sec" onclick="clearAll()">Clear all</button>
   </div>
 
@@ -296,7 +306,7 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
       <div class="sec-hdr" style="margin-bottom:2px">CBA Results — Present Value Analysis</div>
       <div class="sec-sub" style="margin-bottom:0">All figures discounted to PV using the nominal rate set in Inputs → Section A.</div>
     </div>
-    <button class="btn-primary" onclick="showTab('inputs');autoPopulate()">⚡ Auto-populate C1</button>
+    <button class="btn-primary" onclick="showTab('inputs')">← Back to Inputs</button>
   </div>
 
   <div class="card" style="padding:11px 18px;margin-bottom:18px;background:var(--green-xl);border-color:var(--green-l);">
@@ -524,36 +534,121 @@ function dimUnits(dk, sub) { return ((DIMS[dk]||DIMS.cs).subs[sub]) || []; }
 // ── State ─────────────────────────────────────────────────────
 let costs = [], bens = [], nid = 1;
 
-// ── Model answer data ─────────────────────────────────────────
+// ── Model answer data — all 6 scenarios ──────────────────────
 const MODEL_DR = { wacc:3.6, inflation:2.0 };
-const MODEL_COSTS = [
-  { type:'One-Time Cost',  desc:'A1 — Digital system setup (QR ordering, loyalty app, kitchen display system)',  y0:25000, y1:0,     y2:0,     y3:0 },
-  { type:'One-Time Cost',  desc:'B1 — AMK Food Centre fit-out, equipment & deposits',                           y0:80000, y1:0,     y2:0,     y3:0 },
-  { type:'Recurrent Cost', desc:'Digital system annual maintenance — $300/month × 12 (A1)',                      y0:0,     y1:3600,  y2:3600,  y3:3600 },
-  { type:'Recurrent Cost', desc:'AMK outlet rent — $5,500/month × 12 (B1)',                                      y0:0,     y1:66000, y2:66000, y3:66000 },
-  { type:'Recurrent Cost', desc:'AMK outlet additional staff — $7,500/month × 12 (B1)',                          y0:0,     y1:90000, y2:90000, y3:90000 },
-  { type:'Recurrent Cost', desc:'AMK outlet utilities, supplies & misc — $1,500/month × 12 (B1)',                y0:0,     y1:18000, y2:18000, y3:18000 },
+
+// Shared digital benefit rows (A1 uplift = 9%)
+const DIG_A1_BENS = [
+  { dim:'cs',  sub:'Ease of Transaction', btype:'Self Completion Rate',
+    desc:'QR ordering reduces friction — 60% of 9% uplift on $27,500/month ($27,500×9%×60%×12)', y1:17820,y2:17820,y3:17820 },
+  { dim:'cs',  sub:'Quality of Service',  btype:'Channel Satisfaction Rating',
+    desc:'Service speed & wait time improvement — 40% of 9% digital uplift ($27,500×9%×40%×12)', y1:11880,y2:11880,y3:11880 },
+  { dim:'ep',  sub:'Task Efficiency',     btype:'Average Handling Time',
+    desc:'Order processing time saved — 3 staff × 1hr/day × 250 days × $15/hr',                  y1:11250,y2:11250,y3:11250 },
+  { dim:'ep',  sub:'Output Quality',      btype:'Error Rate per Transaction',
+    desc:'Order error & ingredient waste reduction — digital accuracy vs. handwritten forms',       y1:2700, y2:2700, y3:2700  },
+  { dim:'cts', sub:'Cost per Transaction',btype:'Cost per Transaction (as-is vs. to-be)',
+    desc:'Paper order form elimination — printing, storage, manual filing cost avoided',            y1:1050, y2:1050, y3:1050  },
 ];
-const MODEL_BENS = [
-  { dim:'cs',  sub:'Ease of Transaction',         btype:'Self Completion Rate',
-    desc:'QR ordering reduces friction — 60% of 9% revenue uplift on $27,500/month baseline ($27,500×9%×60%×12)',
-    y1:17820,  y2:17820,  y3:17820 },
-  { dim:'cs',  sub:'Quality of Service',          btype:'Channel Satisfaction Rating',
-    desc:'Service speed improvement & reduced wait time — 40% of digital revenue uplift ($27,500×9%×40%×12)',
-    y1:11880,  y2:11880,  y3:11880 },
-  { dim:'ep',  sub:'Task Efficiency',             btype:'Average Handling Time',
-    desc:'Order processing time saved — 3 staff × 1hr/day × 250 working days × $15/hr',
-    y1:11250,  y2:11250,  y3:11250 },
-  { dim:'ep',  sub:'Output Quality',              btype:'Error Rate per Transaction',
-    desc:'Order error & ingredient waste reduction from digital accuracy vs. handwritten forms',
-    y1:2700,   y2:2700,   y3:2700 },
-  { dim:'cts', sub:'Cost per Transaction',        btype:'Cost per Transaction (as-is vs. to-be)',
-    desc:'Paper-based order form elimination — printing, storage, manual filing cost avoided',
-    y1:1050,   y2:1050,   y3:1050 },
-  { dim:'re',  sub:'New Market / Outlet Revenue', btype:'Outlet Gross Revenue ($)',
-    desc:'AMK Food Centre gross revenue — ~150 customers/day × $5 avg × 22 days × 12 months (Y2/Y3 growth to 180/220 customers)',
-    y1:198000, y2:244200, y3:290400 },
+
+// Shared digital benefit rows (A2 uplift = 16.5%, adds supply chain + scalability rows)
+const DIG_A2_BENS = [
+  { dim:'cs',  sub:'Ease of Transaction', btype:'Self Completion Rate',
+    desc:'Full digital ordering reduces friction — 60% of 16.5% uplift ($27,500×16.5%×60%×12)',   y1:32670,y2:32670,y3:32670 },
+  { dim:'cs',  sub:'Quality of Service',  btype:'Channel Satisfaction Rating',
+    desc:'Service speed & accuracy improvement — 40% of 16.5% digital uplift',                     y1:21780,y2:21780,y3:21780 },
+  { dim:'ep',  sub:'Task Efficiency',     btype:'Average Handling Time',
+    desc:'Order processing time saved — 3 staff × 1hr/day × 250 days × $15/hr',                  y1:11250,y2:11250,y3:11250 },
+  { dim:'ep',  sub:'Output Quality',      btype:'Error Rate per Transaction',
+    desc:'Order error & ingredient waste reduction — digital accuracy vs. handwritten forms',       y1:2700, y2:2700, y3:2700  },
+  { dim:'ep',  sub:'Self Sufficiency',    btype:'Total Supervisor Hours Saved from Reduced Escalations',
+    desc:'Supply chain integration reduces owner escalations for stock issues — 6hr/wk × $15 × 50wks',y1:4500,y2:4500,y3:4500},
+  { dim:'sm',  sub:'System Scalability',  btype:'System Capacity Head Room',
+    desc:'Multi-outlet digital readiness — avoids re-engineering cost if second outlet added',      y1:3600, y2:3600, y3:3600  },
+  { dim:'cts', sub:'Cost per Transaction',btype:'Cost per Transaction (as-is vs. to-be)',
+    desc:'Paper order form elimination — printing, storage, manual filing cost avoided',            y1:1050, y2:1050, y3:1050  },
 ];
+
+const MODELS = {
+  A1: {
+    label: 'A1 — Basic digital',
+    costs: [
+      { type:'One-Time Cost',  desc:'A1 — Digital system setup (QR ordering, loyalty app, kitchen display)',y0:25000,y1:0,    y2:0,    y3:0 },
+      { type:'Recurrent Cost', desc:'Digital system maintenance — $300/month × 12',                         y0:0,    y1:3600, y2:3600, y3:3600 },
+    ],
+    bens: DIG_A1_BENS,
+  },
+  A2: {
+    label: 'A2 — Full integrated digital + supply chain',
+    costs: [
+      { type:'One-Time Cost',  desc:'A2 — Full integrated digital system incl. supply chain module',        y0:150000,y1:0,    y2:0,    y3:0 },
+      { type:'Recurrent Cost', desc:'Digital system maintenance — $1,000/month × 12',                       y0:0,    y1:12000,y2:12000,y3:12000 },
+    ],
+    bens: DIG_A2_BENS,
+  },
+  B1: {
+    label: 'B1 — AMK Food Centre expansion',
+    costs: [
+      { type:'One-Time Cost',  desc:'B1 — AMK Food Centre fit-out, equipment & deposits',                   y0:80000, y1:0,     y2:0,     y3:0 },
+      { type:'Recurrent Cost', desc:'AMK outlet rent — $5,500/month × 12',                                   y0:0,     y1:66000, y2:66000, y3:66000 },
+      { type:'Recurrent Cost', desc:'AMK outlet additional staff — $7,500/month × 12',                       y0:0,     y1:90000, y2:90000, y3:90000 },
+      { type:'Recurrent Cost', desc:'AMK outlet utilities, supplies & misc — $1,500/month × 12',             y0:0,     y1:18000, y2:18000, y3:18000 },
+    ],
+    bens: [
+      { dim:'re', sub:'New Market / Outlet Revenue', btype:'Outlet Gross Revenue ($)',
+        desc:'AMK Food Centre gross revenue — ~150 cust/day × $5 avg × 22 days × 12 (Y2/Y3: 180/220 cust/day)',
+        y1:198000, y2:244200, y3:290400 },
+    ],
+  },
+  B2: {
+    label: 'B2 — AMK Hub B1 expansion',
+    costs: [
+      { type:'One-Time Cost',  desc:'B2 — AMK Hub B1 fit-out, equipment & deposits',                        y0:150000,y1:0,     y2:0,     y3:0 },
+      { type:'Recurrent Cost', desc:'AMK Hub outlet rent — $9,000/month × 12',                               y0:0,     y1:108000,y2:108000,y3:108000 },
+      { type:'Recurrent Cost', desc:'AMK Hub additional staff — $9,500/month × 12',                          y0:0,     y1:114000,y2:114000,y3:114000 },
+      { type:'Recurrent Cost', desc:'AMK Hub utilities, supplies & misc — $1,500/month × 12',                y0:0,     y1:18000, y2:18000, y3:18000 },
+    ],
+    bens: [
+      { dim:'re', sub:'New Market / Outlet Revenue', btype:'Outlet Gross Revenue ($)',
+        desc:'AMK Hub B1 gross revenue — ~200 cust/day × $5 avg × 22 days × 12 (Y2/Y3: 260/320 cust/day)',
+        y1:264000, y2:343200, y3:422400 },
+    ],
+  },
+  C1: {
+    label: 'C1 — Conservative: Basic digital + AMK Food Centre ⭐',
+    costs: [
+      { type:'One-Time Cost',  desc:'A1 — Digital system setup (QR ordering, loyalty app, kitchen display)',y0:25000, y1:0,     y2:0,     y3:0 },
+      { type:'One-Time Cost',  desc:'B1 — AMK Food Centre fit-out, equipment & deposits',                   y0:80000, y1:0,     y2:0,     y3:0 },
+      { type:'Recurrent Cost', desc:'Digital system maintenance — $300/month × 12 (A1)',                    y0:0,     y1:3600,  y2:3600,  y3:3600 },
+      { type:'Recurrent Cost', desc:'AMK outlet rent — $5,500/month × 12 (B1)',                             y0:0,     y1:66000, y2:66000, y3:66000 },
+      { type:'Recurrent Cost', desc:'AMK outlet additional staff — $7,500/month × 12 (B1)',                 y0:0,     y1:90000, y2:90000, y3:90000 },
+      { type:'Recurrent Cost', desc:'AMK outlet utilities, supplies & misc — $1,500/month × 12 (B1)',       y0:0,     y1:18000, y2:18000, y3:18000 },
+    ],
+    bens: [
+      ...DIG_A1_BENS,
+      { dim:'re', sub:'New Market / Outlet Revenue', btype:'Outlet Gross Revenue ($)',
+        desc:'AMK Food Centre gross revenue — ~150 cust/day × $5 avg × 22 days × 12 (Y2/Y3: 180/220 cust/day)',
+        y1:198000, y2:244200, y3:290400 },
+    ],
+  },
+  C2: {
+    label: 'C2 — Aggressive: Full digital + AMK Hub B1',
+    costs: [
+      { type:'One-Time Cost',  desc:'A2 — Full integrated digital system incl. supply chain module',         y0:150000,y1:0,     y2:0,     y3:0 },
+      { type:'One-Time Cost',  desc:'B2 — AMK Hub B1 fit-out, equipment & deposits',                        y0:150000,y1:0,     y2:0,     y3:0 },
+      { type:'Recurrent Cost', desc:'Digital system maintenance — $1,000/month × 12 (A2)',                   y0:0,     y1:12000, y2:12000, y3:12000 },
+      { type:'Recurrent Cost', desc:'AMK Hub outlet rent — $9,000/month × 12 (B2)',                          y0:0,     y1:108000,y2:108000,y3:108000 },
+      { type:'Recurrent Cost', desc:'AMK Hub additional staff — $9,500/month × 12 (B2)',                     y0:0,     y1:114000,y2:114000,y3:114000 },
+      { type:'Recurrent Cost', desc:'AMK Hub utilities, supplies & misc — $1,500/month × 12 (B2)',           y0:0,     y1:18000, y2:18000, y3:18000 },
+    ],
+    bens: [
+      ...DIG_A2_BENS,
+      { dim:'re', sub:'New Market / Outlet Revenue', btype:'Outlet Gross Revenue ($)',
+        desc:'AMK Hub B1 gross revenue — ~200 cust/day × $5 avg × 22 days × 12 (Y2/Y3: 260/320 cust/day)',
+        y1:264000, y2:343200, y3:422400 },
+    ],
+  },
+};
 
 // ── Helpers ───────────────────────────────────────────────────
 const fm = n => '$' + Math.round(n).toLocaleString();
@@ -837,12 +932,15 @@ function renderResults() {
 
 // ── Auto-populate / Clear ─────────────────────────────────────
 function autoPopulate() {
+  const key = document.getElementById('scenario-picker').value;
+  const m   = MODELS[key];
+  if (!m) { alert('Please select a scenario from the dropdown first.'); return; }
   clearAll(true);
   document.getElementById('dr-wacc').value = MODEL_DR.wacc;
   document.getElementById('dr-inf').value  = MODEL_DR.inflation;
   updateDR();
-  MODEL_COSTS.forEach(c => addCostRow({...c}));
-  MODEL_BENS.forEach(b  => addBenRow({...b}));
+  m.costs.forEach(c => addCostRow({...c}));
+  m.bens.forEach(b  => addBenRow({...b}));
   updateTotals();
 }
 
