@@ -1912,7 +1912,11 @@ function renderEmailView() {
         <div class="scenario-locked-title">✓ Recommendation locked</div>
         <div class="scenario-locked-rec">Your team has recommended: ${SCENARIOS.find(s=>s.id===state.scenarioSelected)?.name || state.scenarioSelected}</div>
         <div class="scenario-locked-desc">${SCENARIOS.find(s=>s.id===state.scenarioSelected)?.desc || ''}</div>
-        <div class="scenario-locked-next">Your next step: Use the PowerPoint template provided by your facilitator to build your VCR/CBA business case using John's figures above.<br><br>Your synthesis and interview notes remain available for reference via the sidebar.</div>
+        <div class="scenario-locked-next">Your next step: Review the detailed scenario briefing, then build your CBA business case.<br><br>Your synthesis and interview notes remain available for reference via the sidebar.</div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <a href="scenario-brief.html?sc=${state.scenarioSelected}" target="_blank" style="flex:1;min-width:160px;background:#C17A2A;color:white;border:none;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;">📋 Read scenario briefing ↗</a>
+          <a href="cba-vcr.html" target="_blank" style="flex:1;min-width:160px;background:#2D5A27;color:white;border:none;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;">📊 Open CBA &amp; VCR tool ↗</a>
+        </div>
       </div>`
     : `<div class="scenario-grid">${SCENARIOS.map(s => `
         <div class="scenario-card${state.scenarioSelected===s.id?' selected':''}" onclick="selectScenario('${s.id}')">
