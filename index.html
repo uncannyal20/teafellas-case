@@ -188,6 +188,7 @@
     color: var(--tea-text); background: #fff; resize: vertical; min-height: 80px; outline: none; }
   .sp-card textarea:focus { border-color: var(--tea-green-light); }
   .sp-loading { font-size: 13px; color: var(--tea-muted); font-style: italic; padding: 6px 0; }
+  .sp-readonly { font-size: 13px; color: var(--tea-text); line-height: 1.7; padding: 8px 0; }
   .sp-actions { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
   .sp-btn { border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
   .sp-btn-back { background: var(--tea-cream); color: var(--tea-text); border: 1px solid var(--tea-border); }
@@ -1467,12 +1468,43 @@ async function summarisePersona() {
   const id = state.currentPersona;
   const p = PERSONAS.find(x => x.id === id);
   const hist = state.histories[id];
-  if (hist.length < 2) return;
 
   state.view = 'summary';
   showView('summary');
 
   const panel = document.getElementById('summary-panel');
+
+  // If already confirmed — show stored summary read-only, no AI call
+  const existing = state.summaries[id];
+  if (existing?.confirmed) {
+    panel.innerHTML = `
+      <div class="sp-title">${p.emoji} ${p.name} — Interview Summary</div>
+      <div class="sp-sub" style="display:flex;align-items:center;gap:8px;">
+        <span style="background:#E8F5E9;color:#2E7D32;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;">✓ Confirmed</span>
+        <span>Your team's confirmed findings — read-only.</span>
+      </div>
+      <div class="sp-card">
+        <div class="sp-card-title">Key pain points</div>
+        <div class="sp-readonly">${(existing.pain||'').replace(/\n/g,'<br>')}</div>
+      </div>
+      <div class="sp-card">
+        <div class="sp-card-title">Aspirations &amp; wishes</div>
+        <div class="sp-readonly">${(existing.asp||'').replace(/\n/g,'<br>')}</div>
+      </div>
+      <div class="sp-card">
+        <div class="sp-card-title">Key quotes / moments</div>
+        <div class="sp-readonly">${(existing.quotes||'').replace(/\n/g,'<br>')}</div>
+      </div>
+      <div class="sp-actions">
+        <button class="sp-btn sp-btn-back" onclick="backToChat()">← Back to interview</button>
+        <button class="sp-btn" style="background:#6B5A3E;color:white;" onclick="reopenSummary('${id}')">✎ Edit &amp; re-confirm</button>
+      </div>`;
+    renderSidebar();
+    return;
+  }
+
+  if (hist.length < 2) return;
+
   panel.innerHTML = `
     <div class="sp-title">${p.emoji} ${p.name} — Interview Summary</div>
     <div class="sp-sub">Auto-generated from your conversation. Review and edit as a group before confirming.</div>
@@ -1524,6 +1556,12 @@ function backToChat() {
   state.view = 'chat';
   showView('chat');
   renderSidebar();
+}
+
+function reopenSummary(id) {
+  // Clear confirmed flag so summarisePersona() runs the AI flow again
+  if (state.summaries[id]) state.summaries[id].confirmed = false;
+  summarisePersona();
 }
 
 function confirmSummary(id) {
