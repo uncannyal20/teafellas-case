@@ -177,7 +177,7 @@
   #synthesis-area.visible { display: flex; }
   .syn-title { font-size: 18px; font-weight: 700; color: var(--tea-green); margin-bottom: 3px; }
   .syn-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 16px; }
-  .syn-progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .syn-progress { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
   .syn-prog-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px;
     padding: 10px 12px; text-align: center; }
   .syn-prog-card.done { border-color: var(--tea-green); background: #EAF2E8; }
@@ -227,9 +227,64 @@
   .pc-tag { font-size: 11px; background: var(--tea-cream); color: var(--tea-muted); border-radius: 20px; padding: 3px 9px; border: 1px solid var(--tea-border); }
   .pc-cta { margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--tea-green); display: flex; align-items: center; gap: 4px; }
   .pc-card-done .pc-cta { color: var(--tea-muted); }
+
+  /* ── Team code screen ── */
+  #team-code-overlay {
+    position: fixed; inset: 0; background: var(--tea-bg);
+    display: flex; align-items: center; justify-content: center; z-index: 200;
+  }
+  #team-code-overlay.hidden { display: none; }
+  .tc-box {
+    background: var(--tea-card); border-radius: 16px; padding: 36px 40px;
+    max-width: 400px; width: 90%; border: 1px solid var(--tea-border);
+    text-align: center; box-shadow: 0 8px 32px rgba(45,90,39,0.12);
+  }
+  .tc-logo { font-size: 44px; margin-bottom: 10px; }
+  .tc-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
+  .tc-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 24px; line-height: 1.6; max-width: 300px; margin-left: auto; margin-right: auto; }
+  .tc-input-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
+  .tc-input { flex: 1; border: 2px solid var(--tea-border); border-radius: 8px; padding: 10px 14px;
+    font-size: 20px; font-weight: 700; font-family: 'Courier New', monospace;
+    text-align: center; text-transform: uppercase; letter-spacing: 4px;
+    color: var(--tea-text); background: #fff; outline: none; }
+  .tc-input:focus { border-color: var(--tea-green); }
+  .tc-enter { background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .tc-enter:hover { background: var(--tea-green-light); }
+  .tc-hint { font-size: 11px; color: var(--tea-muted); }
+  .tc-error { font-size: 12px; color: var(--tea-danger); margin-top: 8px; display: none; }
+  .tc-error.show { display: block; }
+
+  /* ── PDF button ── */
+  .pdf-btn { background: var(--tea-card); color: var(--tea-green); border: 1px solid var(--tea-green);
+    border-radius: 8px; padding: 10px 18px; font-size: 13px; cursor: pointer; font-weight: 600; transition: background 0.15s, color 0.15s; }
+  .pdf-btn:hover { background: var(--tea-green); color: #fff; }
+  .pdf-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pc-pdf-btn { margin-top: 8px; width: 100%; background: var(--tea-card); color: var(--tea-green);
+    border: 1px solid var(--tea-green); border-radius: 6px; padding: 7px 12px;
+    font-size: 12px; cursor: pointer; font-weight: 600; transition: background 0.15s, color 0.15s; }
+  .pc-pdf-btn:hover { background: var(--tea-green); color: #fff; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+
+<!-- Team code entry -->
+<div id="team-code-overlay">
+  <div class="tc-box">
+    <div class="tc-logo">🍵</div>
+    <div class="tc-title">Tea Fellas</div>
+    <div class="tc-sub">Enter your team code to begin. Your progress will be saved and synced across all devices in your team.</div>
+    <div class="tc-input-wrap">
+      <input type="text" class="tc-input" id="tc-input" maxlength="20" placeholder="TEAM-A"
+        onkeydown="if(event.key==='Enter')enterTeamCode()"
+        oninput="this.value=this.value.toUpperCase()">
+      <button class="tc-enter" onclick="enterTeamCode()">Enter →</button>
+    </div>
+    <div class="tc-hint">Use the same code on all devices in your team.</div>
+    <div class="tc-error" id="tc-error">Please enter a team code.</div>
+  </div>
+</div>
 
 <!-- Instruction overlay -->
 <div id="overlay">
@@ -256,6 +311,7 @@
       <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
       <div class="ov-persona"><div class="ov-p-emoji">🧑‍🦳</div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
       <div class="ov-persona"><div class="ov-p-emoji">👨‍💼</div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
+      <div class="ov-persona"><div class="ov-p-emoji">👨‍🍳</div><div class="ov-p-info"><div class="ov-p-name">Darren</div><div class="ov-p-role">Barista</div></div></div>
     </div>
     <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
   </div>
@@ -273,6 +329,11 @@
       <button class="sidebar-nav-btn" id="nav-synthesis" onclick="showSynthesis()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 4-4"/></svg>
         Overall synthesis
+      </button>
+      <button class="sidebar-nav-btn" id="nav-data" onclick="window.location.href='data.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Case data
+        <span id="data-badge" style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--tea-amber-light);flex-shrink:0;display:none"></span>
       </button>
       <button class="sidebar-nav-btn" id="nav-reset" onclick="confirmReset()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -333,7 +394,7 @@ const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
 // ──────────────────────────────────────────────────────────────
 
 // ── CANONICAL TEA FELLAS FACTS (shared across all personas) ────
-const CANONICAL_FACTS = `
+const DEFAULT_CANONICAL_FACTS = `
 CANONICAL TEA FELLAS FACTS — never contradict or add to these:
 
 SHOP:
@@ -380,6 +441,40 @@ GUARDRAILS — CRITICAL, always follow these:
 - You are being interviewed, not giving a presentation — react, reflect, sometimes pause to think
 - Keep answers to 3–5 sentences normally, longer only when a question genuinely warrants it
 - You may reference other staff by name but only in ways consistent with this brief`;
+
+// ── Custom case data loader ────────────────────────────────────
+function buildCanonicalFactsFromData(data) {
+  const labels = {
+    SHOP: 'SHOP:',
+    ORIGIN_STORY: 'ORIGIN STORY — how Tea Fellas started:',
+    STAFF: 'STAFF — these are the only staff, do not invent anyone else:',
+    SUPPLY_CHAIN: 'SUPPLY CHAIN:',
+    FINANCIALS: 'FINANCIALS:',
+    GUARDRAILS: 'GUARDRAILS — CRITICAL, always follow these:'
+  };
+  const order = ['SHOP','ORIGIN_STORY','STAFF','SUPPLY_CHAIN','FINANCIALS','GUARDRAILS'];
+  const ordered = [...order.filter(s => data.sections[s]), ...Object.keys(data.sections).filter(s => !order.includes(s))];
+  let facts = 'CANONICAL TEA FELLAS FACTS — never contradict or add to these:\n\n';
+  for (const s of ordered) {
+    const bullets = data.sections[s];
+    if (bullets && bullets.length) {
+      facts += (labels[s] || s.replace(/_/g, ' ') + ':') + '\n';
+      bullets.forEach(b => { facts += '- ' + b + '\n'; });
+      facts += '\n';
+    }
+  }
+  return facts.trim();
+}
+
+function getCanonicalFacts() {
+  try {
+    const stored = localStorage.getItem('teafellas_case_data');
+    if (stored) return buildCanonicalFactsFromData(JSON.parse(stored));
+  } catch(e) {}
+  return DEFAULT_CANONICAL_FACTS;
+}
+
+const CANONICAL_FACTS = getCanonicalFacts();
 
 const PERSONAS = [
   {
@@ -526,7 +621,8 @@ const state = {
   timers: {},
   timerIntervals: {},
   summaries: {},
-  synPain: '', synProblem: '', synVision: ''
+  synPain: '', synProblem: '', synVision: '',
+  teamCode: ''
 };
 
 PERSONAS.forEach(p => {
@@ -650,6 +746,7 @@ function renderLandingCards() {
         <div class="pc-bio">${profile.bio}</div>
         <div class="pc-tags">${tags}</div>
         <div class="pc-cta">${done ? '✓ Interview summarised' : '→ Click to begin interview'}</div>
+        ${done ? `<button class="pc-pdf-btn" onclick="event.stopPropagation();generatePersonaPDF('${p.id}')">⬇ Download interview PDF</button>` : ''}
       </div>`;
     c.onclick = () => switchToPersona(p.id);
     cont.appendChild(c);
@@ -811,6 +908,7 @@ async function sendMsg() {
     const reply = data.content?.[0]?.text || "Sorry ah, I got a bit distracted. What were you asking?";
     state.histories[id].push({ role: 'assistant', content: reply });
     renderMessages();
+    saveSession(id);
   } catch (e) {
     typing.remove();
     const err = document.createElement('div');
@@ -890,6 +988,7 @@ function confirmSummary(id) {
   const asp = document.querySelector('#sp-asp textarea')?.value || '';
   const quotes = document.querySelector('#sp-quotes textarea')?.value || '';
   state.summaries[id] = { pain, asp, quotes, confirmed: true };
+  saveSession(id);
   state.view = 'landing';
   state.currentPersona = null;
   showView('landing');
@@ -921,8 +1020,8 @@ function renderSynthesis() {
 
   const note = completed.length === 0
     ? '<div class="syn-note">Complete and summarise at least one interview to generate synthesis.</div>'
-    : completed.length < 4
-    ? `<div class="syn-note">${completed.length} of 4 interviews summarised. You can generate now or complete more interviews first for richer insights.</div>`
+    : completed.length < 5
+    ? `<div class="syn-note">${completed.length} of 5 interviews summarised. You can generate now or complete more interviews first for richer insights.</div>`
     : '';
 
   syn.innerHTML = `
@@ -945,6 +1044,7 @@ function renderSynthesis() {
     <div class="syn-actions">
       <button class="syn-gen-btn" onclick="generateSynthesis()" ${completed.length === 0 ? 'disabled' : ''}>Generate synthesis ↗</button>
       <button class="syn-copy-btn" onclick="copySynthesis()">Copy to clipboard</button>
+      <button class="pdf-btn" onclick="generateSynthesisPDF()" ${completed.length === 0 ? 'disabled' : ''}>⬇ Download synthesis PDF</button>
       <span class="copy-toast" id="copy-toast">✓ Copied!</span>
     </div>
     <div style="height:24px"></div>`;
@@ -989,6 +1089,7 @@ Return ONLY valid JSON, no markdown:
     document.getElementById('syn-pain').value = state.synPain;
     document.getElementById('syn-problem').value = state.synProblem;
     document.getElementById('syn-vision').value = state.synVision;
+    saveSynthesis();
   } catch (e) {
     console.error(e);
   }
@@ -1009,9 +1110,335 @@ function copySynthesis() {
   });
 }
 
+// ── Team code ──────────────────────────────────────────────────
+function enterTeamCode() {
+  const val = document.getElementById('tc-input').value.trim().toUpperCase();
+  const errEl = document.getElementById('tc-error');
+  if (!val) { errEl.classList.add('show'); return; }
+  errEl.classList.remove('show');
+  state.teamCode = val;
+  sessionStorage.setItem('teafellas_team_code', val);
+  document.getElementById('team-code-overlay').classList.add('hidden');
+  loadTeamSession().then(() => {
+    renderLandingCards();
+    renderSidebar();
+  });
+}
+
+async function loadTeamSession() {
+  if (!state.teamCode) return;
+  try {
+    const resp = await fetch(`${API_URL}/load-session?team_code=${encodeURIComponent(state.teamCode)}`);
+    if (!resp.ok) return;
+    const { rows } = await resp.json();
+    if (!rows || !rows.length) return;
+    rows.forEach(row => {
+      if (row.persona_id === '_synthesis') {
+        if (row.synthesis) {
+          state.synPain = row.synthesis.synPain || '';
+          state.synProblem = row.synthesis.synProblem || '';
+          state.synVision = row.synthesis.synVision || '';
+        }
+      } else if (PERSONAS.find(p => p.id === row.persona_id)) {
+        if (row.messages && row.messages.length) state.histories[row.persona_id] = row.messages;
+        if (row.summary) state.summaries[row.persona_id] = row.summary;
+      }
+    });
+  } catch (e) {
+    console.warn('Could not load session:', e);
+  }
+}
+
+async function saveSession(personaId) {
+  if (!state.teamCode) return;
+  try {
+    await fetch(`${API_URL}/save-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        team_code: state.teamCode,
+        persona_id: personaId,
+        messages: state.histories[personaId] || [],
+        summary: state.summaries[personaId] || null,
+        synthesis: null
+      })
+    });
+  } catch (e) {
+    console.warn('Could not save session:', e);
+  }
+}
+
+async function saveSynthesis() {
+  if (!state.teamCode) return;
+  try {
+    await fetch(`${API_URL}/save-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        team_code: state.teamCode,
+        persona_id: '_synthesis',
+        messages: [],
+        summary: null,
+        synthesis: { synPain: state.synPain, synProblem: state.synProblem, synVision: state.synVision }
+      })
+    });
+  } catch (e) {
+    console.warn('Could not save synthesis:', e);
+  }
+}
+
+// ── PDF export ─────────────────────────────────────────────────
+function generatePersonaPDF(personaId) {
+  if (!window.jspdf) { alert('PDF library not loaded — please refresh the page and try again.'); return; }
+  const { jsPDF } = window.jspdf;
+  const p = PERSONAS.find(x => x.id === personaId);
+  const summary = state.summaries[personaId];
+  const history = state.histories[personaId] || [];
+  const profile = PROFILE_DATA[personaId];
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, margin = 14, contentW = W - margin * 2;
+  let y = 0;
+
+  // Green header
+  doc.setFillColor(45, 90, 39);
+  doc.rect(0, 0, W, 44, 'F');
+  // Amber accent stripe
+  doc.setFillColor(193, 122, 42);
+  doc.rect(0, 44, W, 2.5, 'F');
+  // Cream body
+  doc.setFillColor(245, 240, 232);
+  doc.rect(0, 46.5, W, 250.5, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text('TEA FELLAS', margin, 11);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(180, 220, 170);
+  doc.text('Discovery Simulation · Interview Summary', margin, 17);
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(21);
+  doc.text(p.name, margin, 31);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(225, 195, 145);
+  doc.text(`${p.role} · Tea Fellas, Toa Payoh`, margin, 39);
+
+  y = 56;
+
+  function checkPage(needed) {
+    if (y + (needed || 8) > 284) {
+      doc.addPage();
+      doc.setFillColor(245, 240, 232);
+      doc.rect(0, 0, W, 297, 'F');
+      y = 14;
+    }
+  }
+
+  function sectionHeader(title) {
+    checkPage(13);
+    doc.setFillColor(45, 90, 39);
+    doc.rect(margin, y - 5, contentW, 7.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.text(title.toUpperCase(), margin + 3, y + 0.5);
+    y += 10;
+    doc.setTextColor(44, 36, 22);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+  }
+
+  function addText(text, fz, bold, rgb) {
+    fz = fz || 10; bold = bold || false; rgb = rgb || [44, 36, 22];
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.setFontSize(fz);
+    doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+    const lh = fz * 0.44;
+    const lines = doc.splitTextToSize(text || '—', contentW);
+    lines.forEach(function(line) {
+      checkPage(lh + 2);
+      doc.text(line, margin, y);
+      y += lh + 1;
+    });
+    y += 3;
+  }
+
+  sectionHeader('About ' + p.name);
+  addText(profile.bio);
+
+  if (summary) {
+    sectionHeader('Pain Points');
+    addText(summary.pain || '—');
+    sectionHeader('Aspirations');
+    addText(summary.asp || '—');
+    sectionHeader('Key Quotes');
+    addText(summary.quotes || '—');
+  }
+
+  sectionHeader('Interview Transcript');
+  history.forEach(function(m) {
+    var speaker = m.role === 'user' ? 'Interviewer' : p.name;
+    var rgb = m.role === 'user' ? [45, 90, 39] : [44, 36, 22];
+    checkPage(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+    doc.text(speaker + ':', margin, y);
+    y += 5;
+    addText(m.content, 9.5);
+  });
+
+  var pageCount = doc.internal.getNumberOfPages();
+  for (var i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(150, 130, 100);
+    doc.text('Tea Fellas Discovery Simulation · ' + p.name + ' · Page ' + i + ' of ' + pageCount, margin, 291);
+    doc.text(new Date().toLocaleDateString('en-SG'), W - margin, 291, { align: 'right' });
+  }
+
+  doc.save('TeaFellas-' + p.name.replace(/\s+/g, '-') + '-Interview.pdf');
+}
+
+function generateSynthesisPDF() {
+  if (!window.jspdf) { alert('PDF library not loaded — please refresh the page and try again.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, margin = 14, contentW = W - margin * 2;
+  let y = 0;
+
+  doc.setFillColor(45, 90, 39);
+  doc.rect(0, 0, W, 44, 'F');
+  doc.setFillColor(193, 122, 42);
+  doc.rect(0, 44, W, 2.5, 'F');
+  doc.setFillColor(245, 240, 232);
+  doc.rect(0, 46.5, W, 250.5, 'F');
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text('TEA FELLAS', margin, 11);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(180, 220, 170);
+  doc.text('Discovery Simulation · Overall Synthesis', margin, 17);
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(21);
+  doc.text('Overall Synthesis', margin, 31);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(225, 195, 145);
+  doc.text('Cross-persona insights · Tea Fellas, Toa Payoh', margin, 39);
+
+  y = 56;
+
+  function checkPage(needed) {
+    if (y + (needed || 8) > 284) {
+      doc.addPage();
+      doc.setFillColor(245, 240, 232);
+      doc.rect(0, 0, W, 297, 'F');
+      y = 14;
+    }
+  }
+
+  function sectionHeader(title) {
+    checkPage(13);
+    doc.setFillColor(45, 90, 39);
+    doc.rect(margin, y - 5, contentW, 7.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.text(title.toUpperCase(), margin + 3, y + 0.5);
+    y += 10;
+    doc.setTextColor(44, 36, 22);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+  }
+
+  function addText(text, fz) {
+    fz = fz || 10;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(fz);
+    doc.setTextColor(44, 36, 22);
+    var lh = fz * 0.44;
+    var lines = doc.splitTextToSize(text || '—', contentW);
+    lines.forEach(function(line) {
+      checkPage(lh + 2);
+      doc.text(line, margin, y);
+      y += lh + 1;
+    });
+    y += 4;
+  }
+
+  var painVal = (document.getElementById('syn-pain') && document.getElementById('syn-pain').value) || state.synPain || '';
+  var probVal = (document.getElementById('syn-problem') && document.getElementById('syn-problem').value) || state.synProblem || '';
+  var visVal  = (document.getElementById('syn-vision')  && document.getElementById('syn-vision').value)  || state.synVision  || '';
+
+  sectionHeader('Consolidated Pain Points');
+  addText(painVal);
+
+  sectionHeader('Problem Statement');
+  addText(probVal);
+
+  sectionHeader('Vision for Tea Fellas');
+  addText(visVal);
+
+  var summarised = PERSONAS.filter(function(p) { return state.summaries[p.id]; });
+  if (summarised.length > 0) {
+    y += 3;
+    sectionHeader('Per-Persona Pain Points');
+    summarised.forEach(function(p) {
+      var s = state.summaries[p.id];
+      checkPage(14);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(45, 90, 39);
+      doc.text(p.name + ' — ' + p.role, margin, y);
+      y += 5;
+      addText((s.pain || '—').replace(/^• /gm, ''), 9);
+    });
+  }
+
+  var pageCount = doc.internal.getNumberOfPages();
+  for (var i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(150, 130, 100);
+    doc.text('Tea Fellas Discovery Simulation · Overall Synthesis · Page ' + i + ' of ' + pageCount, margin, 291);
+    doc.text(new Date().toLocaleDateString('en-SG'), W - margin, 291, { align: 'right' });
+  }
+
+  doc.save('TeaFellas-Synthesis.pdf');
+}
+
 // ── Init ───────────────────────────────────────────────────────
 renderLandingCards();
 renderSidebar();
+if (localStorage.getItem('teafellas_case_data')) {
+  const badge = document.getElementById('data-badge');
+  if (badge) badge.style.display = 'inline-block';
+}
+
+// Restore team code from sessionStorage (survives page refresh within same tab session)
+(async () => {
+  const saved = sessionStorage.getItem('teafellas_team_code');
+  if (saved) {
+    state.teamCode = saved;
+    document.getElementById('team-code-overlay').classList.add('hidden');
+    await loadTeamSession();
+    renderLandingCards();
+    renderSidebar();
+  }
+})();
 </script>
 </body>
 </html>
