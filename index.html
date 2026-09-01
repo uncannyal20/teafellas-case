@@ -1221,7 +1221,8 @@ function renderSidebar() {
   }
   document.getElementById('nav-declaration').classList.toggle('active', state.view === 'declaration');
   document.getElementById('nav-email').classList.toggle('active', state.view === 'email');
-  if (state.synConfirmed && !state.declarationDone) {
+  const allInterviewsDone = PERSONAS.every(p => state.summaries[p.id]?.confirmed);
+  if (allInterviewsDone && !state.declarationDone) {
     document.getElementById('nav-declaration').style.display = 'flex';
   }
   if (state.declarationDone) {
@@ -1996,29 +1997,26 @@ function renderDeclaration() {
   const area = document.getElementById('declaration-area');
   if (state.declarationDone) {
     area.innerHTML = `
-      <div class="decl-title">Group Declaration</div>
-      <div class="decl-sub">Your group has completed the declaration. John's email is now available.</div>
-      <button class="decl-ready-btn" onclick="showEmail()">Go to John's email →</button>`;
+      <div class="decl-title">Phase 1 — Research Complete</div>
+      <div class="decl-sub">Your group has declared Phase 1 complete. Phase 2 — Define is now unlocked.</div>
+      <a href="phase2.html" class="decl-ready-btn" style="display:inline-block;text-decoration:none;text-align:center;">Go to Phase 2 — Define →</a>`;
     return;
   }
   area.innerHTML = `
-    <div class="decl-title">Group Declaration</div>
-    <div class="decl-sub">Before John's email is revealed, your group must confirm you are aligned on your findings. All four statements below must be ticked before proceeding — this action is permanent and locks all interviews and synthesis from further editing.</div>
+    <div class="decl-title">Phase 1 Declaration</div>
+    <div class="decl-sub">Tick all three boxes as a group to unlock Phase 2 — Define. This confirms your team has completed the Phase 1 research activities.</div>
     <div class="decl-checks">
       <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
-        <span class="decl-check-text"><strong>We have interviewed all 5 personas</strong> and reviewed each interview summary together as a group.</span>
+        <span class="decl-check-text"><strong>We have completed our interviews</strong> — all 5 personas have been interviewed and summaries reviewed as a group.</span>
       </label>
       <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
-        <span class="decl-check-text"><strong>We have reviewed and agreed our synthesis</strong> — the consolidated pain points, problem statement, and vision reflect our shared understanding.</span>
+        <span class="decl-check-text"><strong>We have completed our As-is Process Map</strong> — we have documented Tea Fellas' current operational process.</span>
       </label>
       <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
-        <span class="decl-check-text"><strong>We are aligned on our problem statement</strong> and understand what specific friction we are solving for Tea Fellas.</span>
-      </label>
-      <label class="decl-check"><input type="checkbox" onchange="checkDeclarationReady()">
-        <span class="decl-check-text"><strong>We are agreed on our vision for Tea Fellas</strong> — we have a shared picture of the future we are designing towards.</span>
+        <span class="decl-check-text"><strong>We have completed our Research Findings report</strong> — we have consolidated our key observations from Phase 1.</span>
       </label>
     </div>
-    <button class="decl-ready-btn" id="decl-ready-btn" onclick="submitDeclaration()" disabled>We are ready — reveal John's email →</button>`;
+    <button class="decl-ready-btn" id="decl-ready-btn" onclick="submitDeclaration()" disabled>Proceed to Phase 2 — Define →</button>`;
 }
 
 function checkDeclarationReady() {
@@ -2028,12 +2026,11 @@ function checkDeclarationReady() {
 }
 
 function submitDeclaration() {
-  if (!confirm('Once you proceed, your discovery phase is closed. All interviews and synthesis will be read-only. Your group cannot undo this. Are you sure you are ready?')) return;
   state.declarationDone = true;
   saveDeclaration();
-  markPhaseComplete(1);  // unlock Phase 2 in the nav bar and in D1
+  markPhaseComplete(1);
   renderSidebar();
-  showEmail();
+  renderDeclaration();
 }
 
 // ── John's email + scenario ───────────────────────────────────

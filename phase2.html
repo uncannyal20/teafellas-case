@@ -89,6 +89,35 @@ body.has-phase-nav { padding-top: 46px; }
 .learning-note-title { font-size: 13px; font-weight: 700; color: var(--amber); margin-bottom: 6px; }
 .learning-note-body  { font-size: 13px; color: var(--text); line-height: 1.7; }
 
+/* ── Inline content sections ── */
+.content-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 20px; overflow: hidden; }
+.cs-hdr { background: var(--green); color: white; padding: 13px 20px;
+  display: flex; align-items: center; justify-content: space-between; }
+.cs-hdr-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.cs-hdr-link  { font-size: 12px; color: rgba(255,255,255,.75); text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px; padding: 3px 10px; }
+.cs-hdr-link:hover { background: rgba(255,255,255,.25); color: white; }
+.cs-body { padding: 18px 20px; }
+.cs-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin-bottom: 6px; }
+.cs-ta { width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 10px 13px;
+  font-size: 13px; font-family: inherit; line-height: 1.7; resize: vertical; min-height: 110px;
+  background: white; color: var(--text); }
+.cs-ta:focus { border-color: var(--green); outline: none; }
+.cs-hint { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.cs-save-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  opacity: 0; transition: opacity .3s; display: inline-block; margin-top: 6px; }
+.cs-save-badge.show { opacity: 1; }
+.cs-save-badge.saved { background: #E8F5E9; color: #2E7D32; }
+.cs-save-badge.saving { background: #E3F2FD; color: #1565C0; }
+.cs-ranked-list { font-size: 13px; color: var(--text); line-height: 1.8; padding: 4px 0; }
+.cs-ranked-list li { list-style: none; display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.cs-ranked-list .rank-num { font-size: 11px; font-weight: 800; color: var(--green);
+  background: var(--green-xl); border-radius: 50%; width: 20px; height: 20px; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; }
+.cs-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 6px 0; }
+
 /* ── Phase gate ── */
 .phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
   padding: 24px 28px; margin-top: 40px; }
@@ -99,10 +128,15 @@ body.has-phase-nav { padding-top: 46px; }
 .gate-check label { font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer; }
 .gate-declare-btn { background: var(--green); color: white; border: none; border-radius: 8px;
   padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
-.gate-declare-btn:disabled { background: #aaa; cursor: not-allowed; }
+.gate-declare-btn:disabled { background: #ccc; color: #888; cursor: not-allowed; }
 .gate-done-banner { background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 8px;
-  padding: 14px 18px; font-size: 14px; font-weight: 700; color: #2E7D32; display: none; }
+  padding: 14px 18px; font-size: 14px; font-weight: 700; color: #2E7D32; display: none; margin-top: 16px; }
 .gate-done-banner.show { display: block; }
+.proceed-btn { display: none; background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 13px 28px; font-size: 15px; font-weight: 800; cursor: pointer; text-decoration: none;
+  margin-top: 16px; width: 100%; text-align: center; }
+.proceed-btn.show { display: block; }
+.proceed-btn:hover { opacity: .88; }
 
 @media (max-width: 680px) {
   #phase-content { padding: 20px 14px 60px; }
@@ -133,65 +167,71 @@ body.has-phase-nav { padding-top: 46px; }
   <!-- Research reference -->
   <div class="learning-note">
     <div class="learning-note-title">📚 Your Phase 1 Research is available</div>
-    <div class="learning-note-body">Refer back to your interview summaries from Phase 1 as evidence for your problem statement and vision. Your team's synthesis notes are in the <a href="index.html" style="color:var(--amber);font-weight:700;">Research phase</a>.</div>
+    <div class="learning-note-body">Refer back to your interview summaries in the <a href="index.html" style="color:var(--amber);font-weight:700;">Research phase →</a> as evidence for everything you write below.</div>
   </div>
 
-  <div class="deliverable-grid">
-
-    <div class="del-card">
-      <div class="del-card-hdr">2.1 — Problem Inventory</div>
-      <div class="del-card-body">
-        <div class="del-status active">In progress</div>
-        <div class="del-card-desc">Catalogue all 9 pain points discovered in Phase 1. Rate each by severity and frequency. This feeds your prioritisation exercise.</div>
-        <a href="phase2-inventory.html" class="del-card-btn">Open →</a>
-      </div>
+  <!-- Section 1: Pain Points Prioritisation -->
+  <div class="content-section">
+    <div class="cs-hdr">
+      <span class="cs-hdr-title">2.1 — Pain Point Prioritisation</span>
+      <a href="phase2-prioritise.html" class="cs-hdr-link">Full 2×2 matrix editor ↗</a>
     </div>
-
-    <div class="del-card">
-      <div class="del-card-hdr">2.2 — Problem Prioritisation</div>
-      <div class="del-card-body">
-        <div class="del-status todo">Not started</div>
-        <div class="del-card-desc">Plot your pain points on a Severity × Frequency 2×2 matrix. Agree on the top 3 problems your product must solve.</div>
-        <a href="phase2-prioritise.html" class="del-card-btn">Open →</a>
-      </div>
+    <div class="cs-body">
+      <div class="cs-label">Your top prioritised pain points (ranked most critical first)</div>
+      <div id="ranked-display"></div>
+      <div class="cs-hint">Use the <a href="phase2-prioritise.html" style="color:var(--amber);font-weight:700;">full editor</a> to plot pain points on the Severity × Frequency matrix — your ranked list will appear here. You can also use the <a href="phase2-inventory.html" style="color:var(--amber);font-weight:700;">Problem Inventory</a> to rate all 9 pain points first.</div>
     </div>
+  </div>
 
-    <div class="del-card">
-      <div class="del-card-hdr">2.3 — Problem Statement</div>
-      <div class="del-card-body">
-        <div class="del-status todo">Not started</div>
-        <div class="del-card-desc">Write a clear, structured problem statement using the UX format. This is the single most important artefact you will produce in Phase 2.</div>
-        <a href="phase2-problem.html" class="del-card-btn">Open →</a>
-      </div>
+  <!-- Section 2: Problem Statement -->
+  <div class="content-section">
+    <div class="cs-hdr">
+      <span class="cs-hdr-title">2.2 — Problem Statement</span>
+      <a href="phase2-problem.html" class="cs-hdr-link">Full UX template editor ↗</a>
     </div>
-
-    <div class="del-card">
-      <div class="del-card-hdr">2.4 — Product Vision</div>
-      <div class="del-card-body">
-        <div class="del-status todo">Not started</div>
-        <div class="del-card-desc">Define the compelling future state Tea Fellas is moving towards — the North Star that guides every product decision in Phase 3.</div>
-        <a href="phase2-vision.html" class="del-card-btn">Open →</a>
-      </div>
+    <div class="cs-body">
+      <div class="cs-label">Your agreed problem statement</div>
+      <textarea class="cs-ta" id="ps-ta" rows="5"
+        placeholder="We need to find a way for [user] to [goal] so that [outcome] — without [constraint]."
+        oninput="schedulePs()"></textarea>
+      <span class="cs-save-badge" id="ps-badge"></span>
+      <div class="cs-hint">Write your core problem statement here. Use the <a href="phase2-problem.html" style="color:var(--amber);font-weight:700;">full editor</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
     </div>
+  </div>
 
+  <!-- Section 3: Product Vision -->
+  <div class="content-section">
+    <div class="cs-hdr">
+      <span class="cs-hdr-title">2.3 — Product Vision</span>
+      <a href="phase2-vision.html" class="cs-hdr-link">Full vision editor ↗</a>
+    </div>
+    <div class="cs-body">
+      <div class="cs-label">Your product vision for Tea Fellas</div>
+      <textarea class="cs-ta" id="vis-ta" rows="5"
+        placeholder="Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — [what it looks like, feels like, and stands for]."
+        oninput="scheduleVis()"></textarea>
+      <span class="cs-save-badge" id="vis-badge"></span>
+      <div class="cs-hint">Write your North Star vision here. Use the <a href="phase2-vision.html" style="color:var(--amber);font-weight:700;">full editor</a> to define outcome pillars and "What this is NOT" constraints.</div>
+    </div>
   </div>
 
   <!-- BPR learning note -->
   <div class="learning-note">
     <div class="learning-note-title">📖 Learning Note — Business Process Re-engineering (CARE Framework)</div>
-    <div class="learning-note-body">2.5 BPR Opportunities will be covered as a facilitator-led discussion, not a team deliverable. The CARE framework (Consolidate · Automate · Reduce · Eliminate) will be introduced before Phase 3. <em>No action needed from your team on this item.</em></div>
+    <div class="learning-note-body">BPR Opportunities will be covered as a facilitator-led discussion. The CARE framework (Consolidate · Automate · Reduce · Eliminate) will be introduced before Phase 3. <em>No action needed from your team here.</em></div>
   </div>
 
   <!-- Phase gate -->
   <div class="phase-gate" id="phase-gate-2">
-    <div class="phase-gate-title">Declare Phase 2 — Define complete</div>
+    <div class="phase-gate-title">Phase 2 Declaration</div>
     <div class="gate-checks">
-      <div class="gate-check"><input type="checkbox" id="gc2-1" onchange="checkGate2()"><label for="gc2-1">We have built our Problem Inventory and prioritised the top pain points</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc2-2" onchange="checkGate2()"><label for="gc2-2">We have agreed on a Problem Statement that reflects our research evidence</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc2-3" onchange="checkGate2()"><label for="gc2-3">We have drafted a Product Vision for Tea Fellas</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc2-1" onchange="checkGate2()"><label for="gc2-1">We have prioritised our pain points</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc2-2" onchange="checkGate2()"><label for="gc2-2">We have finalised our problem statement</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc2-3" onchange="checkGate2()"><label for="gc2-3">We have finalised our product vision</label></div>
     </div>
-    <button class="gate-declare-btn" id="gate2-btn" disabled onclick="declarePhase2()">Complete Phase 2 — Move to Ideate →</button>
-    <div class="gate-done-banner" id="gate2-done">✓ Phase 2 complete — <a href="phase3.html" style="color:inherit;font-weight:800;">Open Phase 3: Ideate →</a></div>
+    <button class="gate-declare-btn" id="gate2-btn" disabled onclick="declarePhase2()">Proceed to Phase 3 — Ideate →</button>
+    <div class="gate-done-banner" id="gate2-done">✓ Phase 2 complete</div>
+    <a href="phase3.html" class="proceed-btn" id="proceed3-btn">Proceed to Phase 3 — Ideate →</a>
   </div>
 </div>
 
@@ -244,16 +284,107 @@ async function markPhaseComplete(phase) {
   } catch (_) {}
 }
 
+// ── Deliverable: problem statement ────────────────────────────
+let psTimer = null;
+function schedulePs() {
+  clearTimeout(psTimer);
+  setBadge('ps-badge','saving');
+  psTimer = setTimeout(savePs, 1500);
+}
+async function savePs() {
+  const val = document.getElementById('ps-ta').value;
+  // Load existing content first so we don't overwrite structured fields
+  let content = { statement: val };
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_statement`);
+    const d = await r.json();
+    const existing = d.deliverables?.problem_statement?.content || {};
+    content = { ...existing, statement: val };
+  } catch(_) {}
+  try {
+    const r = await fetch(`${API_URL}/deliverables`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ team_code: teamCode, deliverable_id: 'problem_statement', content })
+    });
+    setBadge('ps-badge', r.ok ? 'saved' : 'error');
+  } catch(_) { setBadge('ps-badge','error'); }
+}
+
+// ── Deliverable: product vision ───────────────────────────────
+let visTimer = null;
+function scheduleVis() {
+  clearTimeout(visTimer);
+  setBadge('vis-badge','saving');
+  visTimer = setTimeout(saveVis, 1500);
+}
+async function saveVis() {
+  const val = document.getElementById('vis-ta').value;
+  let content = { vision: val };
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=product_vision`);
+    const d = await r.json();
+    const existing = d.deliverables?.product_vision?.content || {};
+    content = { ...existing, vision: val };
+  } catch(_) {}
+  try {
+    const r = await fetch(`${API_URL}/deliverables`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ team_code: teamCode, deliverable_id: 'product_vision', content })
+    });
+    setBadge('vis-badge', r.ok ? 'saved' : 'error');
+  } catch(_) { setBadge('vis-badge','error'); }
+}
+
+function setBadge(id, state) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.className = `cs-save-badge ${state} show`;
+  b.textContent = state === 'saved' ? 'Saved ✓' : state === 'saving' ? 'Saving…' : 'Could not save';
+  if (state === 'saved') setTimeout(() => b.classList.remove('show'), 2500);
+}
+
+async function loadDeliverables() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    const dels = d.deliverables || {};
+
+    // Pain points ranked list
+    const pri = dels.problem_priorities?.content;
+    const ranked = pri?.ranked || [];
+    const rdEl = document.getElementById('ranked-display');
+    if (ranked.length) {
+      rdEl.innerHTML = `<ul class="cs-ranked-list">${ranked.map((r,i) =>
+        `<li><span class="rank-num">${i+1}</span><span>${r}</span></li>`).join('')}</ul>`;
+    } else {
+      rdEl.innerHTML = `<div class="cs-empty">No prioritised list yet — use the full editor to complete your 2×2 matrix.</div>`;
+    }
+
+    // Problem statement
+    const ps = dels.problem_statement?.content;
+    if (ps?.statement) document.getElementById('ps-ta').value = ps.statement;
+
+    // Vision
+    const vis = dels.product_vision?.content;
+    if (vis?.vision) document.getElementById('vis-ta').value = vis.vision;
+  } catch(_) {}
+}
+
 function checkGate2() {
-  const all = ['gc2-1','gc2-2','gc2-3'].every(id => document.getElementById(id).checked);
-  document.getElementById('gate2-btn').disabled = !all || phaseGates[2];
+  const all = ['gc2-1','gc2-2','gc2-3'].every(id => document.getElementById(id)?.checked);
+  const btn = document.getElementById('gate2-btn');
+  if (btn) btn.disabled = !all || phaseGates[2];
 }
 
 async function declarePhase2() {
-  if (!confirm('Declare Phase 2 — Define complete? Your team is ready to move to Ideate.')) return;
   await markPhaseComplete(2);
   document.getElementById('gate2-btn').disabled = true;
   document.getElementById('gate2-done').classList.add('show');
+  document.getElementById('proceed3-btn').classList.add('show');
+  ['gc2-1','gc2-2','gc2-3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.checked = true; el.disabled = true; }
+  });
 }
 
 function signOut() {
@@ -287,10 +418,16 @@ async function init() {
   document.getElementById('lock-screen').style.display = 'none';
   document.getElementById('phase-content').style.display = 'block';
 
+  await loadDeliverables();
+
   if (phaseGates[2]) {
     document.getElementById('gate2-btn').disabled = true;
     document.getElementById('gate2-done').classList.add('show');
-    ['gc2-1','gc2-2','gc2-3'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
+    document.getElementById('proceed3-btn').classList.add('show');
+    ['gc2-1','gc2-2','gc2-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.checked = true; el.disabled = true; }
+    });
   }
 }
 
