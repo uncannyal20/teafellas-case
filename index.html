@@ -1807,8 +1807,6 @@ function resumeTeamCode() {
     renderSidebar();
     startSync();
     if (state.declarationDone) {
-      showEmail();
-    } else if (state.synConfirmed) {
       showDeclaration();
     }
   });
@@ -2025,10 +2023,10 @@ function checkDeclarationReady() {
   document.getElementById('decl-ready-btn').disabled = !allChecked;
 }
 
-function submitDeclaration() {
+async function submitDeclaration() {
   state.declarationDone = true;
   saveDeclaration();
-  markPhaseComplete(1);
+  await markPhaseComplete(1);
   renderSidebar();
   renderDeclaration();
 }
