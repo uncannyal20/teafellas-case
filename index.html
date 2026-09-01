@@ -264,6 +264,64 @@
     border: 1px solid var(--tea-green); border-radius: 6px; padding: 7px 12px;
     font-size: 12px; cursor: pointer; font-weight: 600; transition: background 0.15s, color 0.15s; }
   .pc-pdf-btn:hover { background: var(--tea-green); color: #fff; }
+
+  /* ── Phase 1 sections ── */
+  #phase1-view { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .phase-section { padding: 28px 32px; border-bottom: 1px solid var(--tea-border); }
+  .phase-section-alt { background: var(--tea-cream); }
+  .ps-hdr-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+  .ps-num { font-size: 24px; font-weight: 700; color: var(--tea-amber); flex-shrink: 0; min-width: 36px; margin-top: 2px; }
+  .ps-title { font-size: 17px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
+  .ps-sub { font-size: 13px; color: var(--tea-muted); line-height: 1.5; }
+
+  /* ── Phase nav (sidebar) ── */
+  #phase-nav-list { flex: 1; padding: 10px 0 6px; overflow-y: auto; }
+  .pnav-section-hdr { padding: 8px 14px 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 0.8px; text-transform: uppercase; }
+  .pnav-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 9px 14px;
+    text-align: left; display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.75); font-size: 13px; border-left: 3px solid transparent; transition: background 0.15s; }
+  .pnav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .pnav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
+  .pnav-btn.locked { opacity: 0.4; cursor: not-allowed; }
+  .pnav-icon { font-size: 14px; flex-shrink: 0; }
+  .pnav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--tea-amber); color: #fff; border-radius: 10px; padding: 1px 6px; flex-shrink: 0; }
+
+  /* ── As-Is doc ── */
+  .asis-doc { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; overflow: hidden; max-width: 820px; }
+  .asis-doc-header { background: var(--tea-green); color: #fff; padding: 14px 18px; }
+  .asis-doc-title { font-size: 15px; font-weight: 700; }
+  .asis-doc-sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .asis-doc-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 18px; }
+  .asis-metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .asis-metric { background: var(--tea-cream); border-radius: 8px; padding: 12px 14px; border: 1px solid var(--tea-border); }
+  .asis-metric-val { font-size: 22px; font-weight: 700; color: var(--tea-green); }
+  .asis-metric-label { font-size: 11px; color: var(--tea-muted); margin-top: 2px; }
+  .asis-section-title { font-size: 11px; font-weight: 700; color: var(--tea-green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .asis-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .asis-table th { background: var(--tea-cream); padding: 7px 10px; text-align: left; font-weight: 600; color: var(--tea-green); border-bottom: 1px solid var(--tea-border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .asis-table td { padding: 7px 10px; border-bottom: 1px solid var(--tea-border); color: var(--tea-text); line-height: 1.5; }
+  .asis-table tr:last-child td { border-bottom: none; }
+  .asis-pain-list { display: flex; flex-direction: column; gap: 6px; }
+  .asis-pain-item { background: #FEF3CD; border: 1px solid #F5D76E; border-radius: 6px; padding: 8px 12px; font-size: 13px; color: var(--tea-text); line-height: 1.5; }
+
+  /* ── Declaration (Phase 1 section 1.3) ── */
+  .decl-checks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .decl-check { display: flex; align-items: flex-start; gap: 12px; background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: border-color 0.15s; }
+  .decl-check:hover { border-color: var(--tea-green); }
+  .decl-check input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; accent-color: var(--tea-green); cursor: pointer; }
+  .decl-check-text { font-size: 14px; color: var(--tea-text); line-height: 1.5; }
+  .decl-check-text strong { color: var(--tea-green); display: block; margin-bottom: 2px; }
+  .decl-ready-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .decl-ready-btn:hover:not(:disabled) { background: var(--tea-green-light); }
+  .decl-ready-btn:disabled { background: var(--tea-border); color: var(--tea-muted); cursor: not-allowed; }
+  .decl-done-box { background: #EAF2E8; border: 1px solid var(--tea-green); border-radius: 10px; padding: 18px 22px; }
+  .decl-done-title { font-size: 16px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
+  .decl-done-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 14px; line-height: 1.5; }
+  .decl-go-btn { display: inline-block; background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+  .decl-go-btn:hover { background: var(--tea-green-light); }
+
+  /* ── Read-only confirmed summary ── */
+  .sp-readonly { background: var(--tea-cream); border-radius: 6px; padding: 10px 12px; font-size: 13px; color: var(--tea-text); line-height: 1.7; white-space: pre-wrap; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -324,38 +382,50 @@
       <div id="sidebar-logo">teafellas</div>
       <div id="sidebar-tagline">Discovery Sim</div>
     </div>
-    <div id="persona-list"></div>
+    <!-- Phase navigation -->
+    <div id="phase-nav-list"></div>
     <div id="sidebar-footer">
-      <button class="sidebar-nav-btn" id="nav-synthesis" onclick="showSynthesis()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 16l4-4 4 4 4-4"/></svg>
-        Overall synthesis
-      </button>
-      <button class="sidebar-nav-btn" id="nav-data" onclick="window.location.href='data.html'">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Case data
-        <span id="data-badge" style="margin-left:auto;width:7px;height:7px;border-radius:50%;background:var(--tea-amber-light);flex-shrink:0;display:none"></span>
-      </button>
       <button class="sidebar-nav-btn" id="nav-reset" onclick="confirmReset()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Reset session
-      </button>
-      <button class="sidebar-nav-btn" id="nav-help" onclick="showOverlay()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
-        How to use
       </button>
     </div>
   </div>
 
   <!-- Main -->
   <div id="main">
-    <!-- Landing -->
-    <div id="landing">
-      <div class="landing-header">
-        <div style="font-size:36px;margin-bottom:10px;">🍵</div>
-        <h2>Tea Fellas — Discovery Interviews</h2>
-        <p>Meet the people behind Tea Fellas. Select a persona to begin your 15-minute interview. Ask about their daily experience, frustrations, and hopes for the shop.</p>
+    <!-- Phase 1 — Research (3 sections) -->
+    <div id="phase1-view" style="display:none;flex:1;overflow-y:auto;flex-direction:column;">
+
+      <!-- 1.1 Interviews -->
+      <div class="phase-section">
+        <div class="ps-hdr-row">
+          <span class="ps-num">1.1</span>
+          <div><div class="ps-title">Stakeholder Interviews</div>
+          <div class="ps-sub">Click a card to open an interview. Completed interviews show a ✓ — click them to review the confirmed summary.</div></div>
+        </div>
+        <div class="profile-grid" id="profile-cards"></div>
       </div>
-      <div class="profile-grid" id="profile-cards"></div>
+
+      <!-- 1.2 As-Is Document -->
+      <div class="phase-section phase-section-alt">
+        <div class="ps-hdr-row">
+          <span class="ps-num">1.2</span>
+          <div><div class="ps-title">Where We Are Today</div>
+          <div class="ps-sub">Tea Fellas Toa Payoh — Current State Reference. Use this as your baseline during research.</div></div>
+        </div>
+        <div id="asis-doc"></div>
+      </div>
+
+      <!-- 1.3 Declaration -->
+      <div class="phase-section" id="p1-decl-section">
+        <div class="ps-hdr-row">
+          <span class="ps-num">1.3</span>
+          <div><div class="ps-title">Phase 1 Declaration</div>
+          <div class="ps-sub">Tick all three boxes as a group to unlock Phase 2 — Define.</div></div>
+        </div>
+        <div id="declaration-area"></div>
+      </div>
     </div>
 
     <!-- Chat -->
@@ -616,13 +686,14 @@ INTERVIEW STYLE: Open and reflective. You have thought about these problems a lo
 // ── State ──────────────────────────────────────────────────────
 const state = {
   currentPersona: null,
-  view: 'landing',
+  view: 'phase1',
   histories: {},
   timers: {},
   timerIntervals: {},
   summaries: {},
   synPain: '', synProblem: '', synVision: '',
-  teamCode: ''
+  teamCode: '',
+  declarationDone: false
 };
 
 PERSONAS.forEach(p => {
@@ -646,46 +717,56 @@ function confirmReset() {
   });
   state.synPain = ''; state.synProblem = ''; state.synVision = '';
   state.currentPersona = null;
-  state.view = 'landing';
-  showView('landing');
-  renderSidebar();
-  renderLandingCards();
+  state.declarationDone = false;
+  showPhase1();
 }
 
 // ── Views ──────────────────────────────────────────────────────
 function showView(name) {
-  document.getElementById('landing').style.display = name === 'landing' ? 'flex' : 'none';
-  const ca = document.getElementById('chat-area');
-  ca.classList.toggle('visible', name === 'chat');
-  ca.style.display = name === 'chat' ? 'flex' : 'none';
-  document.getElementById('summary-panel').style.display = name === 'summary' ? 'flex' : 'none';
-  document.getElementById('summary-panel').className = name === 'summary' ? 'visible' : '';
-  document.getElementById('synthesis-area').style.display = name === 'synthesis' ? 'flex' : 'none';
-  document.getElementById('synthesis-area').className = name === 'synthesis' ? 'visible' : '';
+  const map = { phase1: 'phase1-view', chat: 'chat-area', summary: 'summary-panel', synthesis: 'synthesis-area' };
+  Object.entries(map).forEach(([key, id]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const on = key === name;
+    el.style.display = on ? 'flex' : 'none';
+    el.classList.toggle('visible', on);
+  });
 }
 
 // ── Sidebar ────────────────────────────────────────────────────
-function renderSidebar() {
-  const list = document.getElementById('persona-list');
-  list.innerHTML = '';
-  PERSONAS.forEach(p => {
-    const t = state.timers[p.id];
-    const isActive = state.currentPersona === p.id && (state.view === 'chat' || state.view === 'summary');
-    const btn = document.createElement('button');
-    btn.className = 'persona-btn' + (isActive ? ' active' : '');
-    let timerHtml = '';
-    if (state.summaries[p.id]) {
-      timerHtml = '<span class="pb-timer done">✓ Done</span>';
-    } else if (t.running || t.seconds < 15 * 60) {
-      const cls = t.seconds <= 0 ? 'expired' : t.seconds <= 120 ? 'warn' : 'running';
-      const label = t.seconds < 0 ? `+${formatTime(Math.abs(t.seconds))} OT` : formatTime(t.seconds);
-      timerHtml = `<span class="pb-timer ${cls}">${label}</span>`;
-    }
-    btn.innerHTML = `<span class="pb-name">${p.emoji} ${p.name}</span><span class="pb-role">${p.role}</span>${timerHtml}`;
-    btn.onclick = () => switchToPersona(p.id);
-    list.appendChild(btn);
-  });
-  document.getElementById('nav-synthesis').classList.toggle('active', state.view === 'synthesis');
+function renderSidebar() { renderPhaseNavList(); }
+
+function renderPhaseNavList() {
+  const el = document.getElementById('phase-nav-list');
+  if (!el) return;
+  const doneCount = PERSONAS.filter(p => state.summaries[p.id]?.confirmed).length;
+  const inPhase1 = ['phase1', 'chat', 'summary'].includes(state.view);
+  el.innerHTML = '';
+
+  const p1 = document.createElement('button');
+  p1.className = 'pnav-btn' + (inPhase1 ? ' active' : '');
+  p1.innerHTML = `<span class="pnav-icon">🔍</span> Phase 1 — Research` +
+    (doneCount > 0 ? `<span class="pnav-badge">${doneCount}/5</span>` : '');
+  p1.onclick = () => showPhase1();
+  el.appendChild(p1);
+
+  const p2 = document.createElement('button');
+  const p2locked = !state.declarationDone;
+  p2.className = 'pnav-btn' + (p2locked ? ' locked' : '');
+  p2.title = p2locked ? 'Complete Phase 1 declaration to unlock' : '';
+  p2.innerHTML = `<span class="pnav-icon">📋</span> Phase 2 — Define`;
+  p2.onclick = () => { if (!p2locked) window.location.href = 'phase2.html'; };
+  el.appendChild(p2);
+
+  const p3 = document.createElement('button');
+  p3.className = 'pnav-btn locked';
+  p3.innerHTML = `<span class="pnav-icon">💡</span> Phase 3 — Ideate`;
+  el.appendChild(p3);
+
+  const p4 = document.createElement('button');
+  p4.className = 'pnav-btn locked';
+  p4.innerHTML = `<span class="pnav-icon">🚀</span> Phase 4 — Build`;
+  el.appendChild(p4);
 }
 
 // ── Profile card data ─────────────────────────────────────────
@@ -926,6 +1007,25 @@ async function summarisePersona() {
   const hist = state.histories[id];
   if (hist.length < 2) return;
 
+  const existing = state.summaries[id];
+  if (existing?.confirmed) {
+    state.view = 'summary';
+    showView('summary');
+    renderPhaseNavList();
+    const panel = document.getElementById('summary-panel');
+    panel.innerHTML = `
+      <div class="sp-title">${p.emoji} ${p.name} — Confirmed Interview Summary</div>
+      <div class="sp-sub">This summary has been confirmed. Edit and re-confirm if needed.</div>
+      <div class="sp-card"><div class="sp-card-title">Key pain points</div><div class="sp-readonly">${existing.pain || '—'}</div></div>
+      <div class="sp-card"><div class="sp-card-title">Aspirations & wishes</div><div class="sp-readonly">${existing.asp || '—'}</div></div>
+      <div class="sp-card"><div class="sp-card-title">Key quotes / moments</div><div class="sp-readonly">${existing.quotes || '—'}</div></div>
+      <div class="sp-actions">
+        <button class="sp-btn sp-btn-back" onclick="showPhase1()">← Back to Phase 1</button>
+        <button class="sp-btn sp-btn-confirm" onclick="reopenSummary('${id}')">Edit & re-confirm →</button>
+      </div>`;
+    return;
+  }
+
   state.view = 'summary';
   showView('summary');
 
@@ -989,11 +1089,8 @@ function confirmSummary(id) {
   const quotes = document.querySelector('#sp-quotes textarea')?.value || '';
   state.summaries[id] = { pain, asp, quotes, confirmed: true };
   saveSession(id);
-  state.view = 'landing';
   state.currentPersona = null;
-  showView('landing');
-  renderSidebar();
-  renderLandingCards();
+  showPhase1();
 }
 
 // ── Overall synthesis ──────────────────────────────────────────
@@ -1119,31 +1216,38 @@ function enterTeamCode() {
   state.teamCode = val;
   sessionStorage.setItem('teafellas_team_code', val);
   document.getElementById('team-code-overlay').classList.add('hidden');
-  loadTeamSession().then(() => {
-    renderLandingCards();
-    renderSidebar();
-  });
+  loadTeamSession().then(() => showPhase1());
 }
 
 async function loadTeamSession() {
   if (!state.teamCode) return;
   try {
-    const resp = await fetch(`${API_URL}/load-session?team_code=${encodeURIComponent(state.teamCode)}`);
-    if (!resp.ok) return;
-    const { rows } = await resp.json();
-    if (!rows || !rows.length) return;
-    rows.forEach(row => {
-      if (row.persona_id === '_synthesis') {
-        if (row.synthesis) {
-          state.synPain = row.synthesis.synPain || '';
-          state.synProblem = row.synthesis.synProblem || '';
-          state.synVision = row.synthesis.synVision || '';
-        }
-      } else if (PERSONAS.find(p => p.id === row.persona_id)) {
-        if (row.messages && row.messages.length) state.histories[row.persona_id] = row.messages;
-        if (row.summary) state.summaries[row.persona_id] = row.summary;
+    const [sessResp, gateResp] = await Promise.all([
+      fetch(`${API_URL}/load-session?team_code=${encodeURIComponent(state.teamCode)}`),
+      fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(state.teamCode)}`)
+    ]);
+    if (sessResp.ok) {
+      const { rows } = await sessResp.json();
+      if (rows && rows.length) {
+        rows.forEach(row => {
+          if (row.persona_id === '_synthesis') {
+            if (row.synthesis) {
+              state.synPain = row.synthesis.synPain || '';
+              state.synProblem = row.synthesis.synProblem || '';
+              state.synVision = row.synthesis.synVision || '';
+            }
+          } else if (PERSONAS.find(p => p.id === row.persona_id)) {
+            if (row.messages && row.messages.length) state.histories[row.persona_id] = row.messages;
+            if (row.summary) state.summaries[row.persona_id] = row.summary;
+          }
+        });
       }
-    });
+    }
+    if (gateResp.ok) {
+      const gates = await gateResp.json();
+      const completed = (gates.phases || []).map(Number);
+      if (completed.includes(1)) state.declarationDone = true;
+    }
   } catch (e) {
     console.warn('Could not load session:', e);
   }
@@ -1420,13 +1524,160 @@ function generateSynthesisPDF() {
   doc.save('TeaFellas-Synthesis.pdf');
 }
 
-// ── Init ───────────────────────────────────────────────────────
-renderLandingCards();
-renderSidebar();
-if (localStorage.getItem('teafellas_case_data')) {
-  const badge = document.getElementById('data-badge');
-  if (badge) badge.style.display = 'inline-block';
+// ── Phase 1 view ───────────────────────────────────────────────
+function showPhase1() {
+  state.view = 'phase1';
+  state.currentPersona = null;
+  showView('phase1');
+  renderLandingCards();
+  renderAsIsDoc();
+  renderDeclaration();
+  renderPhaseNavList();
 }
+
+function renderAsIsDoc() {
+  const el = document.getElementById('asis-doc');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="asis-doc">
+      <div class="asis-doc-header">
+        <div class="asis-doc-title">Tea Fellas, Toa Payoh — Current State of Operations</div>
+        <div class="asis-doc-sub">As at 2025. All figures are estimates based on field observations.</div>
+      </div>
+      <div class="asis-doc-body">
+        <div>
+          <div class="asis-section-title">At a Glance</div>
+          <div class="asis-metric-grid">
+            <div class="asis-metric"><div class="asis-metric-val">~250</div><div class="asis-metric-label">Orders per day</div></div>
+            <div class="asis-metric"><div class="asis-metric-val">15–30 min</div><div class="asis-metric-label">Peak wait time</div></div>
+            <div class="asis-metric"><div class="asis-metric-val">5</div><div class="asis-metric-label">Total staff</div></div>
+            <div class="asis-metric"><div class="asis-metric-val">1</div><div class="asis-metric-label">Outlet (Toa Payoh)</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="asis-section-title">Current Order Flow (As-Is Process)</div>
+          <table class="asis-table">
+            <thead><tr><th>Step</th><th>Who</th><th>How</th><th>Known Issues</th></tr></thead>
+            <tbody>
+              <tr><td>1. Customer orders</td><td>Aunty Mary (cashier)</td><td>Verbal — Mary handwrites chit</td><td>Errors when busy; unclear handwriting</td></tr>
+              <tr><td>2. Chit to system</td><td>Barista A</td><td>Keys handwritten chit into tablet; prints sticker</td><td>Delay step; misread chits cause wrong orders</td></tr>
+              <tr><td>3. Drinks prepared</td><td>Darren (barista)</td><td>Makes all drinks manually</td><td>Peak hour overwhelm; unclear chits break flow</td></tr>
+              <tr><td>4. Cups labelled</td><td>Barista A → Barista C</td><td>Sticker applied; cup wiped; passed to counter</td><td>Labels sometimes hard to read at collection</td></tr>
+              <tr><td>5. Collection</td><td>Uncle John</td><td>Calls out names / order numbers from memory</td><td>No ticketing system; confusion for bulk orders</td></tr>
+              <tr><td>6. Payment</td><td>Aunty Mary</td><td>Cash or PayNow; no POS; no receipt issued</td><td>No digital record; no order history</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="asis-section-title">Supply Chain</div>
+          <table class="asis-table">
+            <thead><tr><th>Activity</th><th>Current Approach</th></tr></thead>
+            <tbody>
+              <tr><td>Ordering</td><td>Uncle John calls one trusted supplier (Chinatown) every Monday</td></tr>
+              <tr><td>Delivery</td><td>Fixed weekly delivery on Wednesday — same items, same quantities</td></tr>
+              <tr><td>Inventory</td><td>No system. John estimates by eye. No stockout issues at current scale</td></tr>
+              <tr><td>Supplier relationship</td><td>30-year relationship. John will not switch even if cheaper alternatives exist</td></tr>
+              <tr><td>Cost pressure</td><td>Ingredient costs rising (fuel pass-through). John absorbs quietly; has not raised prices</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="asis-section-title">Key Pain Points Observed</div>
+          <div class="asis-pain-list">
+            <div class="asis-pain-item">Manual paper-based ordering creates errors and slows down peak-hour throughput</div>
+            <div class="asis-pain-item">No pre-ordering or phone ordering means customers must queue in person</div>
+            <div class="asis-pain-item">Bulk orders (e.g. office teams) are particularly painful — verbal recitation, no labelling by person</div>
+            <div class="asis-pain-item">No receipts or digital records — customers cannot track orders; shop cannot analyse demand</div>
+            <div class="asis-pain-item">Rising ingredient costs silently eroding margins; no pricing strategy in place</div>
+            <div class="asis-pain-item">Expansion risk: one-supplier, one-outlet model cannot scale to a second outlet without operational overhaul</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderDeclaration() {
+  const area = document.getElementById('declaration-area');
+  if (!area) return;
+  if (state.declarationDone) {
+    area.innerHTML = `
+      <div class="decl-done-box">
+        <div class="decl-done-title">✓ Phase 1 Declaration Complete</div>
+        <div class="decl-done-sub">Your team has completed all three Phase 1 activities. Phase 2 — Define is now unlocked.</div>
+        <button class="decl-go-btn" onclick="window.location.href='phase2.html'">Go to Phase 2 — Define →</button>
+      </div>`;
+    return;
+  }
+  area.innerHTML = `
+    <div class="decl-checks">
+      <label class="decl-check">
+        <input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We have completed our interviews</strong>All 5 stakeholder interviews have been conducted and key findings noted.</span>
+      </label>
+      <label class="decl-check">
+        <input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We have completed our As-Is Process Map</strong>We have reviewed and discussed the current state of Tea Fellas' operations.</span>
+      </label>
+      <label class="decl-check">
+        <input type="checkbox" onchange="checkDeclarationReady()">
+        <span class="decl-check-text"><strong>We have completed our Research Findings report</strong>We have documented consolidated insights from our research activities.</span>
+      </label>
+    </div>
+    <button class="decl-ready-btn" id="decl-ready-btn" onclick="submitDeclaration()" disabled>Proceed to Phase 2 — Define →</button>`;
+}
+
+function checkDeclarationReady() {
+  const boxes = document.querySelectorAll('#declaration-area input[type=checkbox]');
+  const allChecked = Array.from(boxes).every(b => b.checked);
+  const btn = document.getElementById('decl-ready-btn');
+  if (btn) btn.disabled = !allChecked;
+}
+
+async function submitDeclaration() {
+  const btn = document.getElementById('decl-ready-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  state.declarationDone = true;
+  await markPhaseComplete(1);
+  await saveDeclaration();
+  renderDeclaration();
+  renderPhaseNavList();
+}
+
+async function saveDeclaration() {
+  if (!state.teamCode) return;
+  try {
+    await fetch(`${API_URL}/save-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        team_code: state.teamCode,
+        persona_id: '_declaration',
+        messages: [],
+        summary: null,
+        declaration_done: true
+      })
+    });
+  } catch (e) { console.warn('Could not save declaration:', e); }
+}
+
+async function markPhaseComplete(phase) {
+  if (!state.teamCode) return;
+  try {
+    await fetch(`${API_URL}/phase-gates`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: state.teamCode, phase })
+    });
+  } catch (e) { console.warn('Could not mark phase complete:', e); }
+}
+
+function reopenSummary(id) {
+  state.summaries[id] = { ...state.summaries[id], confirmed: false };
+  summarisePersona();
+}
+
+// ── Init ───────────────────────────────────────────────────────
+showPhase1();
 
 // Restore team code from sessionStorage (survives page refresh within same tab session)
 (async () => {
@@ -1435,8 +1686,7 @@ if (localStorage.getItem('teafellas_case_data')) {
     state.teamCode = saved;
     document.getElementById('team-code-overlay').classList.add('hidden');
     await loadTeamSession();
-    renderLandingCards();
-    renderSidebar();
+    showPhase1();
   }
 })();
 </script>
