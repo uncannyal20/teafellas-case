@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Phase 4: Validate</title>
+<style>
+:root {
+  --green: #2D5A27; --green-l: #4A7C42; --green-xl: #EEF5ED;
+  --amber: #C17A2A; --amber-l: #E8A94A; --amber-xl: #FFF8E6;
+  --cream: #F5F0E8; --card:   #FDFAF4; --border: #D4C4A0;
+  --text:  #2C2416; --muted:  #6B5A3E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--cream); color: var(--text); }
+body.has-phase-nav { padding-top: 46px; }
+
+/* ── Phase nav bar (shared) ── */
+#phase-nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
+  background: #1E3D1A; display: flex; align-items: center;
+  padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+#phase-nav-bar.pnb-hidden { display: none; }
+.pnb-brand { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); white-space: nowrap; margin-right: 18px; }
+.pnb-team  { font-size: 11px; font-weight: 700; color: #E8A94A; background: rgba(193,122,42,0.25);
+  border-radius: 4px; padding: 2px 7px; margin-left: 8px; }
+.pnb-phases { display: flex; align-items: center; flex: 1; }
+.pnb-phase { display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 46px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.38); cursor: default;
+  white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.15s; text-decoration: none; }
+.pnb-phase.pnb-active { color: white; border-bottom-color: #E8A94A; }
+.pnb-phase.pnb-done   { color: rgba(255,255,255,0.75); border-bottom-color: #4CAF50; cursor: pointer; }
+.pnb-phase.pnb-done:hover { background: rgba(255,255,255,0.07); }
+.pnb-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pnb-phase.pnb-locked .pnb-num { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+.pnb-phase.pnb-active .pnb-num { background: #C17A2A; color: white; }
+.pnb-phase.pnb-done   .pnb-num { background: #4CAF50; color: white; }
+.pnb-sep { color: rgba(255,255,255,0.2); font-size: 14px; padding: 0 2px; }
+.pnb-right { margin-left: auto; }
+.pnb-logout { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: none;
+  cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+.pnb-logout:hover { color: white; background: rgba(255,255,255,0.1); }
+
+/* ── Lock screen ── */
+#lock-screen { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 46px); }
+.lock-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 48px 40px; text-align: center; max-width: 460px; width: 90%; }
+.lock-icon { font-size: 48px; margin-bottom: 16px; }
+.lock-title { font-size: 22px; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+.lock-sub   { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+.lock-btn   { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 11px 22px; font-size: 14px; font-weight: 700; text-decoration: none; display: inline-block; }
+.lock-btn:hover { opacity: .88; }
+
+/* ── Main content ── */
+#phase-content { display: none; max-width: 860px; margin: 0 auto; padding: 40px 36px 80px; }
+.phase-header { margin-bottom: 32px; text-align: center; }
+.phase-tag   { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--amber); margin-bottom: 6px; }
+.phase-title { font-size: 32px; font-weight: 900; color: var(--green); margin-bottom: 10px; }
+.phase-desc  { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+/* ── Presentation prep card ── */
+.prep-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+  padding: 28px; margin-bottom: 24px; }
+.prep-title { font-size: 17px; font-weight: 800; color: var(--green); margin-bottom: 6px; }
+.prep-desc  { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 18px; }
+.prep-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.prep-sec { background: var(--green-xl); border-radius: 8px; padding: 12px 14px; }
+.prep-sec-title { font-size: 12px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
+.prep-sec-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
+.prep-btn { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 11px 22px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  display: inline-block; }
+.prep-btn:hover { opacity: .88; }
+
+/* ── Journey complete ── */
+.complete-banner { background: #E8F5E9; border: 2px solid #4CAF50; border-radius: 14px;
+  padding: 32px; text-align: center; margin-top: 32px; }
+.complete-icon  { font-size: 48px; margin-bottom: 12px; }
+.complete-title { font-size: 22px; font-weight: 900; color: #2E7D32; margin-bottom: 8px; }
+.complete-desc  { font-size: 14px; color: #388E3C; line-height: 1.7; }
+
+/* ── Phase gate ── */
+.phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
+  padding: 24px 28px; margin-top: 32px; }
+.phase-gate-title { font-size: 15px; font-weight: 800; color: var(--green); margin-bottom: 12px; }
+.gate-checks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.gate-check { display: flex; align-items: flex-start; gap: 10px; }
+.gate-check input { margin-top: 3px; accent-color: var(--green); width: 16px; height: 16px; flex-shrink: 0; }
+.gate-check label { font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer; }
+.gate-declare-btn { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.gate-declare-btn:disabled { background: #aaa; cursor: not-allowed; }
+.gate-done-banner { display: none; }
+.gate-done-banner.show { display: block; }
+
+@media (max-width: 680px) {
+  #phase-content { padding: 20px 14px 60px; }
+  .prep-sections { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Phase 4 — Validate</div>
+    <div class="lock-sub" id="lock-msg">Loading your team's progress…</div>
+    <a href="index.html" class="lock-btn" id="lock-action">Go to Phase 1 →</a>
+  </div>
+</div>
+
+<div id="phase-content">
+  <div class="phase-header">
+    <div class="phase-tag">Phase 4 — Final</div>
+    <div class="phase-title">Validate</div>
+    <div class="phase-desc">You've done the research, framed the problem, and designed the solution. Now present it. Your Product Strategy Canvas is your pitch to the room — and to Tea Fellas.</div>
+  </div>
+
+  <!-- Presentation prep -->
+  <div class="prep-card">
+    <div class="prep-title">Your Product Strategy Canvas</div>
+    <div class="prep-desc">Assemble everything your team produced across Phases 1–3 into a single presentation-ready canvas. This is your team's final artefact — the "pitch" for what Tea Fellas should do and why.</div>
+    <div class="prep-sections">
+      <div class="prep-sec">
+        <div class="prep-sec-title">From Phase 1</div>
+        <div class="prep-sec-desc">Key research findings · As-Is process pain points · Customer quotes</div>
+      </div>
+      <div class="prep-sec">
+        <div class="prep-sec-title">From Phase 2</div>
+        <div class="prep-sec-desc">Problem Statement · Product Vision · Top 3 prioritised problems</div>
+      </div>
+      <div class="prep-sec">
+        <div class="prep-sec-title">From Phase 3</div>
+        <div class="prep-sec-desc">Recommended scenario · CBA summary (BCR, payback) · Roadmap snapshot</div>
+      </div>
+      <div class="prep-sec">
+        <div class="prep-sec-title">Your pitch</div>
+        <div class="prep-sec-desc">Why this scenario · Key risks and how you'd address them · What success looks like</div>
+      </div>
+    </div>
+    <a href="phase4-canvas.html" class="prep-btn">Build your Product Strategy Canvas →</a>
+  </div>
+
+  <!-- Gate -->
+  <div class="phase-gate" id="phase-gate-4">
+    <div class="phase-gate-title">Declare Phase 4 — Validate complete</div>
+    <div class="gate-checks">
+      <div class="gate-check"><input type="checkbox" id="gc4-1" onchange="checkGate4()"><label for="gc4-1">We have assembled our Product Strategy Canvas</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc4-2" onchange="checkGate4()"><label for="gc4-2">We have presented our recommendation to the room</label></div>
+    </div>
+    <button class="gate-declare-btn" id="gate4-btn" disabled onclick="declarePhase4()">Complete our discovery journey →</button>
+    <div class="gate-done-banner" id="gate4-done"></div>
+  </div>
+
+  <!-- Complete banner (shown after gate 4 done) -->
+  <div class="complete-banner" id="complete-banner" style="display:none;">
+    <div class="complete-icon">🎉</div>
+    <div class="complete-title">Discovery journey complete!</div>
+    <div class="complete-desc">Your team has completed all four phases of the Tea Fellas product discovery simulation.<br>Well done — Good Tea. Good Day.</div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE = 4;
+const PHASE_PAGES  = { 1: 'index.html', 2: 'phase2.html', 3: 'phase3.html', 4: 'phase4.html' };
+const PHASE_LABELS = { 1: 'Research', 2: 'Define', 3: 'Ideate', 4: 'Validate' };
+
+let teamCode  = localStorage.getItem('teafellas_team_code') || null;
+let phaseGates = { 1: false, 2: false, 3: false, 4: false };
+
+function renderPhaseNav() {
+  const bar = document.getElementById('phase-nav-bar');
+  if (!teamCode) { bar.classList.add('pnb-hidden'); return; }
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases = [1,2,3,4].map((p, i, arr) => {
+    const done   = phaseGates[p];
+    const active = p === CURRENT_PHASE;
+    const cls    = done ? 'pnb-done' : active ? 'pnb-active' : 'pnb-locked';
+    const icon   = done ? '✓' : active ? p : '🔒';
+    const href   = (done && p !== CURRENT_PHASE) ? ` href="${PHASE_PAGES[p]}"` : '';
+    const tag    = (done && p !== CURRENT_PHASE) ? 'a' : 'span';
+    const sep    = i < arr.length - 1 ? '<span class="pnb-sep">›</span>' : '';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML = `<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
+    <div class="pnb-phases">${phases}</div>
+    <div class="pnb-right"><button class="pnb-logout" onclick="signOut()">Sign out</button></div>`;
+}
+
+async function loadPhaseGates() {
+  if (!teamCode) return;
+  try {
+    const r = await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    if (d.gates) phaseGates = { ...phaseGates, ...d.gates };
+  } catch (_) {}
+}
+
+async function markPhaseComplete(phase) {
+  phaseGates[phase] = true;
+  renderPhaseNav();
+  try {
+    await fetch(`${API_URL}/phase-gates`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: teamCode, phase }),
+    });
+  } catch (_) {}
+}
+
+function checkGate4() {
+  const all = ['gc4-1','gc4-2'].every(id => document.getElementById(id).checked);
+  document.getElementById('gate4-btn').disabled = !all || phaseGates[4];
+}
+
+async function declarePhase4() {
+  if (!confirm('Declare your discovery journey complete? This is the final step.')) return;
+  await markPhaseComplete(4);
+  document.getElementById('gate4-btn').style.display = 'none';
+  document.getElementById('complete-banner').style.display = 'block';
+  ['gc4-1','gc4-2'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
+}
+
+function signOut() {
+  localStorage.removeItem('teafellas_team_code');
+  location.href = 'index.html';
+}
+
+async function init() {
+  if (!teamCode) {
+    document.getElementById('lock-msg').textContent = 'Please log in with your team first.';
+    document.getElementById('lock-action').textContent = 'Log in →';
+    document.getElementById('lock-action').href = 'index.html';
+    return;
+  }
+  await loadPhaseGates();
+  renderPhaseNav();
+
+  if (!phaseGates[3]) {
+    const msg = !phaseGates[1] ? 'Complete Phases 1, 2, and 3 first.' :
+                !phaseGates[2] ? 'Complete Phases 2 and 3 before Validate.' :
+                                 'Complete Phase 3 — Ideate before moving to Validate.';
+    const href = !phaseGates[1] ? 'index.html' : !phaseGates[2] ? 'phase2.html' : 'phase3.html';
+    const lbl  = !phaseGates[1] ? 'Go to Phase 1 →' : !phaseGates[2] ? 'Go to Phase 2 →' : 'Go to Phase 3 →';
+    document.getElementById('lock-msg').textContent = msg;
+    document.getElementById('lock-action').textContent = lbl;
+    document.getElementById('lock-action').href = href;
+    return;
+  }
+
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('phase-content').style.display = 'block';
+
+  if (phaseGates[4]) {
+    document.getElementById('gate4-btn').style.display = 'none';
+    document.getElementById('complete-banner').style.display = 'block';
+    ['gc4-1','gc4-2'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
+  }
+}
+
+init();
+</script>
+</body>
+</html>

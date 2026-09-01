@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Scenario Briefing</title>
+<style>
+:root {
+  --green:  #2D5A27; --green-l: #4A7C42; --green-xl: #EEF5ED;
+  --amber:  #C17A2A; --amber-l: #E8A94A; --amber-xl: #FFF8E6;
+  --cream:  #F5F0E8; --card:    #FDFAF4; --border:   #D4C4A0;
+  --text:   #2C2416; --muted:   #6B5A3E;
+  --red:    #C0392B; --red-xl:  #FFEBEE;
+  --pos:    #2E7D32; --pos-xl:  #E8F5E9;
+  --blue:   #1565C0;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--cream); color: var(--text); min-height: 100vh; }
+
+.hdr { background: var(--green); color: white; padding: 16px 36px;
+  display: flex; align-items: baseline; gap: 14px; }
+.hdr-logo { font-size: 17px; font-weight: 700; }
+.hdr-sub  { font-size: 13px; opacity: .65; }
+
+.selector-bar { background: white; border-bottom: 2px solid var(--border);
+  padding: 16px 36px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.sel-label { font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--muted); white-space: nowrap; }
+.scenario-sel { border: 2px solid var(--green); border-radius: 8px; padding: 9px 14px;
+  font-size: 15px; font-weight: 600; color: var(--text); background: white;
+  cursor: pointer; font-family: inherit; min-width: 340px; }
+.scenario-sel:focus { outline: none; }
+.btn-cba { background: var(--amber); color: white; border: none; border-radius: 7px;
+  padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer;
+  text-decoration: none; display: inline-block; margin-left: auto; white-space: nowrap; }
+.btn-cba:hover { opacity: .88; }
+
+.main { max-width: 960px; margin: 0 auto; padding: 28px 36px 60px; }
+
+/* ── Splash ── */
+.splash { text-align: center; padding: 60px 20px; color: var(--muted); }
+.splash-icon { font-size: 48px; margin-bottom: 16px; }
+.splash p { font-size: 15px; }
+
+/* ── Scenario banner ── */
+.sc-banner { border-radius: 12px; padding: 22px 26px; margin-bottom: 24px;
+  display: flex; align-items: flex-start; gap: 18px; }
+.sc-banner.digital  { background: #FCE4EC; border: 1px solid #F48FB1; }
+.sc-banner.expand   { background: #E3F2FD; border: 1px solid #90CAF9; }
+.sc-banner.both-c   { background: var(--green-xl); border: 1px solid var(--green-l); }
+.sc-banner.both-ag  { background: #FFF3E0; border: 1px solid #FFCC80; }
+.sc-id { font-size: 28px; font-weight: 900; min-width: 48px; }
+.sc-banner.digital .sc-id  { color: #880E4F; }
+.sc-banner.expand  .sc-id  { color: var(--blue); }
+.sc-banner.both-c  .sc-id  { color: var(--green); }
+.sc-banner.both-ag .sc-id  { color: #E65100; }
+.sc-info { flex: 1; }
+.sc-name { font-size: 20px; font-weight: 800; margin-bottom: 3px; }
+.sc-path { font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; opacity: .65; margin-bottom: 10px; }
+.sc-overview { font-size: 14px; line-height: 1.7; }
+
+/* ── John quote ── */
+.john-quote { background: white; border-left: 4px solid var(--amber);
+  border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 24px;
+  display: flex; gap: 14px; align-items: flex-start; }
+.john-avatar { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+.john-text { flex: 1; }
+.john-name { font-size: 11px; font-weight: 700; color: var(--amber);
+  text-transform: uppercase; letter-spacing: .07em; margin-bottom: 5px; }
+.john-q { font-size: 14px; line-height: 1.7; font-style: italic; color: var(--text); }
+
+/* ── Grid layout ── */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.info-grid.wide { grid-template-columns: 1fr; }
+
+/* ── Cards ── */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; }
+.card-hdr { background: var(--green); color: white; padding: 10px 16px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.card-hdr.amber { background: var(--amber); }
+.card-hdr.blue  { background: var(--blue); }
+.card-hdr.slate { background: #37474F; }
+.card-body { padding: 0; }
+
+table.fin { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.fin td { padding: 9px 16px; border-bottom: 1px solid #EDE5D3; }
+table.fin tr:last-child td { border-bottom: none; }
+table.fin tr:nth-child(even) td { background: #FAF6EE; }
+table.fin .lbl { color: var(--muted); }
+table.fin .amt { text-align: right; font-weight: 700; color: var(--text); }
+table.fin .total td { background: var(--green-xl) !important; font-weight: 800; color: var(--green); }
+table.fin .warn td  { background: var(--red-xl)  !important; color: var(--red); font-weight: 700; }
+table.fin .amber td { background: var(--amber-xl)!important; color: var(--amber); font-weight: 800; }
+
+/* ── Revenue table ── */
+.rev-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.rev-cell { padding: 14px 16px; border-right: 1px solid var(--border); text-align: center; }
+.rev-cell:last-child { border-right: none; }
+.rev-yr { font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--muted); margin-bottom: 6px; }
+.rev-amt { font-size: 22px; font-weight: 800; color: var(--green); margin-bottom: 3px; }
+.rev-mo  { font-size: 12px; color: var(--muted); }
+.rev-net { font-size: 11px; font-weight: 700; margin-top: 6px; padding: 2px 8px;
+  border-radius: 20px; display: inline-block; }
+.rev-net.pos { background: var(--pos-xl); color: var(--pos); }
+.rev-net.neg { background: var(--red-xl); color: var(--red); }
+
+/* ── Assumptions ── */
+.assump-list { padding: 14px 18px; }
+.assump-list li { font-size: 13px; color: var(--muted); line-height: 1.7;
+  padding-left: 4px; margin-bottom: 2px; }
+.assump-list li::marker { color: var(--amber); }
+
+/* ── Viability badge ── */
+.viability { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.vbadge { flex: 1; min-width: 140px; border-radius: 10px; padding: 14px 16px; text-align: center; }
+.vbadge-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; opacity: .75; margin-bottom: 6px; }
+.vbadge-val { font-size: 20px; font-weight: 800; }
+.vbadge-sub { font-size: 11px; opacity: .8; margin-top: 3px; }
+.vb-green { background: var(--green);  color: white; }
+.vb-amber { background: var(--amber);  color: white; }
+.vb-red   { background: var(--red);    color: white; }
+.vb-blue  { background: var(--blue);   color: white; }
+.vb-slate { background: #546E7A;       color: white; }
+
+/* ── Verdict strip ── */
+.verdict { border-radius: 10px; padding: 14px 20px; font-size: 13px; line-height: 1.7; margin-bottom: 0; }
+.verdict.good { background: var(--pos-xl);    border: 1px solid #A5D6A7; color: #1B5E20; }
+.verdict.warn { background: var(--amber-xl);  border: 1px solid #E8C97A; color: #7F4F00; }
+.verdict.bad  { background: var(--red-xl);    border: 1px solid #EF9A9A; color: #7F1111; }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+@media (max-width:680px) {
+  .main { padding: 16px 14px 48px; }
+  .hdr, .selector-bar { padding: 14px 16px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .scenario-sel { min-width: 100%; }
+  .rev-grid { grid-template-columns: 1fr; }
+  .rev-cell { border-right: none; border-bottom: 1px solid var(--border); }
+  .rev-cell:last-child { border-bottom: none; }
+  .viability { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <span class="hdr-logo">Tea Fellas</span>
+  <span class="hdr-sub">Scenario Briefing · HDB TPO Product Workshop</span>
+</div>
+
+<div class="selector-bar">
+  <span class="sel-label">Select option</span>
+  <select class="scenario-sel" id="sc-pick" onchange="render(this.value); document.getElementById('cba-link').href='cba-vcr.html?sc='+this.value;">
+    <option value="">— Choose a scenario to read the briefing —</option>
+    <option value="A1">A1 — Basic digital ($25K setup)</option>
+    <option value="A2">A2 — Full integrated digital + supply chain ($150K setup)</option>
+    <option value="B1">B1 — AMK Food Centre expansion ($80K setup)</option>
+    <option value="B2">B2 — AMK Hub B1 expansion ($150K setup)</option>
+    <option value="C1">C1 — Conservative: Basic digital + AMK Food Centre (~$105K) ⭐</option>
+    <option value="C2">C2 — Aggressive: Full digital + AMK Hub B1 (~$300K)</option>
+  </select>
+  <a class="btn-cba" id="cba-link" href="cba-vcr.html" target="_blank">Open in CBA ↗</a>
+</div>
+
+<div class="main" id="main-content">
+  <div class="splash">
+    <div class="splash-icon">📋</div>
+    <p>Select a scenario above to read the full briefing —<br>setup costs, monthly financials, and what John has to say about each option.</p>
+  </div>
+</div>
+
+<script>
+// ── Auto-select from URL param (?sc=A1 etc.) ─────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(location.search).get('sc');
+  if (p && document.querySelector(`#sc-pick option[value="${p}"]`)) {
+    document.getElementById('sc-pick').value = p;
+    render(p);
+  }
+});
+
+// ── Scenario data ─────────────────────────────────────────────
+const SCENARIOS = {
+
+  A1: {
+    id: 'A1', name: 'Basic digital ordering system',
+    path: 'Digital only — Toa Payoh', bannerClass: 'digital',
+    overview: 'Install a QR-code ordering system, a digital loyalty programme, and a basic kitchen display screen at the existing Toa Payoh outlet. Customers scan a table QR code to order and pay digitally. Staff see orders on a screen instead of handwritten tickets. The loyalty app tracks returning customers and enables push promotions.',
+    john: `"The QR code idea makes sense. Customers are already on their phones — why not let them order from there? My staff waste so much time taking down orders and running back and forth. And the kitchen display means no more shouting across the counter. I think we can manage this ourselves with some training. Mary likes it too — she says it will help her track which items sell well each day."`,
+    setup: [
+      { label: 'QR ordering system (hardware + software + setup)', amt: 12000 },
+      { label: 'Digital loyalty app (licence + integration)',       amt: 8000  },
+      { label: 'Kitchen display screen (2 units)',                  amt: 3000  },
+      { label: 'Staff training and onboarding',                     amt: 2000  },
+    ],
+    monthly: [
+      { label: 'Software maintenance & support',  amt: 300 },
+    ],
+    revenue: {
+      baseline: { monthly: 27500, label: 'Current Toa Payoh revenue' },
+      uplift:   '8–10% estimated revenue increase (digital friction reduction + loyalty-driven repeat visits)',
+      y1: { gross: 29975, net: 2175,  cust: '~250/day (same outlet, higher conversion)' },
+      y2: { gross: 29975, net: 2175,  cust: '~250/day (steady state)' },
+      y3: { gross: 29975, net: 2175,  cust: '~250/day (steady state)' },
+    },
+    assumptions: [
+      'Revenue uplift of 9% (mid of 8–10% range) on existing $27,500/month baseline.',
+      'Monthly maintenance of $300 already deducted in net benefit figures.',
+      'No new staff required — same team of John, Mary, and 2 part-time staff.',
+      'Implementation timeline: 4–6 weeks from vendor to go-live.',
+      'Does not resolve supply chain or inventory pain points.',
+    ],
+    viability: { setup: 25000, monthly: 300, netY1: 2175, payback: 'Month 12–14', bcr: '~3.1×' },
+    verdictClass: 'good',
+    verdict: '<strong>Financially viable and low risk.</strong> Highest BCR of all 6 options (3.1×) and pays back within Year 1–2. The gap: it only fixes the operational friction at Toa Payoh and does not enable expansion or resolve the supply chain. Recommended as a standalone only if budget is very constrained, or as the first step in C1.',
+  },
+
+  A2: {
+    id: 'A2', name: 'Full integrated digital + supply chain system',
+    path: 'Digital only — Toa Payoh', bannerClass: 'digital',
+    overview: 'A comprehensive end-to-end digital transformation of the Toa Payoh outlet. Includes everything in A1 plus an inventory management module that tracks ingredient stock in real time, a digital supplier ordering interface that auto-triggers purchase orders when stock hits threshold, and a multi-outlet management dashboard that can scale to support future locations.',
+    john: `"This is the complete solution. If we had this, I wouldn't need to call the supplier every morning to guess how much to order — the system would just know. And if we ever open a second shop, everything would already be connected. But $150,000 is a big number. Mary and I would need a business loan. We'd be paying that off for years. It makes me nervous."`,
+    setup: [
+      { label: 'Digital ordering system + loyalty app (A1 equivalent)', amt: 25000 },
+      { label: 'Inventory management module',                            amt: 45000 },
+      { label: 'Supplier ordering integration & API setup',              amt: 35000 },
+      { label: 'Multi-outlet management dashboard',                      amt: 30000 },
+      { label: 'Staff training and change management',                   amt: 15000 },
+    ],
+    monthly: [
+      { label: 'Software maintenance, hosting & support', amt: 1000 },
+    ],
+    revenue: {
+      baseline: { monthly: 27500, label: 'Current Toa Payoh revenue' },
+      uplift:   '15–18% estimated revenue increase (full digital ordering + loyalty + operational precision)',
+      y1: { gross: 31538, net: 3538, cust: '~250/day (higher average order value + loyalty)' },
+      y2: { gross: 31538, net: 3538, cust: '~250/day (steady state)' },
+      y3: { gross: 31538, net: 3538, cust: '~250/day (steady state)' },
+    },
+    assumptions: [
+      'Revenue uplift of 16.5% (mid of 15–18%) on $27,500/month baseline.',
+      'Monthly maintenance of $1,000 already deducted in net benefit figures.',
+      'Supply chain integration requires 3–4 months of configuration and supplier onboarding.',
+      'Resolves all 9 pain points identified in the discovery phase including supply chain.',
+      '3-year net benefit ($127K) does not recover $150K setup cost — BCR < 1 on standalone basis.',
+      'Viable only with SME Go Digital grant (up to $50K offset) or equivalent funding.',
+    ],
+    viability: { setup: 150000, monthly: 1000, netY1: 3538, payback: '> Year 4', bcr: '~0.85×' },
+    verdictClass: 'bad',
+    verdict: '<strong>Not financially viable as a standalone investment.</strong> BCR of 0.85× means the 3-year net benefit does not cover the setup cost. A2 makes sense only as part of C2, or if 30–40% of the setup cost is subsidised by a grant. The supply chain capability it adds is the only feature no other scenario provides.',
+  },
+
+  B1: {
+    id: 'B1', name: 'Second outlet — AMK Food Centre',
+    path: 'Expansion only — No digital fix at Toa Payoh', bannerClass: 'expand',
+    overview: 'Open a second Tea Fellas stall at the AMK Food Centre (heartland hawker centre format). The new stall replicates the existing Toa Payoh menu and operations. No digital systems are implemented at either location. The AMK Food Centre draws a similar heartland customer profile — families, elderly, and neighbourhood regulars.',
+    john: `"AMK Food Centre is a good fit. The crowd there is similar to our Toa Payoh regulars — families, retirees, neighbourhood folks. The rent is manageable compared to a mall. Darren has friends who work there and says lunchtime is very busy. But I am worried about one thing — if I open a second stall before fixing how we take orders, I'll just have the same mess at two places. That's my biggest concern."`,
+    setup: [
+      { label: 'Stall renovation and fit-out',           amt: 35000 },
+      { label: 'Equipment (stoves, refrigerators, etc.)', amt: 30000 },
+      { label: 'Stall deposit (3 months rent)',           amt: 16500 },
+      { label: 'HDB permits, signage & misc',             amt: 8500  },
+    ],
+    monthly: [
+      { label: 'Stall rental (AMK Food Centre)',     amt: 5500  },
+      { label: 'Additional staff (2 part-time)',     amt: 7500  },
+      { label: 'Utilities, supplies & ingredient uplift', amt: 1500 },
+    ],
+    revenue: {
+      baseline: { monthly: 0, label: 'AMK outlet (new — zero base)' },
+      uplift:   'New outlet revenue only. Toa Payoh revenue unchanged (no digital fix).',
+      y1: { gross: 16500, net: 2000,  cust: '~150 customers/day, $5 avg' },
+      y2: { gross: 20350, net: 5850,  cust: '~180 customers/day (ramp-up)' },
+      y3: { gross: 24200, net: 9700,  cust: '~220 customers/day (stabilised)' },
+    },
+    assumptions: [
+      'Year 1 assumes a 3–4 month ramp-up period (lower footfall initially).',
+      'Average order value of $5 held constant across years.',
+      'Monthly total operating cost = $14,500 (rent + staff + utilities).',
+      'No digital systems at either outlet — existing paper-based processes replicated.',
+      'Toa Payoh revenue and costs unchanged (this scenario does not fix ops).',
+      'B1 outlet reaches steady state at ~220 customers/day in Year 3.',
+    ],
+    viability: { setup: 80000, monthly: 14500, netY1: 2000, payback: 'Month 22 (Year 2)', bcr: '~2.6×' },
+    verdictClass: 'warn',
+    verdict: '<strong>Financially viable but operationally risky.</strong> Payback in Year 2 and BCR of 2.6× look attractive, but this scenario expands without fixing the paper-based ordering system. As Darren put it: "Two chaotic shops instead of one." B1 is best as the expansion component of C1 — after A1 has stabilised operations at Toa Payoh.',
+  },
+
+  B2: {
+    id: 'B2', name: 'Second outlet — AMK Hub B1 (mall)',
+    path: 'Expansion only — No digital fix at Toa Payoh', bannerClass: 'expand',
+    overview: 'Open a second Tea Fellas stall at AMK Hub B1, a shopping mall food court. Higher footfall than a food centre — office workers, families, weekend shoppers — but substantially higher rent and operating costs. No digital systems implemented at either location.',
+    john: `"My son thinks the Hub is the right move — he says the mall crowd is younger and we'll build a new customer base. But Mary did the numbers and showed me: $9,000 rent every month against our current $4,100 net profit. If we have one slow month, we can't pay our bills. I'm not saying no, but I'm scared. It feels like betting everything on one dice roll."`,
+    setup: [
+      { label: 'Mall stall renovation and fit-out',       amt: 60000 },
+      { label: 'Equipment (commercial grade for mall)',    amt: 40000 },
+      { label: 'Mall deposit (3 months rent)',             amt: 27000 },
+      { label: 'Permits, compliance, signage & misc',     amt: 23000 },
+    ],
+    monthly: [
+      { label: 'Mall rental (AMK Hub B1)',           amt: 9000  },
+      { label: 'Additional staff (2–3 staff)',        amt: 9500  },
+      { label: 'Utilities, supplies & ingredient uplift', amt: 1500 },
+    ],
+    revenue: {
+      baseline: { monthly: 0, label: 'AMK Hub outlet (new — zero base)' },
+      uplift:   'New outlet revenue only. Toa Payoh revenue unchanged (no digital fix).',
+      y1: { gross: 22000, net: 2000,  cust: '~200 customers/day, $5 avg' },
+      y2: { gross: 28600, net: 8600,  cust: '~260 customers/day (ramp-up)' },
+      y3: { gross: 35200, net: 15200, cust: '~320 customers/day (stabilised)' },
+    },
+    assumptions: [
+      'Monthly total operating cost = $20,000 (rent $9K + staff $9.5K + utilities $1.5K).',
+      'Year 1 net of $2,000/month = mall revenue $22K minus all costs $20K.',
+      'Current Toa Payoh net surplus = $4,100/month — monthly rent commitment is 2.2× this.',
+      'Risk: any 1–2 month shortfall at Hub threatens Toa Payoh rent payment.',
+      'No digital systems at either outlet — paper-based processes at both locations.',
+      'Assumes no grant or loan subsidy for setup.',
+    ],
+    viability: { setup: 150000, monthly: 20000, netY1: 2000, payback: 'Month 29 (Year 3)', bcr: '~2.1×' },
+    verdictClass: 'bad',
+    verdict: '<strong>Not recommended — existential financial risk.</strong> Monthly commitment of $20,000 against a current net surplus of $4,100 creates a liquidity crisis if the Hub ramp-up is slower than projected. Even a 2-month shortfall could prevent Toa Payoh rent payment. The Year 3 upside is real but the Year 1–2 exposure is too great for a family-run business without external capital.',
+  },
+
+  C1: {
+    id: 'C1', name: 'Conservative — Basic digital + AMK Food Centre',
+    path: 'Both: Digital first (Month 1) → Expand (Month 12)', bannerClass: 'both-c',
+    overview: 'The recommended scenario. Implement A1 (basic digital) at Toa Payoh in Month 1. Run for 6 months to prove the system works and let staff settle into the new process. Then open the AMK Food Centre outlet (B1) at Month 12. The sequential approach means operations are stabilised before the business takes on the additional complexity of a second location.',
+    john: `"This is the plan I feel good about. Fix the shop first — get the QR ordering working, train the staff, let Mary use the data to manage things better. Then, once we're confident, we open AMK. Darren said he'd help manage the new stall in the first few months. It's not as fast as going big all at once, but it's responsible. Mary agrees. One step at a time."`,
+    setup: [
+      { label: 'A1 — Digital system setup (QR, loyalty, kitchen display)', amt: 25000 },
+      { label: 'B1 — AMK Food Centre fit-out, equipment & deposits',       amt: 80000 },
+    ],
+    monthly: [
+      { label: 'Digital system maintenance (A1)',         amt: 300   },
+      { label: 'AMK outlet rent — $5,500/month (B1)',     amt: 5500  },
+      { label: 'AMK additional staff — $7,500/month (B1)',amt: 7500  },
+      { label: 'AMK utilities & supplies (B1)',           amt: 1500  },
+    ],
+    monthlyNote: 'Digital maintenance from Month 1. Outlet costs from Month 12 (sequential approach).',
+    revenue: {
+      baseline: { monthly: 27500, label: 'Existing Toa Payoh revenue' },
+      uplift:   'A1 digital uplift (9%) from Month 1 + AMK Food Centre outlet revenue from Month 12.',
+      y1: { gross: 31075, net: 4175,  cust: 'Toa Payoh ~250/day + AMK opens Month 12' },
+      y2: { gross: 52425, net: 8025,  cust: 'Both outlets operating — AMK ~180/day' },
+      y3: { gross: 60275, net: 11875, cust: 'Both outlets operating — AMK ~220/day' },
+    },
+    assumptions: [
+      'A1 digital implemented at Toa Payoh, Month 1. Revenue uplift = 9% of $27,500/month.',
+      'AMK Food Centre outlet opens at Month 12, after 6-month digital stabilisation period.',
+      'Year 1 net benefit blended: 12 months of A1 uplift + ~1 month of AMK net profit.',
+      'Total setup cost: $25,000 (A1) + $80,000 (B1) = $105,000.',
+      'From Month 12 onward, full monthly costs: $300 (digital) + $14,500 (outlet) = $14,800.',
+      'Accepted trade-off: supply chain pain point (#9) deferred to a Year 2 A1 → A2 upgrade.',
+    ],
+    viability: { setup: 105000, monthly: 14800, netY1: 4175, payback: 'Month 19–20 (Year 2)', bcr: '~1.33×' },
+    verdictClass: 'good',
+    verdict: '<strong>⭐ Recommended — the right balance of value, cost, and risk.</strong> BCR of 1.33× (rigorous PV method) with payback in Year 2 and a 3-year net positive of ~$190K (present value). The sequential approach — digital first, then expand — converts the operational risk of B1 into a managed milestone. John and Mary can execute this without a large business loan.',
+  },
+
+  C2: {
+    id: 'C2', name: 'Aggressive — Full digital + AMK Hub B1',
+    path: 'Both: Simultaneously from Day 1', bannerClass: 'both-ag',
+    overview: 'Run A2 (full integrated digital + supply chain) and B2 (AMK Hub B1) simultaneously from Day 1. Maximum investment, maximum potential return. All 9 pain points resolved. Digital system scales across both outlets from launch. Targets a broader customer base through both the heartland (Toa Payoh) and the mall (AMK Hub).',
+    john: `"My son says we should think big. The Hub gets us in front of office workers and weekend shoppers. The full digital system means everything is connected from day one — inventory, orders, both locations. Darren thinks it's exciting. But Mary pulled me aside and said: if anything goes wrong in the first three months — slow sales at the Hub, a problem with the system — we won't be able to pay our rent at Toa Payoh. She's right. The numbers scare me."`,
+    setup: [
+      { label: 'A2 — Full integrated digital system + supply chain', amt: 150000 },
+      { label: 'B2 — AMK Hub B1 fit-out, equipment & deposits',     amt: 150000 },
+    ],
+    monthly: [
+      { label: 'Digital system maintenance (A2)',               amt: 1000  },
+      { label: 'AMK Hub outlet rent — $9,000/month (B2)',       amt: 9000  },
+      { label: 'AMK Hub additional staff — $9,500/month (B2)',  amt: 9500  },
+      { label: 'AMK Hub utilities & supplies (B2)',             amt: 1500  },
+    ],
+    revenue: {
+      baseline: { monthly: 27500, label: 'Existing Toa Payoh revenue' },
+      uplift:   'A2 digital uplift (16.5%) from Month 1 + AMK Hub outlet revenue from Month 1.',
+      y1: { gross: 53538, net: 5538,  cust: 'Toa Payoh ~250/day (16.5% uplift) + AMK Hub ~200/day' },
+      y2: { gross: 64338, net: 12138, cust: 'Toa Payoh steady + AMK Hub ~260/day' },
+      y3: { gross: 75738, net: 18738, cust: 'Toa Payoh steady + AMK Hub ~320/day' },
+    },
+    assumptions: [
+      'Total setup cost: $150,000 (A2) + $150,000 (B2) = $300,000.',
+      'Total monthly costs: $1,000 (digital) + $20,000 (Hub outlet) = $21,000/month.',
+      'Current net surplus ($4,100/month) covers only 19.5% of ongoing monthly costs.',
+      'Requires a business loan of ~$200K–$250K — not typical for a family hawker operation.',
+      'All 9 pain points resolved simultaneously (only scenario that achieves this).',
+      'High execution risk: two major implementations running in parallel from Day 1.',
+    ],
+    viability: { setup: 300000, monthly: 21000, netY1: 5538, payback: 'Month 29 (Year 3)', bcr: '~1.4×' },
+    verdictClass: 'bad',
+    verdict: '<strong>Correct direction but not financeable at Tea Fellas\' current scale.</strong> The strategy is sound but $300,000 in setup and $21,000/month in ongoing costs against a $4,100 monthly surplus requires a business loan that most banks will not extend to a single family-run hawker stall without significant collateral or grant support. C2 becomes viable if and when Tea Fellas secures a strategic partner or investor.',
+  },
+
+};
+
+// ── Helpers ───────────────────────────────────────────────────
+const fm = n => '$' + Math.round(n).toLocaleString();
+
+function render(key) {
+  const sc = SCENARIOS[key];
+  const el = document.getElementById('main-content');
+  if (!sc) {
+    el.innerHTML = `<div class="splash"><div class="splash-icon">📋</div>
+      <p>Select a scenario above to read the full briefing.</p></div>`;
+    return;
+  }
+
+  // Setup total
+  const setupTotal = sc.setup.reduce((s,r)=>s+r.amt, 0);
+  const monthlyTotal = sc.monthly.reduce((s,r)=>s+r.amt, 0);
+
+  // Revenue rows
+  const revRows = ['y1','y2','y3'].map((yr, i) => {
+    const d = sc.revenue[yr];
+    const netCls = d.net >= 0 ? 'pos' : 'neg';
+    return `<div class="rev-cell">
+      <div class="rev-yr">Year ${i+1}</div>
+      <div class="rev-amt">${fm(d.gross)}<span style="font-size:13px;font-weight:400;">/mo</span></div>
+      <div class="rev-mo">${d.cust}</div>
+      <span class="rev-net ${netCls}">Net: ${fm(d.net)}/mo</span>
+    </div>`;
+  }).join('');
+
+  // Viability badges
+  const v = sc.viability;
+  const bcrNum = parseFloat(v.bcr);
+  const bcrCls = bcrNum < 1 ? 'vb-red' : bcrNum < 1.5 ? 'vb-amber' : 'vb-green';
+
+  el.innerHTML = `
+    <!-- Banner -->
+    <div class="sc-banner ${sc.bannerClass}">
+      <div class="sc-id">${sc.id}</div>
+      <div class="sc-info">
+        <div class="sc-name">${sc.name}</div>
+        <div class="sc-path">${sc.path}</div>
+        <div class="sc-overview">${sc.overview}</div>
+      </div>
+    </div>
+
+    <!-- John quote -->
+    <div class="john-quote">
+      <div class="john-avatar">👴🏻</div>
+      <div class="john-text">
+        <div class="john-name">John Tan, 61 — Owner, Tea Fellas Toa Payoh</div>
+        <div class="john-q">${sc.john}</div>
+      </div>
+    </div>
+
+    <!-- Viability summary -->
+    <div class="viability">
+      <div class="vbadge vb-slate">
+        <div class="vbadge-lbl">Setup Cost</div>
+        <div class="vbadge-val">${fm(setupTotal)}</div>
+        <div class="vbadge-sub">one-time</div>
+      </div>
+      <div class="vbadge vb-slate">
+        <div class="vbadge-lbl">Monthly Costs</div>
+        <div class="vbadge-val">${fm(monthlyTotal)}</div>
+        <div class="vbadge-sub">at full operation</div>
+      </div>
+      <div class="vbadge vb-blue">
+        <div class="vbadge-lbl">Net Benefit Y1</div>
+        <div class="vbadge-val">${fm(v.netY1)}/mo</div>
+        <div class="vbadge-sub">after all costs</div>
+      </div>
+      <div class="vbadge vb-amber">
+        <div class="vbadge-lbl">Payback Period</div>
+        <div class="vbadge-val">${v.payback}</div>
+        <div class="vbadge-sub">estimated</div>
+      </div>
+      <div class="vbadge ${bcrCls}">
+        <div class="vbadge-lbl">BCR (3-year PV)</div>
+        <div class="vbadge-val">${v.bcr}</div>
+        <div class="vbadge-sub">benefits ÷ total costs</div>
+      </div>
+    </div>
+
+    <!-- Setup + Monthly costs -->
+    <div class="info-grid">
+      <div class="card">
+        <div class="card-hdr slate">Setup Costs (one-time, Y0)</div>
+        <div class="card-body">
+          <table class="fin">
+            ${sc.setup.map(r=>`<tr><td class="lbl">${r.label}</td><td class="amt">${fm(r.amt)}</td></tr>`).join('')}
+            <tr class="total"><td><strong>Total Setup Investment</strong></td><td class="amt"><strong>${fm(setupTotal)}</strong></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr amber">Monthly Recurring Costs</div>
+        <div class="card-body">
+          <table class="fin">
+            ${sc.monthly.map(r=>`<tr><td class="lbl">${r.label}</td><td class="amt">${fm(r.amt)}/mo</td></tr>`).join('')}
+            <tr class="${monthlyTotal > 10000 ? 'warn' : 'total'}">
+              <td><strong>Total Monthly Costs</strong></td>
+              <td class="amt"><strong>${fm(monthlyTotal)}/mo</strong></td>
+            </tr>
+            ${sc.monthlyNote ? `<tr><td colspan="2" style="font-size:11px;color:var(--muted);padding:8px 16px;">${sc.monthlyNote}</td></tr>` : ''}
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue projections -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-hdr blue">Revenue &amp; Net Benefit Projections</div>
+      <div style="padding:10px 16px 6px; font-size:12px; color:var(--muted); border-bottom:1px solid var(--border);">
+        ${sc.revenue.uplift}
+      </div>
+      <div class="rev-grid">${revRows}</div>
+    </div>
+
+    <!-- Assumptions -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-hdr">Key Assumptions (provided by John)</div>
+      <div class="card-body">
+        <ul class="assump-list">
+          ${sc.assumptions.map(a=>`<li>${a}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Verdict -->
+    <div class="verdict ${sc.verdictClass}">${sc.verdict}</div>
+  `;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Demo</title>
+<style>
+  :root {
+    --tea-bg: #F5F0E8;
+    --tea-card: #FDFAF4;
+    --tea-green: #2D5A27;
+    --tea-green-light: #4A7C42;
+    --tea-amber: #C17A2A;
+    --tea-amber-light: #E8A94A;
+    --tea-cream: #EDE4D0;
+    --tea-border: #D4C4A0;
+    --tea-text: #2C2416;
+    --tea-muted: #6B5A3E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--tea-bg); color: var(--tea-text); }
+
+  /* ── Layout ── */
+  #app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  #sidebar { width: 220px; min-width: 220px; background: var(--tea-green); display: flex; flex-direction: column; }
+  #sidebar-header { padding: 16px 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  #sidebar-logo { font-size: 16px; font-weight: 700; color: #fff; }
+  #sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; letter-spacing: 0.8px; text-transform: uppercase; }
+  #sidebar-demo-badge { background: var(--tea-amber); color: white; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; display: inline-block; margin-top: 6px; }
+
+  .sidebar-section-label { padding: 10px 14px 4px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.7px; color: rgba(255,255,255,0.45); }
+
+  #persona-list { flex: 1; padding: 0 0 8px; overflow-y: auto; }
+  .persona-item { padding: 9px 14px; display: flex; flex-direction: column; gap: 2px; }
+  .pb-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .pb-role { font-size: 10px; color: rgba(255,255,255,0.55); }
+  .pb-done { font-size: 11px; color: #7EC87A; margin-top: 2px; }
+
+  #sidebar-footer { border-top: 1px solid rgba(255,255,255,0.15); padding: 10px 14px; }
+  #sidebar-nav { border-top: 1px solid rgba(255,255,255,0.15); }
+  .sidebar-nav-btn { width: 100%; background: none; border: none; cursor: pointer;
+    padding: 10px 14px; text-align: left; display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.75); font-size: 13px; border-left: 3px solid transparent; transition: background 0.15s; }
+  .sidebar-nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .sidebar-nav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
+
+  #reset-btn { width: calc(100% - 0px); margin: 0; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.8); border-radius: 6px; padding: 9px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; text-align: center; transition: background 0.15s; }
+  #reset-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+
+  /* ── Main area ── */
+  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── Phase banner ── */
+  #phase-banner { background: var(--tea-amber); color: white; font-size: 12px; font-weight: 600;
+    padding: 7px 24px; letter-spacing: 0.04em; display: flex; align-items: center; gap: 8px; }
+  #phase-banner span { opacity: 0.8; font-weight: 400; }
+
+  /* ── Views ── */
+  .view { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding: 28px 32px 40px; }
+  .view.active { display: flex; }
+
+  /* ── Synthesis view ── */
+  .syn-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 6px; }
+  .syn-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 20px; }
+
+  .syn-progress { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .syn-prog-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px;
+    padding: 10px 14px; min-width: 110px; text-align: center; }
+  .syn-prog-card.done { border-color: #4CAF50; background: #F0FAF0; }
+  .syn-prog-emoji { font-size: 20px; margin-bottom: 3px; }
+  .syn-prog-name { font-size: 12px; font-weight: 600; color: var(--tea-text); }
+  .syn-prog-status { font-size: 11px; color: var(--tea-muted); margin-top: 2px; }
+  .syn-prog-card.done .syn-prog-status { color: #2E7D32; font-weight: 600; }
+
+  .syn-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+  .syn-card-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--tea-muted); margin-bottom: 10px; }
+  .syn-card textarea { width: 100%; border: 1px solid var(--tea-border); border-radius: 6px;
+    padding: 10px 12px; font-size: 13px; line-height: 1.65; color: var(--tea-text);
+    background: #FDFAF4; resize: vertical; min-height: 90px; font-family: inherit; }
+  .syn-card textarea:focus { outline: none; border-color: var(--tea-green); }
+  .syn-card textarea[readonly] { background: #F3EEE4; color: var(--tea-text); }
+
+  .syn-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .syn-gen-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 7px;
+    padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .syn-gen-btn:disabled { background: #A0B89A; cursor: default; }
+  .syn-confirm-btn { background: var(--tea-amber); color: #fff; border: none; border-radius: 7px;
+    padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .syn-confirm-btn:disabled { background: #C9A97A; cursor: default; }
+  .syn-confirmed-badge { font-size: 13px; font-weight: 600; color: #2E7D32; }
+
+  /* ── Persona modal ── */
+  #persona-modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  #persona-modal-overlay.open { display: flex; }
+  #persona-modal {
+    background: var(--tea-card); border-radius: 12px; width: 90%; max-width: 560px;
+    max-height: 80vh; display: flex; flex-direction: column;
+    border: 1px solid var(--tea-border); box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  #modal-header {
+    padding: 18px 22px 14px; border-bottom: 1px solid var(--tea-border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+  #modal-emoji { font-size: 28px; margin-right: 4px; }
+  #modal-name { font-size: 17px; font-weight: 700; color: var(--tea-green); }
+  #modal-role { font-size: 12px; color: var(--tea-muted); margin-top: 2px; }
+  #modal-close { background: none; border: none; font-size: 20px; cursor: pointer;
+    color: var(--tea-muted); line-height: 1; padding: 2px 4px; flex-shrink: 0; }
+  #modal-close:hover { color: var(--tea-text); }
+  #modal-body { padding: 18px 22px 22px; overflow-y: auto; }
+  .modal-section { margin-bottom: 18px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--tea-muted); margin-bottom: 8px; }
+  .modal-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .modal-bullets li { font-size: 13px; color: var(--tea-text); line-height: 1.6;
+    padding-left: 16px; position: relative; }
+  .modal-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--tea-green); font-weight: 700; }
+  .modal-quote { background: var(--tea-cream); border-left: 3px solid var(--tea-amber);
+    border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 13px; font-style: italic;
+    color: var(--tea-text); line-height: 1.65; }
+
+  /* ── Phase 3 (Ideate) view ── */
+  .ideate-hero { background: var(--tea-green); color: white; border-radius: 12px; padding: 28px 32px; margin-bottom: 28px; }
+  .ideate-phase-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    opacity: 0.7; margin-bottom: 8px; }
+  .ideate-title { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .ideate-sub { font-size: 14px; opacity: 0.8; line-height: 1.6; }
+
+  .ideate-timeline { display: flex; gap: 0; margin-bottom: 28px; }
+  .timeline-phase { flex: 1; padding: 14px 16px; border-radius: 0; font-size: 13px; text-align: center; }
+  .timeline-phase:first-child { border-radius: 8px 0 0 8px; }
+  .timeline-phase:last-child { border-radius: 0 8px 8px 0; }
+  .timeline-phase.done { background: #E8F5E9; border: 1px solid #A5D6A7; color: #2E7D32; }
+  .timeline-phase.current { background: var(--tea-amber); border: 1px solid var(--tea-amber); color: white; }
+  .timeline-phase.upcoming { background: var(--tea-cream); border: 1px solid var(--tea-border); color: var(--tea-muted); }
+  .timeline-phase-num { font-size: 11px; font-weight: 700; margin-bottom: 2px; opacity: 0.75; }
+  .timeline-phase-name { font-size: 13px; font-weight: 600; }
+  .timeline-phase.done .timeline-phase-num { opacity: 1; }
+
+  .ideate-artefacts-title { font-size: 15px; font-weight: 700; color: var(--tea-green); margin-bottom: 14px; }
+  .ideate-artefacts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .ideate-art-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 8px; padding: 16px 18px; }
+  .ideate-art-id { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--tea-amber); margin-bottom: 4px; }
+  .ideate-art-name { font-size: 14px; font-weight: 600; color: var(--tea-text); margin-bottom: 4px; }
+  .ideate-art-desc { font-size: 12px; color: var(--tea-muted); line-height: 1.5; }
+
+  /* ── Scenario cards ── */
+  .scenarios-title { font-size: 15px; font-weight: 700; color: var(--tea-green); margin: 24px 0 14px; }
+  .scenarios-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 16px; margin-top: -10px; }
+  .scenarios-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .scenario-card {
+    background: var(--tea-card); border: 2px solid var(--tea-border); border-radius: 8px;
+    padding: 14px 16px; cursor: pointer; transition: border-color 0.15s, background 0.15s; position: relative;
+  }
+  .scenario-card:hover { border-color: var(--tea-green-light); background: #F8F4EC; }
+  .scenario-card.selected { border-color: var(--tea-green); background: #EEF5ED; }
+  .scenario-card .sc-check { position: absolute; top: 10px; right: 10px; width: 18px; height: 18px;
+    border-radius: 50%; border: 2px solid var(--tea-border); background: white;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; color: transparent; }
+  .scenario-card.selected .sc-check { background: var(--tea-green); border-color: var(--tea-green); color: white; }
+  .sc-id { font-size: 12px; font-weight: 800; color: var(--tea-amber); letter-spacing: 0.06em; margin-bottom: 4px; }
+  .sc-path { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--tea-muted); margin-bottom: 6px; }
+  .sc-name { font-size: 13px; font-weight: 600; color: var(--tea-text); margin-bottom: 6px; line-height: 1.4; }
+  .sc-cost { font-size: 12px; color: var(--tea-muted); }
+  .sc-cost strong { color: var(--tea-text); }
+  .scenarios-lock-row { margin-top: 16px; display: flex; align-items: center; gap: 14px; }
+  .sc-lock-btn { background: var(--tea-green); color: white; border: none; border-radius: 7px;
+    padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .sc-lock-btn:disabled { background: #A0B89A; cursor: default; }
+  .sc-locked-badge { font-size: 13px; font-weight: 600; color: #2E7D32; display: none; }
+  .sc-locked-badge.visible { display: inline; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div id="sidebar-logo">Tea Fellas</div>
+      <div id="sidebar-tagline">Good Tea. Good Day.</div>
+      <div id="sidebar-demo-badge">Demo</div>
+    </div>
+
+    <div id="sidebar-nav">
+      <button class="sidebar-nav-btn active" id="nav-synthesis" onclick="showSynthesisView()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 8h6M5 5.5h6M5 10.5h4"/></svg>
+        Overall synthesis
+      </button>
+    </div>
+
+    <div class="sidebar-section-label">Interviewees</div>
+    <div id="persona-list">
+      <div class="persona-item"><div class="pb-name">👵 Aunty Mary</div><div class="pb-role">Cashier</div><div class="pb-done">✓ Summarised</div></div>
+      <div class="persona-item"><div class="pb-name">👴 Uncle John</div><div class="pb-role">Owner / Collection</div><div class="pb-done">✓ Summarised</div></div>
+      <div class="persona-item"><div class="pb-name">🧑‍🦳 Mrs Selva</div><div class="pb-role">Loyal Customer</div><div class="pb-done">✓ Summarised</div></div>
+      <div class="persona-item"><div class="pb-name">👨‍💼 Jacky</div><div class="pb-role">HDB Staff / Regular</div><div class="pb-done">✓ Summarised</div></div>
+      <div class="persona-item"><div class="pb-name">👨‍🍳 Darren</div><div class="pb-role">Main Barista</div><div class="pb-done">✓ Summarised</div></div>
+    </div>
+
+    <div id="sidebar-footer">
+      <button id="reset-btn" onclick="resetDemo()">↺ Reset demo</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div id="main">
+    <div id="phase-banner">
+      <span id="phase-label">Phase 2 — Define</span>
+      <span id="phase-step">· Overall Synthesis</span>
+    </div>
+
+    <!-- Synthesis view -->
+    <div id="view-synthesis" class="view active">
+      <div class="syn-title">Overall synthesis</div>
+      <div class="syn-sub">Aggregated insights across all interviews. Use this as the foundation for your product strategy discussion.</div>
+
+      <div class="syn-progress">
+        <div class="syn-prog-card done" onclick="openModal('mary')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👵</div><div class="syn-prog-name">Aunty Mary</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('john')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👴</div><div class="syn-prog-name">Uncle John</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('selva')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">🧑‍🦳</div><div class="syn-prog-name">Mrs Selva</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('jacky')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👨‍💼</div><div class="syn-prog-name">Jacky</div><div class="syn-prog-status">✓ Summarised</div></div>
+        <div class="syn-prog-card done" onclick="openModal('darren')" style="cursor:pointer" title="View summary">
+          <div class="syn-prog-emoji">👨‍🍳</div><div class="syn-prog-name">Darren</div><div class="syn-prog-status">✓ Summarised</div></div>
+      </div>
+
+      <div class="syn-card">
+        <div class="syn-card-title">Consolidated pain points</div>
+        <textarea id="syn-pain" placeholder="Click 'Generate synthesis' to populate…"></textarea>
+      </div>
+      <div class="syn-card">
+        <div class="syn-card-title">Problem statement</div>
+        <textarea id="syn-problem" placeholder="Click 'Generate synthesis' to populate…"></textarea>
+      </div>
+      <div class="syn-card">
+        <div class="syn-card-title">Vision for Tea Fellas</div>
+        <textarea id="syn-vision" placeholder="Click 'Generate synthesis' to populate…"></textarea>
+      </div>
+
+      <div class="syn-actions">
+        <button class="syn-gen-btn" id="gen-btn" onclick="generateSynthesis()">Generate synthesis ↗</button>
+        <button class="syn-confirm-btn" id="confirm-btn" onclick="confirmSynthesis()" disabled>Confirm synthesis →</button>
+      </div>
+
+      <div style="height:24px"></div>
+    </div>
+
+    <!-- Phase 3 Ideate view -->
+    <div id="view-ideate" class="view">
+      <div class="ideate-hero">
+        <div class="ideate-phase-label">Phase 3 unlocked</div>
+        <div class="ideate-title">Ideate</div>
+        <div class="ideate-sub">Your team has completed Research (Phase 1) and Define (Phase 2). You have a shared understanding of Tea Fellas' pain points, a problem statement, and a vision. Now it's time to design your solution.</div>
+      </div>
+
+      <div class="ideate-timeline">
+        <div class="timeline-phase done"><div class="timeline-phase-num">✓ Phase 1</div><div class="timeline-phase-name">Research</div></div>
+        <div class="timeline-phase done"><div class="timeline-phase-num">✓ Phase 2</div><div class="timeline-phase-name">Define</div></div>
+        <div class="timeline-phase current"><div class="timeline-phase-num">→ Phase 3</div><div class="timeline-phase-name">Ideate</div></div>
+        <div class="timeline-phase upcoming"><div class="timeline-phase-num">Phase 4</div><div class="timeline-phase-name">Validate</div></div>
+      </div>
+
+      <div class="ideate-artefacts-title">Your Phase 3 artefacts</div>
+      <div class="ideate-artefacts">
+        <div class="ideate-art-card">
+          <div class="ideate-art-id">3.1</div>
+          <div class="ideate-art-name">Solution Concept Canvas</div>
+          <div class="ideate-art-desc">Customer needs, OKRs, roadmap, and risks in one A3 view</div>
+        </div>
+        <div class="ideate-art-card">
+          <div class="ideate-art-id">3.2</div>
+          <div class="ideate-art-name">To-Be Process Map</div>
+          <div class="ideate-art-desc">Redesigned 10-step digital order flow across 5 swimlanes</div>
+        </div>
+        <div class="ideate-art-card">
+          <div class="ideate-art-id">3.3</div>
+          <div class="ideate-art-name">Product Roadmap</div>
+          <div class="ideate-art-desc">18-month delivery plan across 5 phases with milestone reviews</div>
+        </div>
+        <div class="ideate-art-card">
+          <div class="ideate-art-id">3.4</div>
+          <div class="ideate-art-name">Risk Assessment</div>
+          <div class="ideate-art-desc">9 risks rated on a 5×5 Probability × Impact matrix</div>
+        </div>
+      </div>
+
+      <div class="scenarios-title">John's Investment Scenarios</div>
+      <div class="scenarios-sub">Review the six options John has put together. Select the scenario your team recommends and lock it in.</div>
+      <div class="scenarios-grid" id="scenario-grid">
+
+        <div class="scenario-card" id="sc-A1" onclick="selectScenario('A1')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">A1</div>
+          <div class="sc-path">Digital only</div>
+          <div class="sc-name">Basic digital ($25K)</div>
+          <div class="sc-cost"><strong>$25,000</strong> setup · <strong>+$300</strong>/month<br>QR ordering + digital loyalty. Lower risk, faster payback.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-A2" onclick="selectScenario('A2')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">A2</div>
+          <div class="sc-path">Digital only</div>
+          <div class="sc-name">Full integrated digital + supply chain ($150K)</div>
+          <div class="sc-cost"><strong>$150,000</strong> setup · <strong>+$1,000</strong>/month<br>A1 + kitchen display, inventory, supplier ordering. Only scenario that fully resolves supply chain.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-B1" onclick="selectScenario('B1')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">B1</div>
+          <div class="sc-path">Expansion only</div>
+          <div class="sc-name">AMK Food Centre</div>
+          <div class="sc-cost"><strong>$80,000</strong> setup · <strong>+$14,500</strong>/month<br>Second outlet, community heartland format. Lower risk, familiar footfall.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-B2" onclick="selectScenario('B2')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">B2</div>
+          <div class="sc-path">Expansion only</div>
+          <div class="sc-name">AMK Hub B1</div>
+          <div class="sc-cost"><strong>$150,000</strong> setup · <strong>+$20,000</strong>/month<br>Mall unit, high footfall — higher revenue potential, higher risk.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-C1" onclick="selectScenario('C1')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">C1</div>
+          <div class="sc-path">Both — Conservative</div>
+          <div class="sc-name">Basic digital + AMK Food Centre</div>
+          <div class="sc-cost"><strong>~$105,000</strong> setup · <strong>+$15,100</strong>/month<br>Fix operations first, then expand. Sequential, lower total investment.</div>
+        </div>
+
+        <div class="scenario-card" id="sc-C2" onclick="selectScenario('C2')">
+          <div class="sc-check">✓</div>
+          <div class="sc-id">C2</div>
+          <div class="sc-path">Both — Aggressive</div>
+          <div class="sc-name">Full digital + AMK Hub B1</div>
+          <div class="sc-cost"><strong>~$300,000</strong> setup · <strong>+$21,000</strong>/month<br>Maximum investment, maximum growth. Requires financing.</div>
+        </div>
+
+      </div>
+
+      <div class="scenarios-lock-row">
+        <button class="sc-lock-btn" id="sc-lock-btn" onclick="lockScenario()" disabled>Lock in our recommendation →</button>
+        <span class="sc-locked-badge" id="sc-locked-badge"></span>
+      </div>
+
+      <div style="height:32px"></div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Persona summary modal -->
+<div id="persona-modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div id="persona-modal">
+    <div id="modal-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span id="modal-emoji"></span>
+          <div>
+            <div id="modal-name"></div>
+            <div id="modal-role"></div>
+          </div>
+        </div>
+      </div>
+      <button id="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ── Persona summaries ─────────────────────────────────────────
+const PERSONAS = {
+  mary: {
+    emoji: '👵', name: 'Aunty Mary', role: 'Cashier',
+    insights: [
+      'Handles all verbal orders, handwrites chits, passes to Salmiah — the first link in every order chain',
+      'Handwriting deteriorates noticeably under peak-hour pressure; she is aware it causes downstream errors but has no practical way to fix it without a tool change',
+      'Manages the paper loyalty stamp card system single-handedly — customers frequently lose cards, forget them, or argue about missing stamps',
+      'Deeply proud of knowing regulars by name and order; sees this personal touch as what differentiates Tea Fellas from a chain',
+      'Not tech-resistant — open to a tablet or digital system if someone trains her: "If got tablet, I can try. As long as someone shows me."',
+      'Quietly worried about rising ingredient costs; John has not raised prices yet but she can see the pressure building'
+    ],
+    pains: [
+      'Chit handwriting degrades under rush — errors propagate to Darren and reach customers as wrong drinks',
+      'Stamp card disputes are a daily drain on her attention during the busiest periods',
+      'No way for customers to pre-order; everyone must queue at her counter even for a single drink'
+    ],
+    quote: '"If got tablet, I can try. As long as someone shows me."'
+  },
+  john: {
+    emoji: '👴', name: 'Uncle John', role: 'Owner / Collection',
+    insights: [
+      'Manages the collection counter entirely from memory — no ticket numbers, no display system, no notifications',
+      'Handles all supply ordering himself: calls Lim Teck Seng Trading every Monday, delivery arrives Wednesday. Same order, every week, for 18 years',
+      'Has deep loyalty to his supplier — a church friend referral — and would not switch even for a cheaper price',
+      'Ingredient costs have been rising due to fuel price pass-throughs from the supplier; he is absorbing it quietly and has not raised prices to customers',
+      'Treats Darren as his informal successor and is privately hoping he can run a second outlet one day',
+      'Privately aware that the supply chain cannot scale to a second outlet but does not raise this unless asked directly about expansion'
+    ],
+    pains: [
+      'Drinks pile up at the collection counter during peak hours — wrong drinks handed to wrong customers daily',
+      'Shouting customer names across a noisy shop feels unprofessional and often does not work',
+      'No notification system means customers hover, wander off, or crowd the counter',
+      'Expansion dream is stalled by operational reality — one supplier call on Monday morning will not support two outlets'
+    ],
+    quote: '"If we open a second outlet, calling one supplier on Monday morning will not work anymore. I have no system to track what is at which location."'
+  },
+  selva: {
+    emoji: '🧑‍🦳', name: 'Mrs Selva', role: 'Loyal Customer',
+    insights: [
+      'Has been coming 3–4 times per week since Tea Fellas opened in 2008 — one of their very first regulars',
+      'Aunty Mary knows her name and her usual order (taro milk tea, less sweet, with pearl) — this personal recognition is the main reason she keeps coming back',
+      'Already uses the Kopitiam app for other F&B purchases and sees no reason Tea Fellas cannot offer the same',
+      'Has recommended Tea Fellas to her community WhatsApp group and introduced her husband Raj, who now visits occasionally',
+      'Candid about frustrations when asked directly, but would not complain unprompted — she is loyal first'
+    ],
+    pains: [
+      'Has been late to work due to the morning queue; once gave up and left without her tea',
+      'Has missed at least 4–5 free drinks because of lost or forgotten stamp cards',
+      'No way to pre-order; must join the queue in person even as a daily regular',
+      'Occasionally received the wrong sweetness level or had her order lost entirely during peak hours'
+    ],
+    quote: '"I use Kopitiam app already — so easy. Why not Tea Fellas?"'
+  },
+  jacky: {
+    emoji: '👨‍💼', name: 'Jacky Chan', role: 'HDB Senior Manager / Regular',
+    insights: [
+      'Orders 5–6 drinks for his team almost every morning — Tea Fellas\' highest-volume daily customer',
+      'Arrives at 7:15am specifically to beat the queue; still waits 15+ minutes. A normal 8am arrival means a 25–30 minute wait',
+      'Has tried calling ahead to place an order — Tea Fellas does not take phone orders. He understood, but noted the lost time',
+      'From his HDB work, sees many small businesses resist digitalisation not because they do not want it, but because they fear complexity — he believes Tea Fellas is ready',
+      'Respects the family-run charm and does not want it lost in the process of modernising'
+    ],
+    pains: [
+      'Ordering 5–6 different customised drinks verbally is error-prone — Mary occasionally misses one or gets a customisation wrong',
+      'Collecting 6 drinks with unclear or missing labels means he regularly hands the wrong drink to a colleague',
+      'No receipt or order summary; his team sometimes argues about who ordered what',
+      'Once tried calling ahead — not possible. Pre-ordering would save him significant time every day'
+    ],
+    quote: '"Just a QR code or a web form — scan, order, pay, collect when ready. Nothing fancy."'
+  },
+  darren: {
+    emoji: '👨‍🍳', name: 'Darren DeSouza', role: 'Main Barista',
+    insights: [
+      'Makes every single drink — including the signature Brown Sugar Pearl Milk Tea, with tapioca pearls handmade fresh before 6am daily',
+      'SMU Business Administration graduate (2025) — chose Tea Fellas over a corporate job to gain real-world experience and support his uncle',
+      'Has already researched digital ordering solutions and built a rough proposal for Uncle John — John listened but has not moved on it yet',
+      'Has a strong instinct for the business: cost structures, customer experience, scalability. Careful not to come across as the know-it-all grad',
+      'Sees himself as John\'s informal successor; dreams of running a second outlet — but insists operations must be fixed first'
+    ],
+    pains: [
+      'Unclear chits from Mary force him to stop mid-preparation and clarify — brief but costly interruptions during peak hours',
+      'Single-barista bottleneck: all drink preparation relies on him alone; no capacity buffer during peak volume',
+      'Occasional wrong drinks going out (wrong sweetness, wrong topping) frustrate him even when the error originated upstream',
+      'No kitchen display means he works from paper labels only — one source of truth that can be misread or lost'
+    ],
+    quote: '"Fix the operations first. A second outlet with the current process would just be chaos times two."'
+  }
+};
+
+function openModal(id) {
+  const p = PERSONAS[id];
+  document.getElementById('modal-emoji').textContent = p.emoji;
+  document.getElementById('modal-name').textContent = p.name;
+  document.getElementById('modal-role').textContent = p.role;
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-section">
+      <div class="modal-section-title">Key insights from interview</div>
+      <ul class="modal-bullets">${p.insights.map(i => `<li>${i}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Pain points raised</div>
+      <ul class="modal-bullets">${p.pains.map(i => `<li>${i}</li>`).join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Notable quote</div>
+      <div class="modal-quote">${p.quote}</div>
+    </div>`;
+
+  document.getElementById('persona-modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('persona-modal-overlay').classList.remove('open');
+}
+
+function closeModalOnOverlay(e) {
+  if (e.target === document.getElementById('persona-modal-overlay')) closeModal();
+}
+
+// ── Pre-canned synthesis content ──────────────────────────────
+const CANNED = {
+  pain: `• Order entry friction: Mary's handwritten chits become illegible under peak-hour pressure, causing a cascade of downstream errors — Salmiah misreads and re-keys orders, Darren stops mid-flow to clarify, and wrong drinks reach customers daily.
+
+• Queue and pre-ordering gap: All customers must queue in person regardless of order complexity. Peak waits of 15–30 minutes drive customer loss, lateness to work (Mrs Selva), and bulk-order chaos — Jacky recites 5–6 customised orders verbally, often arriving at 7:15am and still waiting.
+
+• Memory-based collection: John matches completed drinks to customers entirely from memory with no ticket or notification system. Wrong drinks are handed out daily; customers hover at the counter or wander off. The experience feels unprofessional even to Tea Fellas' most loyal regulars.
+
+• Digital loyalty and feedback void: Paper stamp cards are routinely lost or forgotten — Mrs Selva estimates she has missed 4–5 free drinks. There is no digital touchpoint at any stage of the customer journey and no mechanism for John to hear from satisfied customers.
+
+• Supply chain scalability ceiling: One phone call to one supplier every Monday cannot support a second outlet. No inventory tracking, no multi-location ordering capability. Darren is clear: "Fix operations first — a second outlet with the current process would just be chaos times two."`,
+
+  problem: `Mary, Darren, and Uncle John feel frustrated and stretched by Tea Fellas' fully paper-based, memory-dependent order fulfilment process and need to consistently deliver the right drink to the right customer at speed — even during peak-hour pressure — but cannot do so because there is no digital flow linking cashier to kitchen to collection counter, which causes daily order errors, 15–30 minute queues, and an operational ceiling that prevents Tea Fellas from scaling with confidence.`,
+
+  vision: `Tea Fellas will be the heartland tea shop that runs as smoothly as a chain, without losing its soul. By equipping their team with simple, affordable digital tools — from customer order capture to kitchen display to collection — Tea Fellas will eliminate the daily friction that costs them time, accuracy, and customer goodwill. A digitally-enabled Tea Fellas earns the right to grow: a second outlet for Darren to run confidently, a loyal customer base that feels recognised at every visit, and an operation that John can be proud of.`
+};
+
+// ── Demo state: 'ready' | 'generated' | 'confirmed' ──────────
+let demoState = 'ready';
+
+function generateSynthesis() {
+  document.getElementById('syn-pain').value = CANNED.pain;
+  document.getElementById('syn-problem').value = CANNED.problem;
+  document.getElementById('syn-vision').value = CANNED.vision;
+
+  // make textareas readonly
+  ['syn-pain','syn-problem','syn-vision'].forEach(id => {
+    document.getElementById(id).setAttribute('readonly', true);
+  });
+
+  const genBtn = document.getElementById('gen-btn');
+  genBtn.textContent = '✓ Synthesis generated';
+  genBtn.disabled = true;
+
+  document.getElementById('confirm-btn').disabled = false;
+  demoState = 'generated';
+}
+
+function confirmSynthesis() {
+  demoState = 'confirmed';
+  showIdeateView();
+}
+
+function showSynthesisView() {
+  document.getElementById('view-synthesis').classList.add('active');
+  document.getElementById('view-ideate').classList.remove('active');
+  document.getElementById('nav-synthesis').classList.add('active');
+  document.getElementById('phase-label').textContent = 'Phase 2 — Define';
+  document.getElementById('phase-step').textContent = '· Overall Synthesis';
+}
+
+function showIdeateView() {
+  document.getElementById('view-synthesis').classList.remove('active');
+  document.getElementById('view-ideate').classList.add('active');
+  document.getElementById('phase-label').textContent = 'Phase 3 — Ideate';
+  document.getElementById('phase-step').textContent = '· Solution Design';
+}
+
+let selectedScenario = null;
+let scenarioLocked = false;
+
+function selectScenario(id) {
+  if (scenarioLocked) return;
+  selectedScenario = id;
+  document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('sc-' + id).classList.add('selected');
+  document.getElementById('sc-lock-btn').disabled = false;
+}
+
+function lockScenario() {
+  if (!selectedScenario || scenarioLocked) return;
+  const names = {
+    A1: 'Basic digital ($25K)',
+    A2: 'Full integrated digital + supply chain ($150K)',
+    B1: 'AMK Food Centre expansion',
+    B2: 'AMK Hub B1 expansion',
+    C1: 'Conservative — Basic digital + AMK Food Centre',
+    C2: 'Aggressive — Full digital + AMK Hub B1'
+  };
+  scenarioLocked = true;
+  document.getElementById('sc-lock-btn').disabled = true;
+  document.getElementById('sc-lock-btn').textContent = '✓ Recommendation locked';
+  const badge = document.getElementById('sc-locked-badge');
+  badge.textContent = `Your recommendation: ${selectedScenario} — ${names[selectedScenario]}`;
+  badge.classList.add('visible');
+  document.querySelectorAll('.scenario-card').forEach(c => c.style.cursor = 'default');
+}
+
+function resetDemo() {
+  demoState = 'ready';
+  selectedScenario = null;
+  scenarioLocked = false;
+
+  // Clear textareas
+  ['syn-pain','syn-problem','syn-vision'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+    el.removeAttribute('readonly');
+  });
+
+  // Reset synthesis buttons
+  const genBtn = document.getElementById('gen-btn');
+  genBtn.textContent = 'Generate synthesis ↗';
+  genBtn.disabled = false;
+  document.getElementById('confirm-btn').disabled = true;
+
+  // Reset scenario cards
+  document.querySelectorAll('.scenario-card').forEach(c => {
+    c.classList.remove('selected');
+    c.style.cursor = 'pointer';
+  });
+  const lockBtn = document.getElementById('sc-lock-btn');
+  lockBtn.disabled = true;
+  lockBtn.textContent = 'Lock in our recommendation →';
+  const badge = document.getElementById('sc-locked-badge');
+  badge.textContent = '';
+  badge.classList.remove('visible');
+
+  showSynthesisView();
+}
+</script>
+</body>
+</html>

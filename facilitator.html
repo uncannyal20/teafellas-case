@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Facilitator Dashboard</title>
+<style>
+  :root {
+    --tea-bg: #F5F0E8;
+    --tea-card: #FDFAF4;
+    --tea-green: #2D5A27;
+    --tea-green-light: #4A7C42;
+    --tea-amber: #C17A2A;
+    --tea-amber-light: #E8A94A;
+    --tea-cream: #EDE4D0;
+    --tea-border: #D4C4A0;
+    --tea-text: #2C2416;
+    --tea-muted: #6B5A3E;
+    --tea-danger: #C0392B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--tea-bg); color: var(--tea-text); min-height: 100vh; }
+
+  /* ── Password screen ── */
+  #pw-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--tea-bg);
+  }
+  #pw-screen.hidden { display: none; }
+  .pw-box {
+    background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 16px;
+    padding: 40px 44px; max-width: 400px; width: 90%; text-align: center;
+    box-shadow: 0 8px 32px rgba(45,90,39,0.1);
+  }
+  .pw-logo { font-size: 44px; margin-bottom: 12px; }
+  .pw-title { font-size: 22px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
+  .pw-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 28px; }
+  .pw-input { width: 100%; border: 2px solid var(--tea-border); border-radius: 8px;
+    padding: 11px 14px; font-size: 15px; color: var(--tea-text); background: #fff;
+    outline: none; margin-bottom: 12px; text-align: center; letter-spacing: 2px; }
+  .pw-input:focus { border-color: var(--tea-green); }
+  .pw-btn { width: 100%; background: var(--tea-green); color: #fff; border: none;
+    border-radius: 8px; padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .pw-btn:hover { background: var(--tea-green-light); }
+  .pw-error { font-size: 12px; color: var(--tea-danger); margin-top: 10px; display: none; }
+  .pw-error.show { display: block; }
+
+  /* ── Dashboard ── */
+  #dashboard { display: none; }
+  #dashboard.visible { display: block; }
+
+  /* ── Topnav ── */
+  #topnav {
+    background: var(--tea-green); padding: 0 24px; height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .nav-brand { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
+  .nav-brand span { opacity: 0.6; font-weight: 400; font-size: 13px; margin-left: 8px; }
+  .nav-logout { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer; }
+  .nav-logout:hover { background: rgba(255,255,255,0.25); }
+
+  /* ── Page body ── */
+  .page-body { max-width: 1100px; margin: 0 auto; padding: 28px 24px 60px; display: flex; flex-direction: column; gap: 24px; }
+
+  /* ── Section card ── */
+  .section-card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 12px; overflow: hidden; }
+  .section-header { padding: 16px 20px 14px; border-bottom: 1px solid var(--tea-border); display: flex; align-items: baseline; gap: 12px; justify-content: space-between; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--tea-green); }
+  .section-sub { font-size: 12px; color: var(--tea-muted); }
+  .section-body { padding: 20px; }
+
+  /* ── Section 1: Team progress ── */
+  .progress-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .refresh-btn { background: var(--tea-green); color: #fff; border: none; border-radius: 6px;
+    padding: 7px 16px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .refresh-btn:hover { background: var(--tea-green-light); }
+  .last-updated { font-size: 11px; color: var(--tea-muted); }
+  .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .team-card { background: var(--tea-bg); border: 1px solid var(--tea-border); border-radius: 10px; padding: 16px 18px; }
+  .team-code-label { font-size: 22px; font-weight: 800; color: var(--tea-green); font-family: 'Courier New', monospace; letter-spacing: 1px; margin-bottom: 14px; }
+  .progress-row { margin-bottom: 10px; }
+  .progress-label { font-size: 11px; color: var(--tea-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+  .progress-bar-wrap { background: var(--tea-cream); border-radius: 20px; height: 8px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 20px; background: var(--tea-amber); transition: width 0.3s; }
+  .progress-bar-fill.complete { background: var(--tea-green); }
+  .progress-count { font-size: 11px; color: var(--tea-muted); margin-top: 3px; }
+  .persona-row { display: flex; gap: 8px; margin: 12px 0 10px; align-items: center; }
+  .persona-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; position: relative; }
+  .persona-icon.not-started { background: #e0ddd8; opacity: 0.5; }
+  .persona-icon.in-progress { background: #FEF3CD; border: 2px solid var(--tea-amber); }
+  .persona-icon.done { background: #D4EDD1; border: 2px solid var(--tea-green); }
+  .meta-rows { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+  .meta-row { display: flex; justify-content: space-between; font-size: 12px; }
+  .meta-row-label { color: var(--tea-muted); }
+  .meta-row-value { font-weight: 600; color: var(--tea-text); }
+  .meta-row-value.confirmed { color: var(--tea-green); }
+  .meta-row-value.pending { color: var(--tea-muted); font-weight: 400; }
+  .no-teams { text-align: center; padding: 40px 20px; color: var(--tea-muted); font-size: 14px; }
+
+  /* ── Section 2: Financial figures ── */
+  .fig-group { margin-bottom: 24px; }
+  .fig-group-title { font-size: 13px; font-weight: 700; color: var(--tea-green); margin-bottom: 12px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--tea-border); text-transform: uppercase; letter-spacing: 0.5px; }
+  .fig-subgroup { margin-bottom: 16px; }
+  .fig-subgroup-title { font-size: 11px; font-weight: 700; color: var(--tea-amber); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .fig-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .fig-field { display: flex; flex-direction: column; gap: 4px; }
+  .fig-label { font-size: 11px; color: var(--tea-muted); font-weight: 500; }
+  .fig-input-wrap { display: flex; align-items: center; gap: 0; border: 1px solid var(--tea-border); border-radius: 6px; overflow: hidden; background: #fff; }
+  .fig-unit { padding: 7px 10px; background: var(--tea-cream); font-size: 12px; color: var(--tea-muted); border-right: 1px solid var(--tea-border); white-space: nowrap; }
+  .fig-unit.right { border-right: none; border-left: 1px solid var(--tea-border); }
+  .fig-input { flex: 1; border: none; padding: 7px 10px; font-size: 13px; color: var(--tea-text); outline: none; background: transparent; }
+  .fig-input:focus { background: #FDFAF4; }
+  .fig-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .btn-save { background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 22px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-save:hover { background: var(--tea-green-light); }
+  .btn-revert { background: var(--tea-card); color: var(--tea-text); border: 1px solid var(--tea-border);
+    border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-revert:hover { border-color: var(--tea-amber); color: var(--tea-amber); }
+  .save-toast { font-size: 12px; color: var(--tea-green); font-weight: 600; display: none; }
+  .save-toast.show { display: inline; }
+  .save-error { font-size: 12px; color: var(--tea-danger); font-weight: 600; display: none; }
+  .save-error.show { display: inline; }
+
+  /* ── Section 3: Session management ── */
+  .btn-danger { background: var(--tea-danger); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 22px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-danger:hover { background: #A93226; }
+  .reset-confirm-box { display: none; margin-top: 16px; background: #FFF5F5;
+    border: 1px solid #F5C6CB; border-radius: 10px; padding: 16px 18px; }
+  .reset-confirm-box.visible { display: block; }
+  .reset-warn { font-size: 13px; color: var(--tea-danger); margin-bottom: 14px; line-height: 1.6; }
+  .reset-warn strong { display: block; margin-bottom: 6px; font-size: 14px; }
+  .reset-input-wrap { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .reset-label { font-size: 12px; color: var(--tea-text); font-weight: 600; white-space: nowrap; }
+  .reset-input { border: 1px solid var(--tea-border); border-radius: 6px; padding: 8px 12px;
+    font-size: 14px; font-family: 'Courier New', monospace; font-weight: 700; width: 120px;
+    outline: none; letter-spacing: 2px; }
+  .reset-input:focus { border-color: var(--tea-danger); }
+  .btn-cancel { background: var(--tea-cream); color: var(--tea-text); border: 1px solid var(--tea-border);
+    border-radius: 6px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-confirm-reset { background: var(--tea-danger); color: #fff; border: none; border-radius: 6px;
+    padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .btn-confirm-reset:disabled { opacity: 0.35; cursor: not-allowed; }
+  .reset-success { font-size: 13px; color: var(--tea-green); font-weight: 600; margin-top: 12px; display: none; }
+  .reset-success.show { display: block; }
+
+  /* ── Section 4: About ── */
+  .about-grid { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; font-size: 13px; }
+  .about-key { color: var(--tea-muted); font-weight: 600; }
+  .about-val { color: var(--tea-text); }
+</style>
+</head>
+<body>
+
+<!-- ── Password screen ── -->
+<div id="pw-screen">
+  <div class="pw-box">
+    <div class="pw-logo">🍵</div>
+    <div class="pw-title">Tea Fellas</div>
+    <div class="pw-sub">Facilitator Dashboard</div>
+    <input type="password" class="pw-input" id="pw-input" placeholder="Enter facilitator password"
+      onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="pw-btn" onclick="checkPassword()">Enter dashboard →</button>
+    <div class="pw-error" id="pw-error">Incorrect password.</div>
+  </div>
+</div>
+
+<!-- ── Dashboard ── -->
+<div id="dashboard">
+  <nav id="topnav">
+    <div class="nav-brand">🍵 teafellas <span>Facilitator Dashboard</span></div>
+    <button class="nav-logout" onclick="logout()">Log out</button>
+  </nav>
+
+  <div class="page-body">
+
+    <!-- Section 1: Live Team Progress -->
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Live Team Progress</div>
+          <div class="section-sub">Real-time status for all active teams. Auto-refreshes every 30 seconds.</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="progress-meta">
+          <button class="refresh-btn" onclick="refreshProgress()">↻ Refresh now</button>
+          <span class="last-updated" id="last-updated">Not yet loaded</span>
+        </div>
+        <div id="teams-container">
+          <div class="no-teams">Loading team data…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Financial Figures -->
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Financial Figures</div>
+          <div class="section-sub">Edit the numbers used in John's email. Changes take effect immediately for all participants.</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div id="fig-form">
+          <!-- Baseline -->
+          <div class="fig-group">
+            <div class="fig-group-title">Baseline — Current Toa Payoh Performance</div>
+            <div class="fig-grid">
+              <div class="fig-field">
+                <div class="fig-label">Daily customers</div>
+                <div class="fig-input-wrap"><input class="fig-input" type="number" id="f-base-dailyCustomers"><span class="fig-unit right">cust/day</span></div>
+              </div>
+              <div class="fig-field">
+                <div class="fig-label">Average order value</div>
+                <div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" step="0.01" id="f-base-avgOrderValue"></div>
+              </div>
+              <div class="fig-field">
+                <div class="fig-label">Monthly revenue</div>
+                <div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-base-monthlyRevenue"></div>
+              </div>
+              <div class="fig-field">
+                <div class="fig-label">Monthly operating costs</div>
+                <div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-base-monthlyOpsCosts"></div>
+              </div>
+              <div class="fig-field">
+                <div class="fig-label">Monthly drawings</div>
+                <div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-base-monthlyDrawings"></div>
+              </div>
+              <div class="fig-field">
+                <div class="fig-label">Net monthly position</div>
+                <div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-base-netMonthly"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario A -->
+          <div class="fig-group">
+            <div class="fig-group-title">Scenario A — Digital Transformation</div>
+            <div class="fig-subgroup">
+              <div class="fig-subgroup-title">A1 — Basic Solution</div>
+              <div class="fig-grid">
+                <div class="fig-field"><div class="fig-label">Setup cost (one-time)</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-a1-setupCost"></div></div>
+                <div class="fig-field"><div class="fig-label">Monthly maintenance</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-a1-monthlyMaint"></div></div>
+                <div class="fig-field"><div class="fig-label">Queue reduction</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-a1-queueReduction"><span class="fig-unit right">%</span></div></div>
+                <div class="fig-field"><div class="fig-label">Order error reduction</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-a1-errorReduction"><span class="fig-unit right">%</span></div></div>
+                <div class="fig-field"><div class="fig-label">Revenue uplift</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-a1-revenueUplift"><span class="fig-unit right">%</span></div></div>
+              </div>
+            </div>
+            <div class="fig-subgroup">
+              <div class="fig-subgroup-title">A2 — Full Integrated Solution</div>
+              <div class="fig-grid">
+                <div class="fig-field"><div class="fig-label">Setup cost (one-time)</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-a2-setupCost"></div></div>
+                <div class="fig-field"><div class="fig-label">Monthly maintenance</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-a2-monthlyMaint"></div></div>
+                <div class="fig-field"><div class="fig-label">Queue reduction</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-a2-queueReduction"><span class="fig-unit right">%</span></div></div>
+                <div class="fig-field"><div class="fig-label">Order error reduction</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-a2-errorReduction"><span class="fig-unit right">%</span></div></div>
+                <div class="fig-field"><div class="fig-label">Revenue uplift</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-a2-revenueUplift"><span class="fig-unit right">%</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario B -->
+          <div class="fig-group">
+            <div class="fig-group-title">Scenario B — Expansion to AMK</div>
+            <div class="fig-subgroup">
+              <div class="fig-subgroup-title">B1 — AMK Food Centre</div>
+              <div class="fig-grid">
+                <div class="fig-field"><div class="fig-label">Setup cost (one-time)</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b1-setupCost"></div></div>
+                <div class="fig-field"><div class="fig-label">Monthly rent</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b1-monthlyRent"></div></div>
+                <div class="fig-field"><div class="fig-label">Additional staff cost</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b1-addStaffCost"></div></div>
+                <div class="fig-field"><div class="fig-label">Total add. monthly costs</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b1-totalAddMonthlyCosts"></div></div>
+                <div class="fig-field"><div class="fig-label">Year 1 daily customers</div><div class="fig-input-wrap"><input class="fig-input" type="number" id="f-b1-yr1DailyCustomers"><span class="fig-unit right">cust/day</span></div></div>
+                <div class="fig-field"><div class="fig-label">Year 1 monthly revenue</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b1-yr1MonthlyRevenue"></div></div>
+                <div class="fig-field"><div class="fig-label">Year 3 daily customers</div><div class="fig-input-wrap"><input class="fig-input" type="number" id="f-b1-yr3DailyCustomers"><span class="fig-unit right">cust/day</span></div></div>
+                <div class="fig-field"><div class="fig-label">Year 3 monthly revenue</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b1-yr3MonthlyRevenue"></div></div>
+              </div>
+            </div>
+            <div class="fig-subgroup">
+              <div class="fig-subgroup-title">B2 — AMK Hub B1</div>
+              <div class="fig-grid">
+                <div class="fig-field"><div class="fig-label">Setup cost (one-time)</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b2-setupCost"></div></div>
+                <div class="fig-field"><div class="fig-label">Monthly rent</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b2-monthlyRent"></div></div>
+                <div class="fig-field"><div class="fig-label">Additional staff cost</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b2-addStaffCost"></div></div>
+                <div class="fig-field"><div class="fig-label">Total add. monthly costs</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b2-totalAddMonthlyCosts"></div></div>
+                <div class="fig-field"><div class="fig-label">Year 1 daily customers</div><div class="fig-input-wrap"><input class="fig-input" type="number" id="f-b2-yr1DailyCustomers"><span class="fig-unit right">cust/day</span></div></div>
+                <div class="fig-field"><div class="fig-label">Year 1 monthly revenue</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b2-yr1MonthlyRevenue"></div></div>
+                <div class="fig-field"><div class="fig-label">Year 3 daily customers</div><div class="fig-input-wrap"><input class="fig-input" type="number" id="f-b2-yr3DailyCustomers"><span class="fig-unit right">cust/day</span></div></div>
+                <div class="fig-field"><div class="fig-label">Year 3 monthly revenue</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-b2-yr3MonthlyRevenue"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario C -->
+          <div class="fig-group">
+            <div class="fig-group-title">Scenario C — Do Both</div>
+            <div class="fig-subgroup">
+              <div class="fig-subgroup-title">C1 — Conservative</div>
+              <div class="fig-grid">
+                <div class="fig-field"><div class="fig-label">Total investment</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-c1-totalInvestment"></div></div>
+                <div class="fig-field"><div class="fig-label">Additional monthly costs</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-c1-addMonthlyCosts"></div></div>
+                <div class="fig-field"><div class="fig-label">Approach</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-c1-approach" style="min-width:200px"></div></div>
+              </div>
+            </div>
+            <div class="fig-subgroup">
+              <div class="fig-subgroup-title">C2 — Aggressive</div>
+              <div class="fig-grid">
+                <div class="fig-field"><div class="fig-label">Total investment</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-c2-totalInvestment"></div></div>
+                <div class="fig-field"><div class="fig-label">Additional monthly costs</div><div class="fig-input-wrap"><span class="fig-unit">$</span><input class="fig-input" type="number" id="f-c2-addMonthlyCosts"></div></div>
+                <div class="fig-field"><div class="fig-label">Approach</div><div class="fig-input-wrap"><input class="fig-input" type="text" id="f-c2-approach" style="min-width:200px"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fig-actions">
+            <button class="btn-save" onclick="saveConfig()">Save changes →</button>
+            <button class="btn-revert" onclick="revertDefaults()">Revert to defaults</button>
+            <span class="save-toast" id="save-toast">✓ Saved successfully</span>
+            <span class="save-error" id="save-error">⚠ Save failed — check connection</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Session Management -->
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Session Management</div>
+          <div class="section-sub">Reset all participant session data between workshop runs.</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <button class="btn-danger" onclick="showResetConfirm()">Reset all session data</button>
+        <div class="reset-confirm-box" id="reset-confirm-box">
+          <div class="reset-warn">
+            <strong>⚠️ This action cannot be undone.</strong>
+            This will permanently delete all team interview transcripts, summaries, synthesis, declarations, and scenario selections from the database. Financial figures and app configuration will NOT be affected.
+          </div>
+          <div class="reset-input-wrap">
+            <span class="reset-label">Type RESET to confirm:</span>
+            <input type="text" class="reset-input" id="reset-input" placeholder="RESET" oninput="checkResetInput()">
+            <button class="btn-cancel" onclick="hideResetConfirm()">Cancel</button>
+            <button class="btn-confirm-reset" id="btn-confirm-reset" onclick="doReset()" disabled>Confirm reset →</button>
+          </div>
+        </div>
+        <div class="reset-success" id="reset-success">✓ Session data cleared. Ready for next workshop run.</div>
+      </div>
+    </div>
+
+    <!-- Section 4: About -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">About</div>
+      </div>
+      <div class="section-body">
+        <div class="about-grid">
+          <span class="about-key">Application</span><span class="about-val">Tea Fellas Discovery Simulation</span>
+          <span class="about-key">Version</span><span class="about-val">1.3</span>
+          <span class="about-key">Canon document</span><span class="about-val">TeaFellas_Canon_v1_3.docx</span>
+          <span class="about-key">Last updated</span><span class="about-val">July 2026</span>
+          <span class="about-key">Built for</span><span class="about-val">HDB TPO Product Discovery Workshop</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const WORKER_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const FACILITATOR_PASSWORD = 'TEAFELLAS2026';
+
+const DEFAULTS = {"baseline":{"dailyCustomers":250,"avgOrderValue":5.00,"monthlyRevenue":27500,"monthlyOpsCosts":18400,"monthlyDrawings":5000,"netMonthly":4100},"scenarioA":{"basic":{"setupCost":25000,"monthlyMaint":300,"queueReduction":"20–25%","errorReduction":"50–60%","revenueUplift":"8–10%"},"full":{"setupCost":120000,"monthlyMaint":500,"queueReduction":"35–40%","errorReduction":"75–80%","revenueUplift":"15–18%"}},"scenarioB":{"foodCentre":{"setupCost":80000,"monthlyRent":5500,"addStaffCost":7500,"totalAddMonthlyCosts":14500,"yr1DailyCustomers":150,"yr1MonthlyRevenue":16500,"yr3DailyCustomers":220,"yr3MonthlyRevenue":24200},"hub":{"setupCost":150000,"monthlyRent":9000,"addStaffCost":9500,"totalAddMonthlyCosts":20000,"yr1DailyCustomers":200,"yr1MonthlyRevenue":22000,"yr3DailyCustomers":320,"yr3MonthlyRevenue":35200}},"scenarioC":{"conservative":{"totalInvestment":105000,"addMonthlyCosts":15100,"approach":"Digital first (6 months), then expand"},"aggressive":{"totalInvestment":270000,"addMonthlyCosts":20800,"approach":"Run both simultaneously"}}};
+
+const PERSONA_EMOJI = {
+  'aunty-mary': '👵',
+  'uncle-john': '👴',
+  'mrs-selva': '🧑‍🦳',
+  'jacky': '👨‍💼',
+  'darren': '👨‍🍳'
+};
+const PERSONA_IDS = ['aunty-mary','uncle-john','mrs-selva','jacky','darren'];
+
+const SCENARIO_NAMES = {
+  'A1': 'A1: Basic digital ($25K)',
+  'A2': 'A2: Full digital ($120K)',
+  'B1': 'B1: AMK Food Centre',
+  'B2': 'B2: AMK Hub B1',
+  'C1': 'C1: Conservative (both)',
+  'C2': 'C2: Aggressive (both)'
+};
+
+// ── Auth ──
+function checkPassword() {
+  const val = document.getElementById('pw-input').value;
+  const err = document.getElementById('pw-error');
+  if (val === FACILITATOR_PASSWORD) {
+    sessionStorage.setItem('facilitator_auth', 'true');
+    document.getElementById('pw-screen').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('visible');
+    initDashboard();
+  } else {
+    err.classList.add('show');
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('facilitator_auth');
+  location.reload();
+}
+
+// ── Init ──
+function initDashboard() {
+  loadConfig();
+  refreshProgress();
+  setInterval(refreshProgress, 30000);
+}
+
+// ── Section 1: Team Progress ──
+async function refreshProgress() {
+  try {
+    const resp = await fetch(`${WORKER_URL}/team-progress`);
+    const data = await resp.json();
+    renderTeams(data.teams || []);
+    const now = new Date();
+    document.getElementById('last-updated').textContent =
+      `Last updated: ${now.toLocaleTimeString('en-SG', {hour:'2-digit',minute:'2-digit',second:'2-digit'})}`;
+  } catch (e) {
+    document.getElementById('teams-container').innerHTML =
+      '<div class="no-teams" style="color:var(--tea-danger)">⚠ Could not load team data — check Worker connection.</div>';
+  }
+}
+
+function renderTeams(teams) {
+  const container = document.getElementById('teams-container');
+  if (!teams.length) {
+    container.innerHTML = '<div class="no-teams">No active teams. Waiting for participants to join…</div>';
+    return;
+  }
+  container.innerHTML = '<div class="teams-grid">' + teams.map(renderTeamCard).join('') + '</div>';
+}
+
+function renderTeamCard(team) {
+  const personas = team.personas || {};
+  const doneCount = PERSONA_IDS.filter(id => personas[id] && personas[id].summary_confirmed).length;
+  const pct = Math.round((doneCount / 5) * 100);
+
+  const personaIcons = PERSONA_IDS.map(id => {
+    const p = personas[id] || {};
+    let cls = 'not-started';
+    if (p.summary_confirmed) cls = 'done';
+    else if (p.has_messages) cls = 'in-progress';
+    return `<div class="persona-icon ${cls}" title="${id}">${PERSONA_EMOJI[id]}</div>`;
+  }).join('');
+
+  const synthStatus = team.synthesis_confirmed
+    ? '<span class="meta-row-value confirmed">✓ Confirmed</span>'
+    : team.has_synthesis
+    ? '<span class="meta-row-value" style="color:var(--tea-amber)">In progress</span>'
+    : '<span class="meta-row-value pending">Not started</span>';
+
+  const declStatus = team.declaration_done
+    ? `<span class="meta-row-value confirmed">✓ Declared</span>`
+    : '<span class="meta-row-value pending">Pending</span>';
+
+  const scenStatus = team.scenario_selected
+    ? `<span class="meta-row-value confirmed">${SCENARIO_NAMES[team.scenario_selected] || team.scenario_selected}</span>`
+    : '<span class="meta-row-value pending">Not selected</span>';
+
+  return `
+    <div class="team-card">
+      <div class="team-code-label">${escHtml(team.team_code)}</div>
+      <div class="progress-row">
+        <div class="progress-label">Interview progress</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill ${doneCount === 5 ? 'complete' : ''}" style="width:${pct}%"></div>
+        </div>
+        <div class="progress-count">${doneCount}/5 interviews summarised</div>
+      </div>
+      <div class="persona-row">${personaIcons}</div>
+      <div class="meta-rows">
+        <div class="meta-row"><span class="meta-row-label">Synthesis</span>${synthStatus}</div>
+        <div class="meta-row"><span class="meta-row-label">Declaration</span>${declStatus}</div>
+        <div class="meta-row"><span class="meta-row-label">Scenario</span>${scenStatus}</div>
+      </div>
+    </div>`;
+}
+
+// ── Section 2: Financial Figures ──
+async function loadConfig() {
+  try {
+    const resp = await fetch(`${WORKER_URL}/config`);
+    const data = await resp.json();
+    const fig = (data.financial_figures) ? data.financial_figures : DEFAULTS;
+    populateForm(fig);
+  } catch (e) {
+    populateForm(DEFAULTS);
+  }
+}
+
+function populateForm(f) {
+  const b = f.baseline || {};
+  setVal('f-base-dailyCustomers', b.dailyCustomers);
+  setVal('f-base-avgOrderValue', b.avgOrderValue);
+  setVal('f-base-monthlyRevenue', b.monthlyRevenue);
+  setVal('f-base-monthlyOpsCosts', b.monthlyOpsCosts);
+  setVal('f-base-monthlyDrawings', b.monthlyDrawings);
+  setVal('f-base-netMonthly', b.netMonthly);
+
+  const a1 = (f.scenarioA || {}).basic || {};
+  setVal('f-a1-setupCost', a1.setupCost);
+  setVal('f-a1-monthlyMaint', a1.monthlyMaint);
+  setVal('f-a1-queueReduction', a1.queueReduction);
+  setVal('f-a1-errorReduction', a1.errorReduction);
+  setVal('f-a1-revenueUplift', a1.revenueUplift);
+
+  const a2 = (f.scenarioA || {}).full || {};
+  setVal('f-a2-setupCost', a2.setupCost);
+  setVal('f-a2-monthlyMaint', a2.monthlyMaint);
+  setVal('f-a2-queueReduction', a2.queueReduction);
+  setVal('f-a2-errorReduction', a2.errorReduction);
+  setVal('f-a2-revenueUplift', a2.revenueUplift);
+
+  const b1 = (f.scenarioB || {}).foodCentre || {};
+  setVal('f-b1-setupCost', b1.setupCost);
+  setVal('f-b1-monthlyRent', b1.monthlyRent);
+  setVal('f-b1-addStaffCost', b1.addStaffCost);
+  setVal('f-b1-totalAddMonthlyCosts', b1.totalAddMonthlyCosts);
+  setVal('f-b1-yr1DailyCustomers', b1.yr1DailyCustomers);
+  setVal('f-b1-yr1MonthlyRevenue', b1.yr1MonthlyRevenue);
+  setVal('f-b1-yr3DailyCustomers', b1.yr3DailyCustomers);
+  setVal('f-b1-yr3MonthlyRevenue', b1.yr3MonthlyRevenue);
+
+  const b2 = (f.scenarioB || {}).hub || {};
+  setVal('f-b2-setupCost', b2.setupCost);
+  setVal('f-b2-monthlyRent', b2.monthlyRent);
+  setVal('f-b2-addStaffCost', b2.addStaffCost);
+  setVal('f-b2-totalAddMonthlyCosts', b2.totalAddMonthlyCosts);
+  setVal('f-b2-yr1DailyCustomers', b2.yr1DailyCustomers);
+  setVal('f-b2-yr1MonthlyRevenue', b2.yr1MonthlyRevenue);
+  setVal('f-b2-yr3DailyCustomers', b2.yr3DailyCustomers);
+  setVal('f-b2-yr3MonthlyRevenue', b2.yr3MonthlyRevenue);
+
+  const c1 = (f.scenarioC || {}).conservative || {};
+  setVal('f-c1-totalInvestment', c1.totalInvestment);
+  setVal('f-c1-addMonthlyCosts', c1.addMonthlyCosts);
+  setVal('f-c1-approach', c1.approach);
+
+  const c2 = (f.scenarioC || {}).aggressive || {};
+  setVal('f-c2-totalInvestment', c2.totalInvestment);
+  setVal('f-c2-addMonthlyCosts', c2.addMonthlyCosts);
+  setVal('f-c2-approach', c2.approach);
+}
+
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (el && val !== undefined && val !== null) el.value = val;
+}
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  return el.type === 'number' ? (parseFloat(el.value) || 0) : el.value;
+}
+
+function readForm() {
+  return {
+    baseline: {
+      dailyCustomers: getVal('f-base-dailyCustomers'),
+      avgOrderValue: getVal('f-base-avgOrderValue'),
+      monthlyRevenue: getVal('f-base-monthlyRevenue'),
+      monthlyOpsCosts: getVal('f-base-monthlyOpsCosts'),
+      monthlyDrawings: getVal('f-base-monthlyDrawings'),
+      netMonthly: getVal('f-base-netMonthly')
+    },
+    scenarioA: {
+      basic: {
+        setupCost: getVal('f-a1-setupCost'),
+        monthlyMaint: getVal('f-a1-monthlyMaint'),
+        queueReduction: getVal('f-a1-queueReduction'),
+        errorReduction: getVal('f-a1-errorReduction'),
+        revenueUplift: getVal('f-a1-revenueUplift')
+      },
+      full: {
+        setupCost: getVal('f-a2-setupCost'),
+        monthlyMaint: getVal('f-a2-monthlyMaint'),
+        queueReduction: getVal('f-a2-queueReduction'),
+        errorReduction: getVal('f-a2-errorReduction'),
+        revenueUplift: getVal('f-a2-revenueUplift')
+      }
+    },
+    scenarioB: {
+      foodCentre: {
+        setupCost: getVal('f-b1-setupCost'),
+        monthlyRent: getVal('f-b1-monthlyRent'),
+        addStaffCost: getVal('f-b1-addStaffCost'),
+        totalAddMonthlyCosts: getVal('f-b1-totalAddMonthlyCosts'),
+        yr1DailyCustomers: getVal('f-b1-yr1DailyCustomers'),
+        yr1MonthlyRevenue: getVal('f-b1-yr1MonthlyRevenue'),
+        yr3DailyCustomers: getVal('f-b1-yr3DailyCustomers'),
+        yr3MonthlyRevenue: getVal('f-b1-yr3MonthlyRevenue')
+      },
+      hub: {
+        setupCost: getVal('f-b2-setupCost'),
+        monthlyRent: getVal('f-b2-monthlyRent'),
+        addStaffCost: getVal('f-b2-addStaffCost'),
+        totalAddMonthlyCosts: getVal('f-b2-totalAddMonthlyCosts'),
+        yr1DailyCustomers: getVal('f-b2-yr1DailyCustomers'),
+        yr1MonthlyRevenue: getVal('f-b2-yr1MonthlyRevenue'),
+        yr3DailyCustomers: getVal('f-b2-yr3DailyCustomers'),
+        yr3MonthlyRevenue: getVal('f-b2-yr3MonthlyRevenue')
+      }
+    },
+    scenarioC: {
+      conservative: {
+        totalInvestment: getVal('f-c1-totalInvestment'),
+        addMonthlyCosts: getVal('f-c1-addMonthlyCosts'),
+        approach: getVal('f-c1-approach')
+      },
+      aggressive: {
+        totalInvestment: getVal('f-c2-totalInvestment'),
+        addMonthlyCosts: getVal('f-c2-addMonthlyCosts'),
+        approach: getVal('f-c2-approach')
+      }
+    }
+  };
+}
+
+async function saveConfig(figData) {
+  const value = figData || readForm();
+  const saveToast = document.getElementById('save-toast');
+  const saveError = document.getElementById('save-error');
+  saveToast.classList.remove('show');
+  saveError.classList.remove('show');
+  try {
+    const resp = await fetch(`${WORKER_URL}/config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-facilitator-password': FACILITATOR_PASSWORD },
+      body: JSON.stringify({ key: 'financial_figures', value })
+    });
+    if (!resp.ok) throw new Error(resp.status);
+    saveToast.classList.add('show');
+    setTimeout(() => saveToast.classList.remove('show'), 3000);
+  } catch (e) {
+    saveError.classList.add('show');
+    setTimeout(() => saveError.classList.remove('show'), 4000);
+  }
+}
+
+function revertDefaults() {
+  if (!confirm('Reset all financial figures to their original default values? This will overwrite any changes you have made.')) return;
+  populateForm(DEFAULTS);
+  saveConfig(DEFAULTS);
+}
+
+// ── Section 3: Session Management ──
+function showResetConfirm() {
+  document.getElementById('reset-confirm-box').classList.add('visible');
+  document.getElementById('reset-success').classList.remove('show');
+  document.getElementById('reset-input').value = '';
+  document.getElementById('btn-confirm-reset').disabled = true;
+}
+
+function hideResetConfirm() {
+  document.getElementById('reset-confirm-box').classList.remove('visible');
+  document.getElementById('reset-input').value = '';
+}
+
+function checkResetInput() {
+  const val = document.getElementById('reset-input').value;
+  document.getElementById('btn-confirm-reset').disabled = (val !== 'RESET');
+}
+
+async function doReset() {
+  document.getElementById('btn-confirm-reset').disabled = true;
+  try {
+    const resp = await fetch(`${WORKER_URL}/reset-sessions`, {
+      method: 'POST',
+      headers: { 'x-facilitator-password': FACILITATOR_PASSWORD }
+    });
+    if (!resp.ok) throw new Error(resp.status);
+    hideResetConfirm();
+    const s = document.getElementById('reset-success');
+    s.classList.add('show');
+    refreshProgress();
+  } catch (e) {
+    alert('Reset failed — please check the Worker connection and try again.');
+    document.getElementById('btn-confirm-reset').disabled = false;
+  }
+}
+
+// ── Utilities ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Boot ──
+if (sessionStorage.getItem('facilitator_auth') === 'true') {
+  document.getElementById('pw-screen').classList.add('hidden');
+  document.getElementById('dashboard').classList.add('visible');
+  initDashboard();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tea Fellas — Artefacts</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:  #2D5A27;
+      --green-light: #3d7a35;
+      --amber:  #C17A2A;
+      --cream:  #F5F0E8;
+      --card:   #FDFAF4;
+      --text:   #1a1a1a;
+      --muted:  #6b6b6b;
+      --border: #e0d8cc;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--green);
+      color: white;
+      padding: 28px 40px 24px;
+    }
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-logo {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 6px;
+    }
+    .header-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-sub {
+      font-size: 14px;
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+
+    /* ── Notice ── */
+    .notice {
+      background: #fffbf2;
+      border-left: 4px solid var(--amber);
+      max-width: 900px;
+      margin: 28px auto 0;
+      padding: 14px 20px;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: #5a4010;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .notice strong { font-weight: 600; }
+
+    /* ── Main ── */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px 40px 60px;
+    }
+
+    /* ── Phase block ── */
+    .phase {
+      margin-bottom: 36px;
+    }
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--green);
+    }
+    .phase-badge {
+      background: var(--green);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .phase-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    /* ── Artefact card ── */
+    .artefact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .artefact-id {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .artefact-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .artefact-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .artefact-desc {
+      font-size: 13px;
+      color: #4a4a4a;
+    }
+    .artefact-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-participant {
+      background: var(--amber);
+      color: white;
+    }
+    .btn-facilitator {
+      background: var(--green);
+      color: white;
+    }
+    .btn-icon { font-size: 14px; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 0 0 40px;
+    }
+
+    @media (max-width: 640px) {
+      .header { padding: 20px 20px 18px; }
+      .main { padding: 20px 20px 48px; }
+      .artefact-card {
+        grid-template-columns: 1fr;
+      }
+      .artefact-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-logo">Tea Fellas · HDB TPO Product Workshop</div>
+    <div class="header-title">Artefacts</div>
+    <div class="header-sub">24 artefacts across 4 phases · July 2026</div>
+  </div>
+</div>
+
+<div class="notice" style="padding-left:40px; padding-right:40px; border-radius:0;">
+  <span style="margin-top:1px;">🟡</span>
+  <div>
+    <strong>Two versions per artefact.</strong>
+    <strong style="color:var(--amber);">Participant</strong> — blank fillable template for groups.
+    <strong style="color:var(--green);">Facilitator</strong> — model answer reference (facilitators only).
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Phase 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-badge">Phase 1</span>
+      <span class="phase-name">Research</span>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">1.1</div>
+        <div class="artefact-name">As-Is Process Map</div>
+        <div class="artefact-meta">A3 Landscape · 1 page</div>
+        <div class="artefact-desc">Current 13-step paper-based order fulfilment process across 5 swimlanes</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase1_Research/1.1_As-Is_Process_Map_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase1_Research/1.1_As-Is_Process_Map_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">1.2</div>
+        <div class="artefact-name">Research Findings Brief</div>
+        <div class="artefact-meta">A4 Portrait · 3 pages</div>
+        <div class="artefact-desc">Stakeholder interview outputs — persona cards, pain point table, opportunity areas</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase1_Research/1.2_Research_Findings_Brief_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase1_Research/1.2_Research_Findings_Brief_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-badge">Phase 2</span>
+      <span class="phase-name">Define</span>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">2.1</div>
+        <div class="artefact-name">Problem Prioritisation</div>
+        <div class="artefact-meta">A4 Landscape · 1 page</div>
+        <div class="artefact-desc">9 pain points prioritised using the RICE framework (Reach, Impact, Confidence, Effort)</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase2_Define/2.1_Problem_Prioritisation_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase2_Define/2.1_Problem_Prioritisation_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">2.2</div>
+        <div class="artefact-name">Problem Statement</div>
+        <div class="artefact-meta">A4 Portrait · 1 page</div>
+        <div class="artefact-desc">Structured articulation of the core operational and customer experience problem</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase2_Define/2.2_Problem_Statement_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase2_Define/2.2_Problem_Statement_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">2.3</div>
+        <div class="artefact-name">Product Vision</div>
+        <div class="artefact-meta">A4 Portrait · 1 page</div>
+        <div class="artefact-desc">Future state vision — 3 outcome pillars and scope constraints</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase2_Define/2.3_Product_Vision_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase2_Define/2.3_Product_Vision_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">2.4</div>
+        <div class="artefact-name">BPR Opportunities — CARE</div>
+        <div class="artefact-meta">A4 Landscape · 1 page</div>
+        <div class="artefact-desc">Process redesign using Consolidate, Automate, Reduce, Eliminate</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase2_Define/2.4_BPR_Opportunities_CARE_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase2_Define/2.4_BPR_Opportunities_CARE_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-badge">Phase 3</span>
+      <span class="phase-name">Ideate</span>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">3.1</div>
+        <div class="artefact-name">Solution Concept Canvas</div>
+        <div class="artefact-meta">A3 Landscape · 1 page</div>
+        <div class="artefact-desc">Customer needs, OKRs, roadmap and risks in one A3 view</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase3_Ideate/3.1_Solution_Concept_Canvas_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase3_Ideate/3.1_Solution_Concept_Canvas_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">3.2</div>
+        <div class="artefact-name">To-Be Process Map</div>
+        <div class="artefact-meta">A3 Landscape · 1 page</div>
+        <div class="artefact-desc">Redesigned 10-step digital order flow across 5 swimlanes</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase3_Ideate/3.2_To-Be_Process_Map_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase3_Ideate/3.2_To-Be_Process_Map_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">3.3</div>
+        <div class="artefact-name">Product Roadmap</div>
+        <div class="artefact-meta">A3 Landscape · 1 page</div>
+        <div class="artefact-desc">18-month delivery plan across 5 phases with milestone reviews</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase3_Ideate/3.3_Product_Roadmap_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase3_Ideate/3.3_Product_Roadmap_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">3.4</div>
+        <div class="artefact-name">Risk Assessment</div>
+        <div class="artefact-meta">A4 Landscape · 1 page</div>
+        <div class="artefact-desc">9 risks rated on a 5×5 Probability × Impact matrix with mitigations</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase3_Ideate/3.4_Risk_Assessment_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase3_Ideate/3.4_Risk_Assessment_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-badge">Phase 4</span>
+      <span class="phase-name">Validate</span>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">4.1</div>
+        <div class="artefact-name">Cost-Benefit Analysis</div>
+        <div class="artefact-meta">A4 Portrait · 2 pages</div>
+        <div class="artefact-desc">Full investment, benefits, AMK projections and BCR (~2.7×) for Scenario C1</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase4_Validate/4.1_Cost-Benefit_Analysis_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase4_Validate/4.1_Cost-Benefit_Analysis_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+
+    <div class="artefact-card">
+      <div>
+        <div class="artefact-id">4.2</div>
+        <div class="artefact-name">VCR Assessment</div>
+        <div class="artefact-meta">A4 Landscape · 1 page</div>
+        <div class="artefact-desc">All 6 investment scenarios compared on Value, Cost and Risk</div>
+      </div>
+      <div class="artefact-buttons">
+        <a class="btn btn-participant" href="artefacts/Phase4_Validate/4.2_VCR_Assessment_Participant.pdf" download>
+          <span class="btn-icon">⬇</span> Participant
+        </a>
+        <a class="btn btn-facilitator" href="artefacts/Phase4_Validate/4.2_VCR_Assessment_Facilitator.pdf" download>
+          <span class="btn-icon">⬇</span> Facilitator
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Tea Fellas Discovery Simulation · HDB TPO Product Workshop · July 2026
+</div>
+
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Phase 2: Define</title>
+<style>
+:root {
+  --green: #2D5A27; --green-l: #4A7C42; --green-xl: #EEF5ED;
+  --amber: #C17A2A; --amber-l: #E8A94A; --amber-xl: #FFF8E6;
+  --cream: #F5F0E8; --card:   #FDFAF4; --border: #D4C4A0;
+  --text:  #2C2416; --muted:  #6B5A3E; --red: #C0392B;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--cream); color: var(--text); }
+body.has-phase-nav { padding-top: 46px; }
+
+/* ── Phase nav bar (shared) ── */
+#phase-nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
+  background: #1E3D1A; display: flex; align-items: center;
+  padding: 0 18px; gap: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+#phase-nav-bar.pnb-hidden { display: none; }
+.pnb-brand { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9);
+  letter-spacing: 0.3px; white-space: nowrap; margin-right: 18px; }
+.pnb-team  { font-size: 11px; font-weight: 700; color: #E8A94A;
+  background: rgba(193,122,42,0.25); border-radius: 4px; padding: 2px 7px;
+  margin-left: 8px; letter-spacing: 0.5px; }
+.pnb-phases { display: flex; align-items: center; flex: 1; }
+.pnb-phase { display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 46px;
+  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.38); cursor: default;
+  white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.15s; text-decoration: none; }
+.pnb-phase.pnb-active { color: white; border-bottom-color: #E8A94A; }
+.pnb-phase.pnb-done   { color: rgba(255,255,255,0.75); border-bottom-color: #4CAF50; cursor: pointer; }
+.pnb-phase.pnb-done:hover { background: rgba(255,255,255,0.07); }
+.pnb-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pnb-phase.pnb-locked .pnb-num { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
+.pnb-phase.pnb-active .pnb-num { background: #C17A2A; color: white; }
+.pnb-phase.pnb-done   .pnb-num { background: #4CAF50; color: white; }
+.pnb-sep { color: rgba(255,255,255,0.2); font-size: 14px; padding: 0 2px; }
+.pnb-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.pnb-logout { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: none;
+  cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+.pnb-logout:hover { color: white; background: rgba(255,255,255,0.1); }
+
+/* ── Lock screen ── */
+#lock-screen { display: flex; align-items: center; justify-content: center;
+  min-height: calc(100vh - 46px); }
+.lock-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 48px 40px; text-align: center; max-width: 460px; width: 90%; }
+.lock-icon { font-size: 48px; margin-bottom: 16px; }
+.lock-title { font-size: 22px; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+.lock-sub   { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
+.lock-btn   { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 11px 22px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+.lock-btn:hover { opacity: .88; }
+.lock-btn.disabled { background: #aaa; cursor: not-allowed; opacity: 1; pointer-events: none; }
+
+/* ── Main content ── */
+#phase-content { display: none; max-width: 900px; margin: 0 auto; padding: 32px 36px 80px; }
+.phase-header { margin-bottom: 32px; }
+.phase-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--amber); margin-bottom: 6px; }
+.phase-title { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+.phase-desc  { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 680px; }
+
+/* ── Deliverable cards ── */
+.deliverable-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 32px; }
+.del-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; }
+.del-card-hdr { background: var(--green); color: white; padding: 12px 16px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.del-card-body { padding: 16px; }
+.del-card-desc { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+.del-card-btn { background: var(--amber); color: white; border: none; border-radius: 7px;
+  padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none;
+  display: inline-block; }
+.del-card-btn:hover { opacity: .88; }
+.del-status { display: inline-flex; align-items: center; gap: 5px; font-size: 12px;
+  font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+.del-status.done   { background: #E8F5E9; color: #2E7D32; }
+.del-status.active { background: var(--amber-xl); color: var(--amber); }
+.del-status.todo   { background: #F5F5F5; color: #9E9E9E; }
+
+/* ── Learning note ── */
+.learning-note { background: var(--amber-xl); border: 1px solid #E8C97A; border-left: 4px solid var(--amber);
+  border-radius: 8px; padding: 16px 20px; margin-bottom: 32px; }
+.learning-note-title { font-size: 13px; font-weight: 700; color: var(--amber); margin-bottom: 6px; }
+.learning-note-body  { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+/* ── Inline content sections ── */
+.content-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 20px; overflow: hidden; }
+.cs-hdr { background: var(--green); color: white; padding: 13px 20px;
+  display: flex; align-items: center; justify-content: space-between; }
+.cs-hdr-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.cs-hdr-link  { font-size: 12px; color: rgba(255,255,255,.75); text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px; padding: 3px 10px; }
+.cs-hdr-link:hover { background: rgba(255,255,255,.25); color: white; }
+.cs-body { padding: 18px 20px; }
+.cs-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); margin-bottom: 6px; }
+.cs-ta { width: 100%; border: 1px solid var(--border); border-radius: 7px; padding: 10px 13px;
+  font-size: 13px; font-family: inherit; line-height: 1.7; resize: vertical; min-height: 110px;
+  background: white; color: var(--text); }
+.cs-ta:focus { border-color: var(--green); outline: none; }
+.cs-hint { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.cs-save-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  opacity: 0; transition: opacity .3s; display: inline-block; margin-top: 6px; }
+.cs-save-badge.show { opacity: 1; }
+.cs-save-badge.saved { background: #E8F5E9; color: #2E7D32; }
+.cs-save-badge.saving { background: #E3F2FD; color: #1565C0; }
+.cs-ranked-list { font-size: 13px; color: var(--text); line-height: 1.8; padding: 4px 0; }
+.cs-ranked-list li { list-style: none; display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.cs-ranked-list .rank-num { font-size: 11px; font-weight: 800; color: var(--green);
+  background: var(--green-xl); border-radius: 50%; width: 20px; height: 20px; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; }
+.cs-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 6px 0; }
+
+/* ── Phase gate ── */
+.phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
+  padding: 24px 28px; margin-top: 40px; }
+.phase-gate-title { font-size: 15px; font-weight: 800; color: var(--green); margin-bottom: 12px; }
+.gate-checks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.gate-check  { display: flex; align-items: flex-start; gap: 10px; }
+.gate-check input { margin-top: 3px; accent-color: var(--green); width: 16px; height: 16px; flex-shrink: 0; }
+.gate-check label { font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer; }
+.gate-declare-btn { background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.gate-declare-btn:disabled { background: #ccc; color: #888; cursor: not-allowed; }
+.gate-done-banner { background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 8px;
+  padding: 14px 18px; font-size: 14px; font-weight: 700; color: #2E7D32; display: none; margin-top: 16px; }
+.gate-done-banner.show { display: block; }
+.proceed-btn { display: none; background: var(--green); color: white; border: none; border-radius: 8px;
+  padding: 13px 28px; font-size: 15px; font-weight: 800; cursor: pointer; text-decoration: none;
+  margin-top: 16px; width: 100%; text-align: center; }
+.proceed-btn.show { display: block; }
+.proceed-btn:hover { opacity: .88; }
+
+@media (max-width: 680px) {
+  #phase-content { padding: 20px 14px 60px; }
+  .deliverable-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Phase 2 — Define</div>
+    <div class="lock-sub" id="lock-msg">Loading your team's progress…</div>
+    <a href="index.html" class="lock-btn" id="lock-action">Go to Phase 1 →</a>
+  </div>
+</div>
+
+<div id="phase-content">
+  <div class="phase-header">
+    <div class="phase-tag">Phase 2</div>
+    <div class="phase-title">Define</div>
+    <div class="phase-desc">You've completed your research. Now it's time to make sense of what you heard. Work through the four deliverables below — build your problem inventory, prioritise the pain points, craft a clear problem statement, and articulate a compelling product vision for Tea Fellas.</div>
+  </div>
+
+  <!-- Research reference -->
+  <div class="learning-note">
+    <div class="learning-note-title">📚 Your Phase 1 Research is available</div>
+    <div class="learning-note-body">Refer back to your interview summaries in the <a href="index.html" style="color:var(--amber);font-weight:700;">Research phase →</a> as evidence for everything you write below.</div>
+  </div>
+
+  <!-- Section 1: Pain Points Prioritisation -->
+  <div class="content-section">
+    <div class="cs-hdr">
+      <span class="cs-hdr-title">2.1 — Pain Point Prioritisation</span>
+      <a href="phase2-prioritise.html" class="cs-hdr-link">Full 2×2 matrix editor ↗</a>
+    </div>
+    <div class="cs-body">
+      <div class="cs-label">Your top prioritised pain points (ranked most critical first)</div>
+      <div id="ranked-display"></div>
+      <div class="cs-hint">Use the <a href="phase2-prioritise.html" style="color:var(--amber);font-weight:700;">full editor</a> to plot pain points on the Severity × Frequency matrix — your ranked list will appear here. You can also use the <a href="phase2-inventory.html" style="color:var(--amber);font-weight:700;">Problem Inventory</a> to rate all 9 pain points first.</div>
+    </div>
+  </div>
+
+  <!-- Section 2: Problem Statement -->
+  <div class="content-section">
+    <div class="cs-hdr">
+      <span class="cs-hdr-title">2.2 — Problem Statement</span>
+      <a href="phase2-problem.html" class="cs-hdr-link">Full UX template editor ↗</a>
+    </div>
+    <div class="cs-body">
+      <div class="cs-label">Your agreed problem statement</div>
+      <textarea class="cs-ta" id="ps-ta" rows="5"
+        placeholder="We need to find a way for [user] to [goal] so that [outcome] — without [constraint]."
+        oninput="schedulePs()"></textarea>
+      <span class="cs-save-badge" id="ps-badge"></span>
+      <div class="cs-hint">Write your core problem statement here. Use the <a href="phase2-problem.html" style="color:var(--amber);font-weight:700;">full editor</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
+    </div>
+  </div>
+
+  <!-- Section 3: Product Vision -->
+  <div class="content-section">
+    <div class="cs-hdr">
+      <span class="cs-hdr-title">2.3 — Product Vision</span>
+      <a href="phase2-vision.html" class="cs-hdr-link">Full vision editor ↗</a>
+    </div>
+    <div class="cs-body">
+      <div class="cs-label">Your product vision for Tea Fellas</div>
+      <textarea class="cs-ta" id="vis-ta" rows="5"
+        placeholder="Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — [what it looks like, feels like, and stands for]."
+        oninput="scheduleVis()"></textarea>
+      <span class="cs-save-badge" id="vis-badge"></span>
+      <div class="cs-hint">Write your North Star vision here. Use the <a href="phase2-vision.html" style="color:var(--amber);font-weight:700;">full editor</a> to define outcome pillars and "What this is NOT" constraints.</div>
+    </div>
+  </div>
+
+  <!-- BPR learning note -->
+  <div class="learning-note">
+    <div class="learning-note-title">📖 Learning Note — Business Process Re-engineering (CARE Framework)</div>
+    <div class="learning-note-body">BPR Opportunities will be covered as a facilitator-led discussion. The CARE framework (Consolidate · Automate · Reduce · Eliminate) will be introduced before Phase 3. <em>No action needed from your team here.</em></div>
+  </div>
+
+  <!-- Phase gate -->
+  <div class="phase-gate" id="phase-gate-2">
+    <div class="phase-gate-title">Phase 2 Declaration</div>
+    <div class="gate-checks">
+      <div class="gate-check"><input type="checkbox" id="gc2-1" onchange="checkGate2()"><label for="gc2-1">We have prioritised our pain points</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc2-2" onchange="checkGate2()"><label for="gc2-2">We have finalised our problem statement</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc2-3" onchange="checkGate2()"><label for="gc2-3">We have finalised our product vision</label></div>
+    </div>
+    <button class="gate-declare-btn" id="gate2-btn" disabled onclick="declarePhase2()">Proceed to Phase 3 — Ideate →</button>
+    <div class="gate-done-banner" id="gate2-done">✓ Phase 2 complete</div>
+    <a href="phase3.html" class="proceed-btn" id="proceed3-btn">Proceed to Phase 3 — Ideate →</a>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE = 2;
+const PHASE_PAGES  = { 1: 'index.html', 2: 'phase2.html', 3: 'phase3.html', 4: 'phase4.html' };
+const PHASE_LABELS = { 1: 'Research', 2: 'Define', 3: 'Ideate', 4: 'Validate' };
+
+let teamCode  = localStorage.getItem('teafellas_team_code') || null;
+let phaseGates = { 1: false, 2: false, 3: false, 4: false };
+
+function renderPhaseNav() {
+  const bar = document.getElementById('phase-nav-bar');
+  if (!teamCode) { bar.classList.add('pnb-hidden'); return; }
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases = [1,2,3,4].map((p, i, arr) => {
+    const done   = phaseGates[p];
+    const active = p === CURRENT_PHASE;
+    const cls    = done ? 'pnb-done' : active ? 'pnb-active' : 'pnb-locked';
+    const icon   = done ? '✓' : active ? p : '🔒';
+    const href   = (done && p !== CURRENT_PHASE) ? ` href="${PHASE_PAGES[p]}"` : '';
+    const tag    = (done && p !== CURRENT_PHASE) ? 'a' : 'span';
+    const sep    = i < arr.length - 1 ? '<span class="pnb-sep">›</span>' : '';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML = `<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
+    <div class="pnb-phases">${phases}</div>
+    <div class="pnb-right"><button class="pnb-logout" onclick="signOut()">Sign out</button></div>`;
+}
+
+async function loadPhaseGates() {
+  if (!teamCode) return;
+  try {
+    const r = await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    if (d.gates) phaseGates = { ...phaseGates, ...d.gates };
+  } catch (_) {}
+}
+
+async function markPhaseComplete(phase) {
+  phaseGates[phase] = true;
+  renderPhaseNav();
+  try {
+    await fetch(`${API_URL}/phase-gates`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_code: teamCode, phase }),
+    });
+  } catch (_) {}
+}
+
+// ── Deliverable: problem statement ────────────────────────────
+let psTimer = null;
+function schedulePs() {
+  clearTimeout(psTimer);
+  setBadge('ps-badge','saving');
+  psTimer = setTimeout(savePs, 1500);
+}
+async function savePs() {
+  const val = document.getElementById('ps-ta').value;
+  // Load existing content first so we don't overwrite structured fields
+  let content = { statement: val };
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_statement`);
+    const d = await r.json();
+    const existing = d.deliverables?.problem_statement?.content || {};
+    content = { ...existing, statement: val };
+  } catch(_) {}
+  try {
+    const r = await fetch(`${API_URL}/deliverables`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ team_code: teamCode, deliverable_id: 'problem_statement', content })
+    });
+    setBadge('ps-badge', r.ok ? 'saved' : 'error');
+  } catch(_) { setBadge('ps-badge','error'); }
+}
+
+// ── Deliverable: product vision ───────────────────────────────
+let visTimer = null;
+function scheduleVis() {
+  clearTimeout(visTimer);
+  setBadge('vis-badge','saving');
+  visTimer = setTimeout(saveVis, 1500);
+}
+async function saveVis() {
+  const val = document.getElementById('vis-ta').value;
+  let content = { vision: val };
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=product_vision`);
+    const d = await r.json();
+    const existing = d.deliverables?.product_vision?.content || {};
+    content = { ...existing, vision: val };
+  } catch(_) {}
+  try {
+    const r = await fetch(`${API_URL}/deliverables`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ team_code: teamCode, deliverable_id: 'product_vision', content })
+    });
+    setBadge('vis-badge', r.ok ? 'saved' : 'error');
+  } catch(_) { setBadge('vis-badge','error'); }
+}
+
+function setBadge(id, state) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.className = `cs-save-badge ${state} show`;
+  b.textContent = state === 'saved' ? 'Saved ✓' : state === 'saving' ? 'Saving…' : 'Could not save';
+  if (state === 'saved') setTimeout(() => b.classList.remove('show'), 2500);
+}
+
+async function loadDeliverables() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    const dels = d.deliverables || {};
+
+    // Pain points ranked list
+    const pri = dels.problem_priorities?.content;
+    const ranked = pri?.ranked || [];
+    const rdEl = document.getElementById('ranked-display');
+    if (ranked.length) {
+      rdEl.innerHTML = `<ul class="cs-ranked-list">${ranked.map((r,i) =>
+        `<li><span class="rank-num">${i+1}</span><span>${r}</span></li>`).join('')}</ul>`;
+    } else {
+      rdEl.innerHTML = `<div class="cs-empty">No prioritised list yet — use the full editor to complete your 2×2 matrix.</div>`;
+    }
+
+    // Problem statement
+    const ps = dels.problem_statement?.content;
+    if (ps?.statement) document.getElementById('ps-ta').value = ps.statement;
+
+    // Vision
+    const vis = dels.product_vision?.content;
+    if (vis?.vision) document.getElementById('vis-ta').value = vis.vision;
+  } catch(_) {}
+}
+
+function checkGate2() {
+  const all = ['gc2-1','gc2-2','gc2-3'].every(id => document.getElementById(id)?.checked);
+  const btn = document.getElementById('gate2-btn');
+  if (btn) btn.disabled = !all || phaseGates[2];
+}
+
+async function declarePhase2() {
+  await markPhaseComplete(2);
+  document.getElementById('gate2-btn').disabled = true;
+  document.getElementById('gate2-done').classList.add('show');
+  document.getElementById('proceed3-btn').classList.add('show');
+  ['gc2-1','gc2-2','gc2-3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.checked = true; el.disabled = true; }
+  });
+}
+
+function signOut() {
+  localStorage.removeItem('teafellas_team_code');
+  location.href = 'index.html';
+}
+
+async function init() {
+  if (!teamCode) {
+    // No team logged in — send to Phase 1 login
+    document.getElementById('lock-msg').textContent = 'Please log in with your team first.';
+    document.getElementById('lock-action').textContent = 'Log in →';
+    document.getElementById('lock-action').href = 'index.html';
+    document.getElementById('lock-screen').style.display = 'flex';
+    return;
+  }
+
+  await loadPhaseGates();
+  renderPhaseNav();
+
+  if (!phaseGates[1]) {
+    // Phase 1 not complete
+    document.getElementById('lock-msg').textContent = 'Your team must complete Phase 1 — Research before moving to Define. Complete all 5 interviews and submit your group declaration.';
+    document.getElementById('lock-action').textContent = 'Back to Phase 1 →';
+    document.getElementById('lock-action').href = 'index.html';
+    document.getElementById('lock-screen').style.display = 'flex';
+    return;
+  }
+
+  // Unlocked — show content
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('phase-content').style.display = 'block';
+
+  await loadDeliverables();
+
+  if (phaseGates[2]) {
+    document.getElementById('gate2-btn').disabled = true;
+    document.getElementById('gate2-done').classList.add('show');
+    document.getElementById('proceed3-btn').classList.add('show');
+    ['gc2-1','gc2-2','gc2-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.checked = true; el.disabled = true; }
+    });
+  }
+}
+
+init();
+</script>
+</body>
+</html>

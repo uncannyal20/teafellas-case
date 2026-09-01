@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Product Roadmap</title>
+<style>
+:root{
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;--red-xl:#FFEBEE;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body.has-phase-nav{padding-top:46px;}
+#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;
+  background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+#phase-nav-bar.pnb-hidden{display:none;}
+.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,.9);white-space:nowrap;margin-right:18px;}
+.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
+.pnb-phases{display:flex;align-items:center;flex:1;}
+.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;
+  color:rgba(255,255,255,.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;text-decoration:none;}
+.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
+.pnb-phase.pnb-done{color:rgba(255,255,255,.75);border-bottom-color:#4CAF50;cursor:pointer;}
+.pnb-phase.pnb-done:hover{background:rgba(255,255,255,.07);}
+.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,.1);color:rgba(255,255,255,.35);}
+.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
+.pnb-phase.pnb-done   .pnb-num{background:#4CAF50;color:white;}
+.pnb-sep{color:rgba(255,255,255,.2);font-size:14px;padding:0 2px;}
+.pnb-right{margin-left:auto;}
+.pnb-logout{font-size:11px;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.pnb-logout:hover{color:white;background:rgba(255,255,255,.1);}
+
+.page{max-width:900px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:18px;}
+.back-link:hover{color:var(--green);}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:20px;}
+.save-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
+  padding:3px 10px;border-radius:20px;margin-left:12px;transition:opacity .3s;opacity:0;}
+.save-badge.show{opacity:1;}
+.save-badge.saved{background:#E8F5E9;color:#2E7D32;}
+.save-badge.saving{background:#E3F2FD;color:#1565C0;}
+.save-badge.error{background:var(--red-xl);color:var(--red);}
+
+.sc-row{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.sc-label{font-size:13px;font-weight:700;color:var(--muted);}
+.sc-select{border:1px solid var(--green);border-radius:7px;padding:8px 14px;font-size:14px;
+  font-weight:600;color:var(--text);background:white;cursor:pointer;font-family:inherit;min-width:260px;}
+.sc-select:focus{outline:none;}
+.autofill-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:8px 16px;
+  font-size:13px;font-weight:700;cursor:pointer;}
+.autofill-btn:hover{opacity:.88;}
+
+/* Timeline */
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border);}
+.tl-phase{position:relative;margin-bottom:20px;}
+.tl-dot{position:absolute;left:-24px;top:16px;width:14px;height:14px;border-radius:50%;
+  background:var(--green);border:2px solid white;box-shadow:0 0 0 2px var(--green);}
+.tl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.tl-card.alt{background:var(--amber-xl);border-color:#E8C97A;}
+.tl-card-hdr{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.tl-card.alt .tl-card-hdr{border-bottom-color:#E8C97A;}
+.tl-name-input{font-size:15px;font-weight:800;color:var(--green);border:none;background:transparent;
+  font-family:inherit;flex:1;min-width:120px;}
+.tl-name-input:focus{outline:none;border-bottom:1px dashed var(--green);}
+.tl-time-input{font-size:12px;font-weight:700;color:var(--muted);border:1px solid transparent;
+  background:rgba(255,255,255,.7);border-radius:5px;padding:3px 8px;font-family:inherit;}
+.tl-time-input:focus{outline:none;border-color:var(--green);}
+.tl-card-body{padding:14px 18px;}
+.milestone-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.milestone-item{display:flex;align-items:flex-start;gap:8px;}
+.milestone-item::before{content:'→';color:var(--green);font-weight:700;flex-shrink:0;margin-top:2px;}
+.milestone-input{flex:1;border:1px solid transparent;background:transparent;font-size:13px;
+  color:var(--text);font-family:inherit;padding:2px 4px;border-radius:4px;line-height:1.5;}
+.milestone-input:focus{outline:none;border-color:var(--green);background:white;}
+.milestone-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0 4px;}
+.milestone-del:hover{color:var(--red);}
+.add-milestone-btn{font-size:12px;color:var(--green);background:none;border:none;cursor:pointer;
+  font-weight:700;padding:2px 0;text-decoration:underline;}
+
+.notes-section{margin-top:28px;}
+.notes-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px;}
+.notes-ta{width:100%;border:1px solid var(--border);border-radius:8px;padding:12px 14px;
+  font-size:13px;font-family:inherit;line-height:1.7;resize:vertical;min-height:100px;background:white;}
+.notes-ta:focus{outline:none;border-color:var(--green);}
+
+.proceed-wrap{margin-top:32px;padding-top:20px;border-top:1px solid var(--border);}
+.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:12px 24px;
+  font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.proceed-btn:hover{opacity:.88;}
+</style>
+</head>
+<body>
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+<div class="page">
+  <a href="phase3.html" class="back-link">← Back to Phase 3</a>
+  <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+    <div class="page-title">Product Roadmap</div>
+    <span class="save-badge" id="save-badge"></span>
+  </div>
+  <div class="page-sub">Phase 3.2 — Map your solution delivery across 18 months</div>
+
+  <div class="sc-row">
+    <span class="sc-label">Select your scenario:</span>
+    <select class="sc-select" id="sc-sel" onchange="onScenarioChange(this.value)">
+      <option value="">— Pick a scenario to auto-populate —</option>
+      <option value="A1">A1 — Basic digital ($25K)</option>
+      <option value="A2">A2 — Full integrated ($150K)</option>
+      <option value="B1">B1 — AMK Food Centre expansion</option>
+      <option value="B2">B2 — AMK Hub B1 expansion</option>
+      <option value="C1">C1 — Conservative (digital + Food Centre) ⭐</option>
+      <option value="C2">C2 — Aggressive (full digital + Hub B1)</option>
+    </select>
+  </div>
+
+  <div class="timeline" id="timeline"></div>
+
+  <div class="notes-section">
+    <div class="notes-label">Team notes on the roadmap</div>
+    <textarea class="notes-ta" id="team-notes" placeholder="Add any assumptions, dependencies, or open questions about your roadmap…" oninput="scheduleSave()"></textarea>
+  </div>
+
+  <div class="proceed-wrap">
+    <a href="phase3-canvas.html" class="proceed-btn">Proceed to Solution Concept Canvas →</a>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE = 3;
+const PHASE_PAGES  = {1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS = {1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+const DEL_ID = 'product_roadmap';
+
+let teamCode = localStorage.getItem('teafellas_team_code');
+if (!teamCode) location.href = 'index.html';
+
+let phaseGates = {1:false,2:false,3:false,4:false};
+let saveTimer = null;
+
+const TEMPLATES = {
+  A1: [
+    {name:'Phase 0 — Foundation',timeframe:'Month 0–1',milestones:['Select digital ordering vendor','Apply for SME Go Digital / CDG grant','Design menu digitally; set up QR code ordering flow','Train Mary, John, Darren, Salmiah on new system']},
+    {name:'Phase 1 — Digital Order Flow',timeframe:'Month 1–3',milestones:['Launch QR code ordering (walk-in and pre-order)','Kitchen display system for Darren goes live','Numbered ticket collection replaces memory-based collection','Customer collection notifications activated']},
+    {name:'Phase 2 — Customer Loyalty',timeframe:'Month 3–6',milestones:['Digital loyalty programme launches (replaces paper stamp cards)','Reorder shortcut for returning customers','Bulk/team ordering flow for customers like Jacky','Review Phase 1 KRs; optimise before expanding']},
+    {name:'Phase 3 — Stabilise & Plan',timeframe:'Month 6–18',milestones:['Monitor KRs (error rate, queue time, loyalty enrolment)','Consider upgrade to A2 if grant funding secured','Begin expansion planning if Phase 1–2 KRs achieved']},
+  ],
+  A2: [
+    {name:'Phase 0 — Foundation',timeframe:'Month 0–2',milestones:['Select full integrated F&B SaaS vendor','Apply for SME Go Digital grant (target 30–40% offset)','Configure inventory module and supplier integration','Train all staff on digital ordering, kitchen display, analytics']},
+    {name:'Phase 1 — Full Digital Launch',timeframe:'Month 2–5',milestones:['QR ordering, kitchen display, collection notification go live','Inventory tracking activated across Toa Payoh','Supplier digital ordering (Lim Teck Seng) integrated','Measure: error rate, queue time, Darren chit interruptions']},
+    {name:'Phase 2 — Optimise',timeframe:'Month 5–12',milestones:['Digital loyalty + reorder shortcut launch','Analytics dashboard reviewed monthly with Mary','Multi-outlet management dashboard configured and tested']},
+    {name:'Phase 3 — Expansion Ready',timeframe:'Month 12–18',milestones:['All KRs reviewed: Toa Payoh fully stabilised','System ready to support second outlet from Day 1','Begin location scouting for expansion']},
+  ],
+  B1: [
+    {name:'Phase 0 — Setup',timeframe:'Month 0–2',milestones:['Secure AMK Food Centre unit; sign lease','Begin stall renovation and fit-out ($35K)','Purchase and install equipment ($30K)','Recruit 2 part-time staff; begin training']},
+    {name:'Phase 1 — AMK Outlet Opens',timeframe:'Month 2–4',milestones:['AMK Food Centre outlet launches (paper-based operations)','Darren splits time between Toa Payoh and AMK','Target: 150 customers/day by end of Month 4','Note: existing operational issues replicated at new location']},
+    {name:'Phase 2 — Ramp Up',timeframe:'Month 4–12',milestones:['AMK outlet stabilises; daily customers ramp to ~180/day','Revenue target: $20,350/month by Month 12','Review: is Darren ready to run AMK independently?']},
+    {name:'Phase 3 — Steady State',timeframe:'Month 12–18',milestones:['AMK at ~220 customers/day; monthly revenue ~$24,200','Consider digital transformation (A1) to fix operational issues','Review Toa Payoh: same manual pain points persist']},
+  ],
+  B2: [
+    {name:'Phase 0 — Setup',timeframe:'Month 0–2',milestones:['Secure AMK Hub B1 unit; sign mall lease ($9,000/month)','Begin fit-out ($60K); install commercial equipment ($40K)','Apply for mall permits; compliance and signage ($23K)','Recruit 2–3 staff; intensive training period']},
+    {name:'Phase 1 — AMK Hub Opens',timeframe:'Month 2–4',milestones:['AMK Hub B1 outlet launches','Target: 200 customers/day; $22,000/month revenue','Critical: monthly cost = $20,000 — breakeven requires $22K+ revenue','Paper-based operations replicated from Toa Payoh']},
+    {name:'Phase 2 — Ramp Up',timeframe:'Month 4–12',milestones:['Hub ramp-up: target ~260 customers/day by Month 12','Revenue target: $28,600/month to comfortably cover costs','Cash flow watch: any shortfall risks Toa Payoh rent payment']},
+    {name:'Phase 3 — Steady State',timeframe:'Month 12–18',milestones:['Hub at ~320 customers/day; revenue ~$35,200/month','Consider digital (A1 or A2) to fix operational issues at both outlets','Review expansion performance vs initial projections']},
+  ],
+  C1: [
+    {name:'Phase 0 — Digital Foundation',timeframe:'Month 0–1',milestones:['Select A1 digital vendor; begin QR ordering setup','Apply for SME Go Digital grant','Negotiate AMK Food Centre lease; begin planning','Train Toa Payoh staff on digital system']},
+    {name:'Phase 1 — Digital Goes Live',timeframe:'Month 1–6',milestones:['A1 QR ordering + kitchen display + loyalty launches at Toa Payoh','Measure KRs: error rate, queue time, loyalty sign-ups','Darren begins preparation as future AMK outlet manager','AMK fit-out and recruitment begins in Month 4–5']},
+    {name:'Phase 2 — AMK Opens',timeframe:'Month 6–12',milestones:['AMK Food Centre outlet opens with digital order flow from Day 1','John manages Toa Payoh; Darren manages AMK','Digital system covers both outlets','Target AMK: 150 customers/day, $16,500/month revenue']},
+    {name:'Phase 3 — Both Outlets Steady',timeframe:'Month 12–18',milestones:['AMK ramps to ~220 customers/day; revenue ~$24,200/month','Combined monthly surplus target: ~$11,875/month','Review at Month 18: upgrade A1 → A2 if KRs met and grant secured']},
+  ],
+  C2: [
+    {name:'Phase 0 — Setup Both Simultaneously',timeframe:'Month 0–2',milestones:['A2 full digital vendor selected and onboarded','AMK Hub B1 lease signed; renovation begins','Both implementations run in parallel from Day 1','Apply for all available grants; explore business financing ($200K+)']},
+    {name:'Phase 1 — Everything Launches',timeframe:'Month 2–4',milestones:['A2 full digital live at Toa Payoh (ordering, inventory, analytics)','AMK Hub B1 opens with digital system integrated','Combined monthly costs: $21,000 — requires $21K+ revenue to break even','Critical cash flow period: any delay hits both locations']},
+    {name:'Phase 2 — Ramp Up',timeframe:'Month 4–12',milestones:['Toa Payoh: revenue uplift 16.5% → ~$31,538/month','AMK Hub: ramp to ~260 customers/day; ~$28,600/month','Net monthly: ~$12,138 — first sustainable positive period']},
+    {name:'Phase 3 — Full Steady State',timeframe:'Month 12–18',milestones:['AMK Hub: ~320 customers/day; $35,200/month','Combined monthly surplus: ~$18,738/month','Review: consider third outlet or franchise model']},
+  ],
+};
+
+let phases = TEMPLATES.C1.map(p=>({...p, milestones:[...p.milestones]}));
+let teamNotes = '';
+let scenario = '';
+
+function renderTimeline() {
+  const tl = document.getElementById('timeline');
+  tl.innerHTML = phases.map((p,pi) => `
+    <div class="tl-phase">
+      <div class="tl-dot"></div>
+      <div class="tl-card${pi%2===1?' alt':''}">
+        <div class="tl-card-hdr">
+          <input class="tl-name-input" value="${esc(p.name)}" oninput="phases[${pi}].name=this.value;scheduleSave()">
+          <input class="tl-time-input" value="${esc(p.timeframe)}" oninput="phases[${pi}].timeframe=this.value;scheduleSave()" style="font-size:12px">
+        </div>
+        <div class="tl-card-body">
+          <ul class="milestone-list" id="ml-${pi}">
+            ${p.milestones.map((m,mi)=>`
+              <li class="milestone-item">
+                <input class="milestone-input" value="${esc(m)}" oninput="phases[${pi}].milestones[${mi}]=this.value;scheduleSave()">
+                <button class="milestone-del" onclick="removeMilestone(${pi},${mi})">×</button>
+              </li>`).join('')}
+          </ul>
+          <button class="add-milestone-btn" onclick="addMilestone(${pi})">+ add milestone</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function esc(s){return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+function addMilestone(pi) {
+  phases[pi].milestones.push('');
+  renderTimeline(); scheduleSave();
+}
+function removeMilestone(pi, mi) {
+  phases[pi].milestones.splice(mi,1);
+  renderTimeline(); scheduleSave();
+}
+
+function onScenarioChange(val) {
+  scenario = val;
+  if (TEMPLATES[val]) {
+    phases = TEMPLATES[val].map(p=>({...p, milestones:[...p.milestones]}));
+    renderTimeline();
+  }
+  scheduleSave();
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  setBadge('saving');
+  saveTimer = setTimeout(saveData, 1500);
+}
+function setBadge(state) {
+  const b=document.getElementById('save-badge');
+  b.className=`save-badge ${state} show`;
+  b.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
+  if(state==='saved') setTimeout(()=>b.classList.remove('show'),2500);
+}
+async function saveData() {
+  try {
+    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({team_code:teamCode,deliverable_id:DEL_ID,content:{scenario,phases,team_notes:document.getElementById('team-notes').value}})});
+    setBadge(r.ok?'saved':'error');
+  } catch(_){setBadge('error');}
+}
+async function loadData() {
+  try {
+    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=${DEL_ID}`);
+    const d=await r.json();
+    const saved=d.deliverables?.[DEL_ID]?.content;
+    if (saved) {
+      if (saved.scenario) { scenario=saved.scenario; document.getElementById('sc-sel').value=saved.scenario; }
+      if (saved.phases?.length) phases=saved.phases;
+      if (saved.team_notes) document.getElementById('team-notes').value=saved.team_notes;
+    }
+  } catch(_){}
+  renderTimeline();
+}
+
+// Phase nav
+async function loadPhaseGates() {
+  try {
+    const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d=await r.json();
+    if(d.gates) phaseGates={...phaseGates,...d.gates};
+  } catch(_){}
+}
+function renderPhaseNav() {
+  const bar=document.getElementById('phase-nav-bar');
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases2=[1,2,3,4].map((p,i,arr)=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
+    const icon=done?'✓':active?p:'🔒';
+    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:''
+    const tag=(done&&p!==CURRENT_PHASE)?'a':'span';
+    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
+    <div class="pnb-phases">${phases2}</div>
+    <div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+}
+
+loadPhaseGates().then(()=>{ renderPhaseNav(); loadData(); });
+</script>
+</body>
+</html>

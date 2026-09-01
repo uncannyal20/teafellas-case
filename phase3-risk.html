@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Risk Assessment</title>
+<style>
+:root {
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;--red-xl:#FFEBEE;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body.has-phase-nav{padding-top:46px;}
+#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;
+  background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+#phase-nav-bar.pnb-hidden{display:none;}
+.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,.9);white-space:nowrap;margin-right:18px;}
+.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
+.pnb-phases{display:flex;align-items:center;flex:1;}
+.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;
+  color:rgba(255,255,255,.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;text-decoration:none;}
+.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
+.pnb-phase.pnb-done{color:rgba(255,255,255,.75);border-bottom-color:#4CAF50;cursor:pointer;}
+.pnb-phase.pnb-done:hover{background:rgba(255,255,255,.07);}
+.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,.1);color:rgba(255,255,255,.35);}
+.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
+.pnb-phase.pnb-done   .pnb-num{background:#4CAF50;color:white;}
+.pnb-sep{color:rgba(255,255,255,.2);font-size:14px;padding:0 2px;}
+.pnb-right{margin-left:auto;}
+.pnb-logout{font-size:11px;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.pnb-logout:hover{color:white;background:rgba(255,255,255,.1);}
+
+.page{max-width:1000px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:18px;}
+.back-link:hover{color:var(--green);}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:6px;}
+.intro{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;padding:12px 16px;
+  background:white;border-radius:8px;border-left:3px solid var(--amber);}
+
+.save-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
+  padding:3px 10px;border-radius:20px;margin-left:12px;transition:opacity .3s;opacity:0;}
+.save-badge.show{opacity:1;}
+.save-badge.saved{background:#E8F5E9;color:#2E7D32;}
+.save-badge.saving{background:#E3F2FD;color:#1565C0;}
+.save-badge.error{background:var(--red-xl);color:var(--red);}
+
+/* Risk table */
+.risk-table-wrap{overflow-x:auto;margin-bottom:28px;}
+table.risk-table{width:100%;border-collapse:collapse;font-size:13px;min-width:800px;}
+table.risk-table th{background:var(--green);color:white;padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+table.risk-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+table.risk-table tr:hover td{background:#FAF6EE;}
+.rt-num{font-weight:700;color:var(--muted);text-align:center;width:32px;}
+.rt-label{font-weight:600;}
+.rt-label input{border:1px solid transparent;background:transparent;padding:4px 6px;font-size:13px;width:100%;border-radius:4px;font-family:inherit;}
+.rt-label input:focus{border-color:var(--green);background:white;outline:none;}
+.rt-sel{border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:13px;font-family:inherit;background:white;cursor:pointer;}
+.rt-sel:focus{border-color:var(--green);outline:none;}
+.rt-score{font-weight:800;text-align:center;border-radius:6px;padding:4px 8px;min-width:36px;display:inline-block;}
+.sc-high{background:#FFCDD2;color:#B71C1C;}
+.sc-med {background:var(--amber-xl);color:#7F4F00;}
+.sc-low {background:#E8F5E9;color:#2E7D32;}
+.sc-nil {background:#F5F5F5;color:#9E9E9E;}
+.rt-rating{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+.rt-mit input{border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;width:100%;font-family:inherit;}
+.rt-mit input:focus{border-color:var(--green);outline:none;}
+.rt-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:2px 6px;}
+.rt-del:hover{color:var(--red);}
+.add-risk-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:8px 16px;
+  font-size:13px;font-weight:700;cursor:pointer;margin-bottom:28px;}
+.add-risk-btn:hover{opacity:.88;}
+
+/* 5×5 matrix */
+.matrix-section{margin-bottom:32px;}
+.matrix-title{font-size:14px;font-weight:800;color:var(--green);margin-bottom:12px;}
+.matrix-wrap{display:flex;gap:12px;align-items:flex-end;}
+.y-axis-label{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;margin-bottom:28px;}
+.matrix-inner{flex:1;}
+.matrix-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:4px;}
+.mx-cell{min-height:60px;border-radius:5px;display:flex;flex-wrap:wrap;align-items:center;
+  justify-content:center;gap:3px;padding:4px;position:relative;}
+.mx-cell.hi{background:#FFCDD2;}
+.mx-cell.md{background:var(--amber-xl);}
+.mx-cell.lo{background:#E8F5E9;}
+.mx-dot{width:24px;height:24px;border-radius:50%;background:var(--green);color:white;
+  font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.mx-x-labels{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:2px;}
+.mx-x-label{text-align:center;font-size:10px;color:var(--muted);}
+.mx-x-axis{text-align:center;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.y-num{display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:flex-end;margin-bottom:4px;margin-right:4px;}
+.y-num span{font-size:10px;color:var(--muted);min-height:60px;display:flex;align-items:center;}
+
+.proceed-wrap{margin-top:32px;padding-top:20px;border-top:1px solid var(--border);}
+.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:12px 24px;
+  font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.proceed-btn:hover{opacity:.88;}
+</style>
+</head>
+<body>
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+<div class="page">
+  <a href="phase3.html" class="back-link">← Back to Phase 3</a>
+  <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+    <div class="page-title">Risk Assessment</div>
+    <span class="save-badge" id="save-badge">Saved ✓</span>
+  </div>
+  <div class="page-sub">Phase 3.1 — Assess the key risks of your recommended scenario</div>
+  <div class="intro">Rate each risk by <strong>Probability (1–5)</strong> and <strong>Impact (1–5)</strong>. Score = P × I. High ≥ 12 (red), Medium 6–11 (amber), Low 1–5 (green).</div>
+
+  <div class="risk-table-wrap">
+    <table class="risk-table" id="risk-table">
+      <thead>
+        <tr>
+          <th style="width:32px">#</th>
+          <th>Risk</th>
+          <th style="width:90px">Probability</th>
+          <th style="width:80px">Impact</th>
+          <th style="width:60px">Score</th>
+          <th style="width:80px">Rating</th>
+          <th>Mitigation</th>
+          <th style="width:32px"></th>
+        </tr>
+      </thead>
+      <tbody id="risk-tbody"></tbody>
+    </table>
+  </div>
+  <button class="add-risk-btn" onclick="addRisk()">+ Add custom risk</button>
+
+  <div class="matrix-section">
+    <div class="matrix-title">Probability × Impact Matrix</div>
+    <div class="matrix-wrap">
+      <div class="y-axis-label">Probability →</div>
+      <div class="y-num" id="y-nums"></div>
+      <div class="matrix-inner">
+        <div class="matrix-grid" id="matrix-grid"></div>
+        <div class="mx-x-labels" id="mx-x-labels"></div>
+        <div class="mx-x-axis">Impact →</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proceed-wrap">
+    <a href="phase3-roadmap.html" class="proceed-btn">Proceed to Product Roadmap →</a>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE = 3;
+const PHASE_PAGES  = {1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS = {1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+const DEL_ID = 'risk_assessment';
+
+let teamCode = localStorage.getItem('teafellas_team_code');
+if (!teamCode) location.href = 'index.html';
+
+let phaseGates = {1:false,2:false,3:false,4:false};
+let saveTimer = null;
+
+const CANONICAL = [
+  {id:1,label:'Staff resistance to digital ordering (Mary, John)',canonical:true},
+  {id:2,label:'Upfront setup cost strains monthly surplus ($4,100)',canonical:true},
+  {id:3,label:'Customers refuse QR ordering, revert to counter queue',canonical:true},
+  {id:4,label:'Vendor lock-in or poor local F&B SaaS support',canonical:true},
+  {id:5,label:'Darren not ready to run second outlet independently',canonical:true},
+  {id:6,label:'Second outlet location unavailable when Tea Fellas is ready',canonical:true},
+  {id:7,label:'Ingredient cost increases erode margin further',canonical:true},
+  {id:8,label:'Digital system downtime during peak hours',canonical:true},
+  {id:9,label:'Customer data privacy concern with digital loyalty',canonical:true},
+];
+
+let risks = CANONICAL.map(r => ({...r, probability:'', impact:'', mitigation:''}));
+let nextId = 10;
+
+function scoreClass(s) {
+  if (!s) return 'sc-nil';
+  if (s >= 12) return 'sc-high';
+  if (s >= 6)  return 'sc-med';
+  return 'sc-low';
+}
+function ratingLabel(s) {
+  if (!s) return '';
+  if (s >= 12) return '<span class="rt-rating" style="background:#FFCDD2;color:#B71C1C;">High</span>';
+  if (s >= 6)  return '<span class="rt-rating" style="background:var(--amber-xl);color:#7F4F00;">Medium</span>';
+  return '<span class="rt-rating" style="background:#E8F5E9;color:#2E7D32;">Low</span>';
+}
+
+function renderTable() {
+  const tbody = document.getElementById('risk-tbody');
+  tbody.innerHTML = risks.map((r,i) => {
+    const p = parseInt(r.probability) || 0;
+    const im = parseInt(r.impact) || 0;
+    const s = p && im ? p * im : 0;
+    const sc = scoreClass(s);
+    const lbl = r.canonical
+      ? `<span class="rt-label" style="padding:4px 6px;display:block;">${r.label}</span>`
+      : `<div class="rt-label"><input type="text" value="${esc(r.label)}" onchange="updateRisk(${r.id},'label',this.value);" placeholder="Describe the risk…"></div>`;
+    return `<tr>
+      <td class="rt-num">${i+1}</td>
+      <td>${lbl}</td>
+      <td><select class="rt-sel" onchange="updateRisk(${r.id},'probability',this.value)">
+        <option value="">—</option>${[1,2,3,4,5].map(n=>`<option value="${n}"${r.probability==n?' selected':''}>${n}</option>`).join('')}
+      </select></td>
+      <td><select class="rt-sel" onchange="updateRisk(${r.id},'impact',this.value)">
+        <option value="">—</option>${[1,2,3,4,5].map(n=>`<option value="${n}"${r.impact==n?' selected':''}>${n}</option>`).join('')}
+      </select></td>
+      <td style="text-align:center"><span class="rt-score ${sc}">${s||'—'}</span></td>
+      <td>${ratingLabel(s)}</td>
+      <td class="rt-mit"><input type="text" value="${esc(r.mitigation)}" onchange="updateRisk(${r.id},'mitigation',this.value)" placeholder="How would you mitigate this?"></td>
+      <td>${r.canonical ? '' : `<button class="rt-del" onclick="deleteRisk(${r.id})">×</button>`}</td>
+    </tr>`;
+  }).join('');
+  renderMatrix();
+}
+
+function esc(s) { return (s||'').replace(/"/g,'&quot;'); }
+
+function updateRisk(id, field, val) {
+  const r = risks.find(x=>x.id===id);
+  if (r) { r[field] = val; renderTable(); scheduleSave(); }
+}
+function deleteRisk(id) { risks = risks.filter(x=>x.id!==id); renderTable(); scheduleSave(); }
+function addRisk() {
+  risks.push({id:nextId++, label:'', canonical:false, probability:'', impact:'', mitigation:''});
+  renderTable();
+}
+
+function renderMatrix() {
+  const grid = document.getElementById('matrix-grid');
+  const yNums = document.getElementById('y-nums');
+  const xLabels = document.getElementById('mx-x-labels');
+  // Build 5×5: rows = P 5→1 (top to bottom), cols = I 1→5 (left to right)
+  const cells = {};
+  risks.forEach((r,i) => {
+    const p = parseInt(r.probability), im = parseInt(r.impact);
+    if (p && im) { const k=`${p}_${im}`; if(!cells[k]) cells[k]=[]; cells[k].push(i+1); }
+  });
+  let html = '';
+  for (let p=5;p>=1;p--) {
+    for (let im=1;im<=5;im++) {
+      const s=p*im;
+      const cls = s>=12?'hi':s>=6?'md':'lo';
+      const dots = (cells[`${p}_${im}`]||[]).map(n=>`<div class="mx-dot">${n}</div>`).join('');
+      html += `<div class="mx-cell ${cls}">${dots}</div>`;
+    }
+  }
+  grid.innerHTML = html;
+  yNums.innerHTML = [5,4,3,2,1].map(n=>`<span>${n}</span>`).join('');
+  xLabels.innerHTML = [1,2,3,4,5].map(n=>`<div class="mx-x-label">${n}</div>`).join('');
+}
+
+// Save/load
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  setBadge('saving');
+  saveTimer = setTimeout(saveData, 1500);
+}
+function setBadge(state, msg) {
+  const b = document.getElementById('save-badge');
+  b.className = `save-badge ${state} show`;
+  b.textContent = state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
+  if (state==='saved') setTimeout(()=>b.classList.remove('show'),2500);
+}
+async function saveData() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({team_code:teamCode,deliverable_id:DEL_ID,content:{risks}})});
+    setBadge(r.ok?'saved':'error');
+  } catch(_){setBadge('error');}
+}
+async function loadData() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=${DEL_ID}`);
+    const d = await r.json();
+    const saved = d.deliverables?.[DEL_ID]?.content;
+    if (saved?.risks?.length) {
+      risks = saved.risks;
+      nextId = Math.max(...risks.map(x=>x.id)) + 1;
+    }
+  } catch(_){}
+  renderTable();
+}
+
+// Phase nav
+async function loadPhaseGates() {
+  try {
+    const r = await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    if (d.gates) phaseGates = {...phaseGates,...d.gates};
+  } catch(_){}
+}
+function renderPhaseNav() {
+  const bar = document.getElementById('phase-nav-bar');
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases = [1,2,3,4].map((p,i,arr) => {
+    const done=phaseGates[p], active=p===CURRENT_PHASE;
+    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
+    const icon=done?'✓':active?p:'🔒';
+    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:''
+    const tag=(done&&p!==CURRENT_PHASE)?'a':'span';
+    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
+    <div class="pnb-phases">${phases}</div>
+    <div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+}
+
+loadPhaseGates().then(() => { renderPhaseNav(); loadData(); });
+</script>
+</body>
+</html>

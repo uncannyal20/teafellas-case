@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Problem Prioritisation</title>
+<style>
+:root{
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body.has-phase-nav{padding-top:46px;}
+
+/* Phase nav */
+#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+#phase-nav-bar.pnb-hidden{display:none;}
+.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,0.9);white-space:nowrap;margin-right:18px;}
+.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,0.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
+.pnb-phases{display:flex;align-items:center;flex:1;}
+.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all 0.15s;text-decoration:none;}
+.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
+.pnb-phase.pnb-done{color:rgba(255,255,255,0.75);border-bottom-color:#4CAF50;cursor:pointer;}
+.pnb-phase.pnb-done:hover{background:rgba(255,255,255,0.07);}
+.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.35);}
+.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
+.pnb-phase.pnb-done .pnb-num{background:#4CAF50;color:white;}
+.pnb-sep{color:rgba(255,255,255,0.2);font-size:14px;padding:0 2px;}
+.pnb-right{margin-left:auto;}
+.pnb-logout{font-size:11px;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.pnb-logout:hover{color:white;background:rgba(255,255,255,0.1);}
+
+/* Layout */
+.page-wrap{max-width:1000px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--green);text-decoration:none;display:inline-block;margin-bottom:20px;}
+.back-link:hover{text-decoration:underline;}
+.page-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.phase-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);}
+.save-indicator{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:8px;}
+.save-indicator.saved{background:#E8F5E9;color:#2E7D32;}
+.save-indicator.saving{background:var(--amber-xl);color:var(--amber);}
+.save-indicator.error{background:#FFEBEE;color:var(--red);}
+.save-indicator.hidden{visibility:hidden;}
+
+.instruction{background:white;border:1px solid var(--border);border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:24px;}
+
+/* 2x2 matrix */
+.matrix-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+.quadrant{background:var(--card);border-radius:10px;padding:16px;min-height:140px;}
+.q-fix{border:2px solid #EF9A9A;}
+.q-plan{border:2px solid #FFCC80;}
+.q-quick{border:2px solid #FFF176;}
+.q-monitor{border:2px solid #CFD8DC;}
+.q-label{font-size:13px;font-weight:800;margin-bottom:4px;}
+.q-fix .q-label{color:#C62828;}
+.q-plan .q-label{color:#E65100;}
+.q-quick .q-label{color:#F57F17;}
+.q-monitor .q-label{color:#546E7A;}
+.q-axis{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.q-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;cursor:default;}
+.q-fix .chip{background:#FFEBEE;color:#C62828;}
+.q-plan .chip{background:#FFF3E0;color:#E65100;}
+.q-quick .chip{background:#FFFDE7;color:#F57F17;}
+.q-monitor .chip{background:#ECEFF1;color:#546E7A;}
+.q-empty{font-size:12px;color:#ccc;font-style:italic;}
+
+/* Assignment list */
+.section-heading{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.assign-list{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px;}
+.assign-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid #EDE5D3;font-size:13px;}
+.assign-row:last-child{border-bottom:none;}
+.assign-num{width:24px;font-weight:700;color:var(--muted);text-align:center;flex-shrink:0;}
+.assign-label{flex:1;}
+.assign-sel{border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;background:white;cursor:pointer;min-width:140px;}
+.assign-sel:focus{outline:none;border-color:var(--green);}
+.assign-sel.v-fix{background:#FFEBEE;color:#C62828;}
+.assign-sel.v-plan{background:#FFF3E0;color:#E65100;}
+.assign-sel.v-quick{background:#FFFDE7;color:#F57F17;}
+.assign-sel.v-monitor{background:#ECEFF1;color:#546E7A;}
+
+/* Priority list */
+.priority-list{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:28px;}
+.priority-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid #EDE5D3;font-size:13px;}
+.priority-row:last-child{border-bottom:none;}
+.priority-row.p-empty{color:var(--muted);font-style:italic;}
+.p-rank{width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#E8F5E9;color:#2E7D32;}
+.p-quad-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;flex-shrink:0;}
+
+.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+.proceed-btn:hover{opacity:.88;}
+</style>
+</head>
+<body>
+<div id="phase-nav-bar" class="pnb-hidden"></div>
+
+<div class="page-wrap">
+  <a href="phase2.html" class="back-link">← Back to Phase 2</a>
+  <div class="page-header">
+    <div>
+      <div class="phase-tag">Phase 2.2</div>
+      <div class="page-title">Problem Prioritisation</div>
+      <div class="page-sub">Map pain points onto the Severity × Frequency matrix and agree on your top priorities.</div>
+    </div>
+    <div class="save-indicator hidden" id="save-ind">Saved ✓</div>
+  </div>
+
+  <div class="instruction">Assign each pain point to a quadrant based on how severe it is and how often it occurs. The matrix will update in real time. Your prioritised list is auto-generated below.</div>
+
+  <!-- 2×2 Matrix -->
+  <div class="matrix-wrap">
+    <div class="quadrant q-fix">
+      <div class="q-label">🔴 Fix First</div>
+      <div class="q-axis">High Severity · High Frequency</div>
+      <div class="q-chips" id="q-fix-chips"></div>
+    </div>
+    <div class="quadrant q-plan">
+      <div class="q-label">🟠 Plan For</div>
+      <div class="q-axis">High Severity · Low Frequency</div>
+      <div class="q-chips" id="q-plan-chips"></div>
+    </div>
+    <div class="quadrant q-quick">
+      <div class="q-label">🟡 Quick Wins</div>
+      <div class="q-axis">Low Severity · High Frequency</div>
+      <div class="q-chips" id="q-quick-chips"></div>
+    </div>
+    <div class="quadrant q-monitor">
+      <div class="q-label">⚪ Monitor</div>
+      <div class="q-axis">Low Severity · Low Frequency</div>
+      <div class="q-chips" id="q-monitor-chips"></div>
+    </div>
+  </div>
+
+  <!-- Assignment list -->
+  <div class="section-heading">Assign pain points to quadrants</div>
+  <div class="assign-list" id="assign-list"></div>
+
+  <!-- Prioritised list -->
+  <div class="section-heading">Prioritised list (auto-generated)</div>
+  <div class="priority-list" id="priority-list"></div>
+
+  <a href="phase2-problem.html" class="proceed-btn">Proceed to Problem Statement →</a>
+</div>
+
+<script>
+const API_URL='https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE=2;
+const PHASE_PAGES={1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS={1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+
+const teamCode=localStorage.getItem('teafellas_team_code');
+if(!teamCode){location.href='index.html';}
+
+let phaseGates={1:false,2:false,3:false,4:false};
+let saveTimer=null;
+
+const DEFAULT_ITEMS=[
+  {id:1,label:'Handwriting errors → order mistakes (Mary → Darren)'},
+  {id:2,label:'No pre-ordering — all customers must queue in person'},
+  {id:3,label:'Memory-based collection → wrong drinks handed out'},
+  {id:4,label:'No customer notification system'},
+  {id:5,label:'Paper loyalty stamp cards — lost or forgotten'},
+  {id:6,label:'Bulk order confusion and mislabelling (Jacky)'},
+  {id:7,label:'Single barista bottleneck — Darren alone'},
+  {id:8,label:'No feedback mechanism'},
+  {id:9,label:'Supply chain won\'t scale to a second outlet'},
+];
+
+// assignments: id → 'fix_first'|'plan_for'|'quick_wins'|'monitor'|''
+let items=DEFAULT_ITEMS.map(x=>({...x,assignment:''}));
+
+const Q_META={
+  fix_first:{key:'fix_first',label:'Fix First',cls:'fix',badgeBg:'#FFEBEE',badgeColor:'#C62828'},
+  plan_for:{key:'plan_for',label:'Plan For',cls:'plan',badgeBg:'#FFF3E0',badgeColor:'#E65100'},
+  quick_wins:{key:'quick_wins',label:'Quick Wins',cls:'quick',badgeBg:'#FFFDE7',badgeColor:'#F57F17'},
+  monitor:{key:'monitor',label:'Monitor',cls:'monitor',badgeBg:'#ECEFF1',badgeColor:'#546E7A'},
+};
+
+function renderAll(){
+  renderMatrix();
+  renderAssignList();
+  renderPriorityList();
+}
+
+function renderMatrix(){
+  ['fix_first','plan_for','quick_wins','monitor'].forEach(q=>{
+    const assigned=items.filter(x=>x.assignment===q);
+    const key=q.replace('_','').replace('quick_wins','quick').replace('fix_first','fix').replace('plan_for','plan');
+    const el=document.getElementById('q-'+key+'-chips');
+    if(q==='quick_wins'){}// handled below
+    const elId='q-'+{fix_first:'fix',plan_for:'plan',quick_wins:'quick',monitor:'monitor'}[q]+'-chips';
+    const target=document.getElementById(elId);
+    if(!target)return;
+    target.innerHTML=assigned.length?assigned.map(x=>`<span class="chip">#${x.id} ${x.label.slice(0,30)}${x.label.length>30?'…':''}</span>`).join(''):'<span class="q-empty">None assigned</span>';
+  });
+}
+
+function renderAssignList(){
+  const list=document.getElementById('assign-list');
+  list.innerHTML=items.map(item=>{
+    const a=item.assignment;
+    const cls=a?'v-'+{fix_first:'fix',plan_for:'plan',quick_wins:'quick',monitor:'monitor'}[a]:'';
+    return `<div class="assign-row">
+      <span class="assign-num">${item.id}</span>
+      <span class="assign-label">${escHtml(item.label)}</span>
+      <select class="assign-sel ${cls}" onchange="setAssignment(${item.id},this.value);applySelClass(this)">
+        <option value="">— Unassigned —</option>
+        <option value="fix_first" ${a==='fix_first'?'selected':''}>🔴 Fix First</option>
+        <option value="plan_for" ${a==='plan_for'?'selected':''}>🟠 Plan For</option>
+        <option value="quick_wins" ${a==='quick_wins'?'selected':''}>🟡 Quick Wins</option>
+        <option value="monitor" ${a==='monitor'?'selected':''}>⚪ Monitor</option>
+      </select>
+    </div>`;
+  }).join('');
+}
+
+function renderPriorityList(){
+  const el=document.getElementById('priority-list');
+  const order=['fix_first','plan_for','quick_wins','monitor'];
+  let rank=1;
+  const rows=[];
+  order.forEach(q=>{
+    const meta=Q_META[q];
+    items.filter(x=>x.assignment===q).forEach(x=>{
+      rows.push(`<div class="priority-row">
+        <span class="p-rank">${rank++}</span>
+        <span style="flex:1">${escHtml(x.label)}</span>
+        <span class="p-quad-badge" style="background:${meta.badgeBg};color:${meta.badgeColor}">${meta.label}</span>
+      </div>`);
+    });
+  });
+  const unassigned=items.filter(x=>!x.assignment);
+  if(unassigned.length)rows.push(`<div class="priority-row p-empty">${unassigned.length} pain point${unassigned.length>1?'s':''} not yet assigned</div>`);
+  el.innerHTML=rows.length?rows.join(''):'<div class="priority-row p-empty">Assign pain points above to generate the prioritised list.</div>';
+}
+
+function setAssignment(id,val){
+  const item=items.find(x=>x.id===id);
+  if(item)item.assignment=val;
+  renderAll();
+  scheduleSave();
+}
+
+function applySelClass(sel){
+  const map={fix_first:'v-fix',plan_for:'v-plan',quick_wins:'v-quick',monitor:'v-monitor'};
+  sel.className='assign-sel'+(sel.value?' '+map[sel.value]:'');
+}
+
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  showSave('saving');
+  saveTimer=setTimeout(doSave,1500);
+}
+
+async function doSave(){
+  const quadrants={fix_first:[],plan_for:[],quick_wins:[],monitor:[]};
+  items.forEach(x=>{if(x.assignment&&quadrants[x.assignment])quadrants[x.assignment].push(x.id);});
+  try{
+    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'problem_priorities',content:{quadrants}})});
+    if(!r.ok)throw new Error();
+    showSave('saved');
+  }catch{showSave('error');}
+}
+
+function showSave(state){
+  const el=document.getElementById('save-ind');
+  el.className='save-indicator '+state;
+  el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
+  if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+function suggestFromInventory(invItems){
+  invItems.forEach(s=>{
+    const item=items.find(x=>x.id===s.id);
+    if(!item||item.assignment)return;
+    const sev=s.severity,freq=s.frequency;
+    if(sev==='H'&&freq==='H')item.assignment='fix_first';
+    else if(sev==='H')item.assignment='plan_for';
+    else if(freq==='H')item.assignment='quick_wins';
+    else if(sev==='L'&&freq==='L')item.assignment='monitor';
+  });
+}
+
+async function loadPhaseGates(){
+  try{const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);const d=await r.json();if(d.gates)phaseGates={...phaseGates,...d.gates};}catch{}
+}
+
+function renderPhaseNav(){
+  const bar=document.getElementById('phase-nav-bar');
+  bar.classList.remove('pnb-hidden');
+  document.body.classList.add('has-phase-nav');
+  const phases=[1,2,3,4].map((p,i,arr)=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
+    const icon=done?'✓':active?p:'🔒';
+    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:active?` href="${PHASE_PAGES[p]}"`:'';
+    const tag=(done||active)&&p!==CURRENT_PHASE?'a':'span';
+    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
+    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  }).join('');
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span><div class="pnb-phases">${phases}</div><div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+}
+
+async function init(){
+  await loadPhaseGates();
+  renderPhaseNav();
+
+  // Load inventory for suggestions
+  try{
+    const ri=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_inventory`);
+    const di=await ri.json();
+    if(di.deliverables?.problem_inventory?.content?.items){
+      suggestFromInventory(di.deliverables.problem_inventory.content.items);
+    }
+  }catch{}
+
+  // Load saved priorities (override suggestions)
+  try{
+    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_priorities`);
+    const d=await r.json();
+    const saved=d.deliverables?.problem_priorities?.content?.quadrants;
+    if(saved){
+      // Reset then apply saved
+      items.forEach(x=>x.assignment='');
+      ['fix_first','plan_for','quick_wins','monitor'].forEach(q=>{
+        (saved[q]||[]).forEach(id=>{const item=items.find(x=>x.id===id);if(item)item.assignment=q;});
+      });
+    }
+  }catch{}
+
+  renderAll();
+}
+init();
+</script>
+</body>
+</html>

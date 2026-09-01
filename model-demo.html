@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Demo Setup</title>
+<style>
+:root{
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;
+  --red:#C0392B;--red-xl:#FFEBEE;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#111;color:#eee;min-height:100vh;}
+
+.top-bar{background:#1E3D1A;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.brand{font-size:16px;font-weight:900;color:white;}
+.brand span{color:#E8A94A;}
+.mode-tag{background:rgba(232,169,74,.2);border:1px solid #E8A94A;color:#E8A94A;
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.07em;}
+
+.page{max-width:900px;margin:0 auto;padding:32px 28px 80px;}
+
+.hero{background:linear-gradient(135deg,#1E3D1A,#2D5A27);border-radius:16px;padding:32px;margin-bottom:32px;}
+.hero h1{font-size:28px;font-weight:900;color:white;margin-bottom:6px;}
+.hero p{font-size:14px;color:rgba(255,255,255,.7);line-height:1.65;max-width:600px;}
+.hero-btns{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;}
+.hero-btn{padding:12px 26px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:opacity .15s;}
+.hero-btn.primary{background:#E8A94A;color:#1E3D1A;}
+.hero-btn.secondary{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.2);}
+.hero-btn.danger{background:rgba(192,57,43,.8);color:white;}
+.hero-btn:hover{opacity:.85;}
+.hero-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.team-code-row{display:flex;align-items:center;gap:12px;margin-top:16px;}
+.team-code-label{font-size:12px;color:rgba(255,255,255,.6);}
+.team-code-input{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:7px;
+  padding:8px 14px;font-size:15px;font-weight:700;color:white;width:160px;text-transform:uppercase;letter-spacing:.1em;}
+.team-code-input::placeholder{color:rgba(255,255,255,.3);}
+.team-code-input:focus{outline:none;border-color:#E8A94A;}
+
+/* Progress */
+.progress-section{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:24px;margin-bottom:28px;display:none;}
+.progress-section.show{display:block;}
+.progress-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#888;margin-bottom:16px;}
+.progress-bar-wrap{background:#2a2a2a;border-radius:4px;height:6px;margin-bottom:20px;}
+.progress-bar{background:#E8A94A;height:6px;border-radius:4px;transition:width .4s ease;width:0%;}
+.step-list{display:flex;flex-direction:column;gap:7px;max-height:340px;overflow-y:auto;}
+.step{display:flex;align-items:center;gap:10px;font-size:13px;color:#888;transition:color .2s;}
+.step.running{color:#E8A94A;}
+.step.done{color:#81C784;}
+.step.error{color:#EF9A9A;}
+.step-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;background:#2a2a2a;}
+.step.running .step-icon{background:rgba(232,169,74,.2);color:#E8A94A;}
+.step.done .step-icon{background:rgba(129,199,132,.2);color:#81C784;}
+.step.error .step-icon{background:rgba(239,154,154,.2);color:#EF9A9A;}
+
+/* Hub */
+.hub{display:none;}
+.hub.show{display:block;}
+.hub-alert{background:#1E3D1A;border:1px solid #4A7C42;border-radius:10px;padding:16px 20px;
+  margin-bottom:28px;display:flex;align-items:center;gap:12px;}
+.hub-alert-icon{font-size:22px;}
+.hub-alert-text{font-size:14px;color:#A5D6A7;line-height:1.5;}
+.hub-alert-text strong{color:white;}
+
+.phase-section{margin-bottom:28px;}
+.phase-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.phase-badge{background:#2D5A27;color:#A5D6A7;font-size:11px;font-weight:800;padding:3px 10px;
+  border-radius:20px;text-transform:uppercase;letter-spacing:.07em;}
+.phase-badge.amber{background:#4A2E08;color:#FFCC80;}
+.phase-badge.slate{background:#263238;color:#B0BEC5;}
+.phase-title{font-size:16px;font-weight:700;color:white;}
+.page-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.page-card{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:14px 16px;
+  text-decoration:none;color:inherit;transition:border-color .15s,background .15s;display:block;}
+.page-card:hover{border-color:#4A7C42;background:#1E2A1A;}
+.page-card-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#555;margin-bottom:4px;}
+.page-card-title{font-size:13px;font-weight:700;color:white;margin-bottom:3px;}
+.page-card-sub{font-size:11px;color:#666;}
+.page-card-badge{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:10px;background:#1E3D1A;color:#A5D6A7;}
+.page-card-badge.amber{background:#3A2000;color:#FFB74D;}
+.divider{border:none;border-top:1px solid #222;margin:28px 0;}
+
+.info-box{background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:20px;margin-bottom:20px;}
+.info-box h3{font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.info-item{font-size:12px;}
+.info-key{color:#555;}
+.info-val{color:#ccc;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="brand">Tea Fellas <span>Discovery Simulation</span></div>
+  <div class="mode-tag">FACILITATOR DEMO MODE</div>
+</div>
+
+<div class="page">
+  <div class="hero">
+    <h1>Demo Control Panel</h1>
+    <p>Initialise a pre-populated demo team in one click. All 5 interviews, 7 deliverables, and phases 1–3 will be seeded with realistic Tea Fellas data so you can demonstrate the full capability without running through the exercise live.</p>
+    <div class="team-code-row">
+      <span class="team-code-label">Demo team code:</span>
+      <input class="team-code-input" id="team-code-input" value="DEMO" placeholder="DEMO" maxlength="10">
+    </div>
+    <div class="hero-btns">
+      <button class="hero-btn primary" id="init-btn" onclick="initDemo()">⚡ Initialise Demo</button>
+      <button class="hero-btn secondary" id="goto-btn" onclick="gotoApp()" style="display:none">→ Open App as DEMO</button>
+      <button class="hero-btn danger" id="reset-btn" onclick="resetDemo()" style="display:none">↺ Re-initialise</button>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section" id="progress-section">
+    <div class="progress-title">Setup progress</div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="step-list" id="step-list"></div>
+  </div>
+
+  <!-- Hub -->
+  <div class="hub" id="hub">
+    <div class="hub-alert">
+      <div class="hub-alert-icon">✅</div>
+      <div class="hub-alert-text"><strong>Demo ready.</strong> Team <strong id="hub-team-name">DEMO</strong> is logged in. All phases and deliverables are pre-populated. Navigate directly to any page below — or open the app normally and enter the team code.</div>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="phase-section">
+      <div class="phase-hdr">
+        <span class="phase-badge">Phase 1 ✓</span>
+        <span class="phase-title">Research — Stakeholder Interviews</span>
+      </div>
+      <div class="page-grid">
+        <a class="page-card" href="index.html" target="_blank">
+          <div class="page-card-num">Hub</div>
+          <div class="page-card-title">Phase 1 Home</div>
+          <div class="page-card-sub">Interview list + declaration</div>
+          <div class="page-card-badge">5/5 interviewed</div>
+        </a>
+        <a class="page-card" href="index.html?persona=john" target="_blank">
+          <div class="page-card-num">Interview 1</div>
+          <div class="page-card-title">Uncle John</div>
+          <div class="page-card-sub">Owner, 65 — risk-averse, wants ROI</div>
+          <div class="page-card-badge">Confirmed ✓</div>
+        </a>
+        <a class="page-card" href="index.html?persona=mary" target="_blank">
+          <div class="page-card-num">Interview 2</div>
+          <div class="page-card-title">Aunty Mary</div>
+          <div class="page-card-sub">Operator, 61 — sceptical but open</div>
+          <div class="page-card-badge">Confirmed ✓</div>
+        </a>
+        <a class="page-card" href="index.html?persona=darren" target="_blank">
+          <div class="page-card-num">Interview 3</div>
+          <div class="page-card-title">Darren</div>
+          <div class="page-card-sub">Barista, 24 — internal champion</div>
+          <div class="page-card-badge">Confirmed ✓</div>
+        </a>
+        <a class="page-card" href="index.html?persona=mrs_selva" target="_blank">
+          <div class="page-card-num">Interview 4</div>
+          <div class="page-card-title">Mrs Selva</div>
+          <div class="page-card-sub">Loyal regular, 58 — loyalty risk</div>
+          <div class="page-card-badge">Confirmed ✓</div>
+        </a>
+        <a class="page-card" href="index.html?persona=jacky" target="_blank">
+          <div class="page-card-num">Interview 5</div>
+          <div class="page-card-title">Jacky</div>
+          <div class="page-card-sub">Office bulk orderer — premium segment</div>
+          <div class="page-card-badge">Confirmed ✓</div>
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Phase 2 -->
+    <div class="phase-section">
+      <div class="phase-hdr">
+        <span class="phase-badge">Phase 2 ✓</span>
+        <span class="phase-title">Define — Problem Framing</span>
+      </div>
+      <div class="page-grid">
+        <a class="page-card" href="phase2.html" target="_blank">
+          <div class="page-card-num">Hub</div>
+          <div class="page-card-title">Phase 2 Home</div>
+          <div class="page-card-sub">4 deliverables overview</div>
+        </a>
+        <a class="page-card" href="phase2-inventory.html" target="_blank">
+          <div class="page-card-num">P2.1</div>
+          <div class="page-card-title">Pain Point Inventory</div>
+          <div class="page-card-sub">9 pain points rated H/M/L</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+        <a class="page-card" href="phase2-prioritise.html" target="_blank">
+          <div class="page-card-num">P2.2</div>
+          <div class="page-card-title">Prioritisation Matrix</div>
+          <div class="page-card-sub">2×2 Severity × Frequency</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+        <a class="page-card" href="phase2-problem.html" target="_blank">
+          <div class="page-card-num">P2.3</div>
+          <div class="page-card-title">Problem Statement</div>
+          <div class="page-card-sub">UX template + live preview</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+        <a class="page-card" href="phase2-vision.html" target="_blank">
+          <div class="page-card-num">P2.4</div>
+          <div class="page-card-title">Product Vision</div>
+          <div class="page-card-sub">Vision + outcomes + constraints</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+        <a class="page-card" href="scenario-brief.html" target="_blank">
+          <div class="page-card-num">Reference</div>
+          <div class="page-card-title">Scenario Briefings</div>
+          <div class="page-card-sub">A1–C2 financial data</div>
+          <div class="page-card-badge amber">Read-only</div>
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Phase 3 -->
+    <div class="phase-section">
+      <div class="phase-hdr">
+        <span class="phase-badge">Phase 3 ✓</span>
+        <span class="phase-title">Ideate — Solution Design</span>
+      </div>
+      <div class="page-grid">
+        <a class="page-card" href="phase3.html" target="_blank">
+          <div class="page-card-num">Hub</div>
+          <div class="page-card-title">Phase 3 Home</div>
+          <div class="page-card-sub">3 deliverables + CBA link</div>
+        </a>
+        <a class="page-card" href="cba-vcr.html?sc=C1" target="_blank">
+          <div class="page-card-num">Tool</div>
+          <div class="page-card-title">CBA / VCR Calculator</div>
+          <div class="page-card-sub">Financial viability — pre-loaded C1</div>
+          <div class="page-card-badge amber">Interactive</div>
+        </a>
+        <a class="page-card" href="phase3-risk.html" target="_blank">
+          <div class="page-card-num">P3.1</div>
+          <div class="page-card-title">Risk Assessment</div>
+          <div class="page-card-sub">9 risks, 5×5 matrix</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+        <a class="page-card" href="phase3-roadmap.html" target="_blank">
+          <div class="page-card-num">P3.2</div>
+          <div class="page-card-title">Product Roadmap</div>
+          <div class="page-card-sub">4-phase C1 timeline</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+        <a class="page-card" href="phase3-canvas.html" target="_blank">
+          <div class="page-card-num">P3.3</div>
+          <div class="page-card-title">Solution Concept Canvas</div>
+          <div class="page-card-sub">Vision, OKRs, Features, Risks</div>
+          <div class="page-card-badge">Pre-filled ✓</div>
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Phase 4 -->
+    <div class="phase-section">
+      <div class="phase-hdr">
+        <span class="phase-badge amber">Phase 4</span>
+        <span class="phase-title">Validate — Product Strategy</span>
+      </div>
+      <div class="page-grid">
+        <a class="page-card" href="phase4.html" target="_blank">
+          <div class="page-card-num">Hub</div>
+          <div class="page-card-title">Phase 4 Home</div>
+          <div class="page-card-sub">Final synthesis and presentation</div>
+          <div class="page-card-badge amber">Live to complete</div>
+        </a>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="info-box">
+      <h3>Demo Details</h3>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-key">Team code: </span><span class="info-val" id="info-team"></span></div>
+        <div class="info-item"><span class="info-key">Recommended scenario: </span><span class="info-val">C1 — Conservative</span></div>
+        <div class="info-item"><span class="info-key">Phases pre-completed: </span><span class="info-val">1, 2, 3</span></div>
+        <div class="info-item"><span class="info-key">Deliverables seeded: </span><span class="info-val">7 / 7</span></div>
+        <div class="info-item"><span class="info-key">Interviews seeded: </span><span class="info-val">5 personas + group declaration</span></div>
+        <div class="info-item"><span class="info-key">Phase 4: </span><span class="info-val">Unlocked, ready to complete live</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+
+function getTeamCode(){
+  return (document.getElementById('team-code-input').value||'DEMO').toUpperCase().trim();
+}
+
+// ── All demo data ────────────────────────────────────────────────────────────
+
+const SESSIONS = {
+  john: {
+    summary: {text:"Uncle John (65) is cautiously optimistic about digital transformation. He has run Tea Fellas for 28 years and is proud of the family reputation. His primary concern is cost — having just survived COVID with minimal reserves he is risk-averse. He is willing to invest IF there is a clear payback period under 18 months. He worries about losing the personal touch that loyal customers like Mrs Selva appreciate. He named Darren as the champion for any change. His scenario preference leans conservative — he said 'no big bets.'"},
+    synthesis: {text:"John's perspective anchors the business case: ROI within 18 months is non-negotiable. Any solution must preserve the family brand warmth. He has implicitly delegated digital leadership to Darren, which creates a natural change champion. His conservative risk appetite points directly toward Scenario C1."}
+  },
+  mary: {
+    summary: {text:"Aunty Mary (61) runs the front of house and knows every regular customer by name. She is sceptical of technology — 'my customers come for me, not an app' — but acknowledged that the stamp cards are a headache and she sometimes gives out wrong drinks when it gets crowded. She is open to change if it does not make her look incompetent in front of customers. She particularly worries about elderly customers who do not use smartphones. Her loyalty insight: 68% of regulars visit at least 3x per week."},
+    synthesis: {text:"Mary's resistance is emotional, not logical — she fears losing her identity as the face of Tea Fellas. A solution that keeps her central (she still greets every customer; the app handles the admin) would win her over. The loyalty data she shared (3x/week regulars) validates a digital loyalty programme investment."}
+  },
+  darren: {
+    summary: {text:"Darren (24, SMU grad) is both the bottleneck and the solution. He makes every drink himself, reads handwritten chits, shouts names across the stall, and manages bulk orders with sticky notes. He loses roughly 2–3 orders per busy day to errors. He has already researched QR ordering apps and found one at ~$300/month. He is frustrated but committed to the family business. He sees himself as future GM of the second outlet if systems are in place. His biggest fear: John saying 'not now' again."},
+    synthesis: {text:"Darren is the internal change champion. He has already done the research; he needs facilitation not persuasion. His self-reported error rate (~15%) is the most credible operational data point. A kitchen display system that eliminates handwritten chits is his immediate priority. He is ready to lead the second outlet if operational independence is built in."}
+  },
+  mrs_selva: {
+    summary: {text:"Mrs Selva (58, retired teacher) comes every weekday morning. She has 11 full loyalty cards in her wallet. She loves the personal recognition from Mary and Darren. She tried ordering via an app at another café and found it too complicated. She would use a simpler digital loyalty app if Mary showed her how. She has referred at least 5 friends to Tea Fellas. Her pain point: sometimes her 'usual' order is wrong because a new helper is on."},
+    synthesis: {text:"Mrs Selva represents the high-value loyal segment that could churn if the change feels impersonal. Her feedback validates: (1) loyalty digitisation is worthwhile but must be simple, (2) staff continuity and personal recognition matter more than features, (3) wrong orders are a loyalty risk. She is a net promoter — protecting her experience protects referral revenue."}
+  },
+  jacky: {
+    summary: {text:"Jacky (32, office manager) places bulk orders 3–4x per week for her 12-person team. Currently she calls ahead and hopes for the best — orders are sometimes wrong or not ready on time. She has switched to a competitor twice when Tea Fellas could not handle her order. She would pay a premium (up to 15% more) for a reliable pre-order system with a collection time guarantee. She shared that 4 other offices in her building would likely use Tea Fellas if pre-ordering was available."},
+    synthesis: {text:"Jacky represents a high-value, underserved B2B segment. Her willingness to pay a premium for reliability is a direct revenue opportunity. Pre-ordering with a guaranteed collection time is the must-have feature for this segment. Winning 5 offices at 12 pax each = 60 additional customers, potentially adding $900–$1,200/week in revenue."}
+  }
+};
+
+const DELIVERABLES = {
+  problem_inventory: {
+    rows: [
+      {label:"Handwritten orders misread by barista",who:"Darren",severity:"H",frequency:"H"},
+      {label:"No pre-ordering — full queue at peak hour",who:"Customers, Mary",severity:"H",frequency:"H"},
+      {label:"Drink collection by name-shout — wrong handouts",who:"Darren, customers",severity:"H",frequency:"H"},
+      {label:"No customer notification when order is ready",who:"Customers",severity:"M",frequency:"H"},
+      {label:"Paper loyalty stamp cards — easy to lose",who:"Aunty Mary, Mrs Selva",severity:"M",frequency:"H"},
+      {label:"Bulk order labelling confusion",who:"Jacky, office customers",severity:"H",frequency:"M"},
+      {label:"Single barista bottleneck — cannot scale",who:"Darren, John",severity:"H",frequency:"H"},
+      {label:"No structured customer feedback mechanism",who:"John, Mary",severity:"M",frequency:"M"},
+      {label:"Supply chain cannot support second outlet",who:"Uncle John",severity:"H",frequency:"M"}
+    ]
+  },
+  problem_priorities: {
+    matrix: {
+      "H-H": ["Handwritten orders misread by barista","No pre-ordering — full queue at peak hour","Drink collection by name-shout — wrong handouts","Single barista bottleneck — cannot scale"],
+      "H-M": ["Bulk order labelling confusion","Supply chain cannot support second outlet"],
+      "M-H": ["No customer notification when order is ready","Paper loyalty stamp cards — easy to lose"],
+      "M-M": ["No structured customer feedback mechanism"]
+    },
+    ranked: [
+      "Handwritten orders misread by barista",
+      "Single barista bottleneck — cannot scale",
+      "No pre-ordering — full queue at peak hour",
+      "Bulk order labelling confusion",
+      "Supply chain cannot support second outlet",
+      "Paper loyalty stamp cards — easy to lose",
+      "No customer notification when order is ready",
+      "No structured customer feedback mechanism"
+    ]
+  },
+  problem_statement: {
+    user_role:"Darren, the sole barista",
+    emotion:"overwhelmed and anxious",
+    situation:"during peak lunch hour with 15+ customers queuing",
+    goal:"fulfil every order correctly and efficiently without losing customers",
+    barrier:"handwritten chits are illegible and there is no digital queue or notification system",
+    impact:"order error rates reach ~15%, customers leave the queue, and Tea Fellas' reputation suffers",
+    statement:"We need to find a way for Darren to receive, process and fulfil orders accurately and efficiently so that Tea Fellas can serve more customers with zero errors — while keeping the family's warm, personal touch.",
+    secondary:"Beyond fixing the operational bottleneck, Tea Fellas needs a scalable foundation that lets Uncle John confidently open a second outlet, knowing Darren can run Toa Payoh independently."
+  },
+  product_vision: {
+    vision:"Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — digitally enabled, family-run, and always personal.",
+    outcomes:[
+      {title:"Zero-error operations",description:"Every order is digitally captured and fulfilled — Darren never misreads a chit again."},
+      {title:"Loyal community",description:"Customers feel recognised and rewarded — digital loyalty replaces paper stamps."},
+      {title:"Expansion-ready",description:"The same system runs Toa Payoh and AMK — Uncle John can step back and watch the business grow."}
+    ],
+    not:[
+      "A high-tech startup replacing the family feel",
+      "A franchise model that strips out John and Mary's warmth",
+      "A system so complex that Aunty Mary cannot use it"
+    ]
+  },
+  risk_assessment: {
+    risks:[
+      {label:"Mary/John resistance to digital change",probability:4,impact:4,mitigation:"Simplest possible interface; 2-week parallel paper run with no pressure to switch"},
+      {label:"Darren tech learning curve",probability:2,impact:3,mitigation:"In-app onboarding; Darren already comfortable with technology"},
+      {label:"Upfront cost strains cash surplus",probability:3,impact:4,mitigation:"Apply for SME Go Digital grant; phase rollout over 3 months"},
+      {label:"Internet outage during peak service",probability:2,impact:5,mitigation:"Offline mode fallback; paper backup SOP posted in kitchen"},
+      {label:"Low customer adoption of QR ordering",probability:3,impact:3,mitigation:"QR code prominently placed; Mary explains to every customer for first 2 weeks"},
+      {label:"HDB rent increase at second outlet",probability:3,impact:3,mitigation:"C1 scenario de-risks: prove model at Toa Payoh first before committing to AMK"},
+      {label:"Competitor copies the digital model",probability:2,impact:2,mitigation:"Brand loyalty and 28-year reputation is the real moat, not the technology"},
+      {label:"Supplier unable to scale ingredients",probability:2,impact:4,mitigation:"Dual-source key ingredients (pearls, tea base) before expansion launch"},
+      {label:"Darren burnout before second hire",probability:3,impact:4,mitigation:"Hire part-time staff at Month 4 as a milestone; roadmap includes this explicitly"}
+    ]
+  },
+  product_roadmap: {
+    scenario:"C1",
+    phases:[
+      {name:"Phase A — Digital Foundation",timeframe:"Month 1–3",milestones:[
+        "Deploy QR code ordering at Toa Payoh counter",
+        "Install kitchen display screen for Darren",
+        "Run 2-week parallel paper + digital transition period",
+        "Launch WhatsApp/SMS 'order ready' notifications",
+        "Enable Jacky's bulk pre-order flow"
+      ]},
+      {name:"Phase B — Customer Engagement",timeframe:"Month 3–6",milestones:[
+        "Go live with digital loyalty programme",
+        "Retire paper stamp cards",
+        "Launch post-purchase feedback prompt",
+        "Mary-led onboarding for elderly regulars (Mrs Selva cohort)",
+        "First analytics review: error rate, wait time, loyalty enrolments"
+      ]},
+      {name:"Phase C — Scale Readiness",timeframe:"Month 6–9",milestones:[
+        "Hire and train part-time barista at Toa Payoh",
+        "Darren shadows AMK site preparation",
+        "Multi-outlet dashboard live (one view, two stalls)",
+        "Supplier portal integration — track stock across outlets",
+        "6-month operational review — go/no-go for AMK opening"
+      ]},
+      {name:"Phase D — AMK Launch",timeframe:"Month 9–12",milestones:[
+        "Open AMK outlet with Darren as outlet manager",
+        "Full digital operations from Day 1 (no paper run-in needed)",
+        "Cross-outlet loyalty programme live",
+        "John's first quarterly review as hands-off owner",
+        "Year 1 combined revenue target: $33K–$36K/month"
+      ]}
+    ],
+    team_notes:"Scenario C1 chosen: digital transformation first (6 months to prove the model at Toa Payoh), then conservative expansion to AMK. Total investment $105K over 12 months. SME Go Digital grant application to be submitted in Month 1."
+  },
+  solution_canvas: {
+    scenario:"C1",
+    solution_name:"Tea Fellas Digital — Operational Excellence & Conservative Expansion",
+    vision:"Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — digitally enabled, family-run, and always personal. We start lean, prove the model at Toa Payoh, and expand to AMK only when the system is rock-solid.",
+    designed_for:"Darren (barista & future outlet GM), Aunty Mary (owner-operator), Uncle John (decision-maker), Mrs Selva (loyal regular), Jacky (office bulk orderer)",
+    okrs:[
+      {objective:"Eliminate operational errors",kr1:"Reduce order error rate from ~15% to <3% within 6 months",kr2:"Reduce Darren's chit interruptions to zero within 3 months of QR launch"},
+      {objective:"Improve customer experience",kr1:"Reduce peak-hour wait time from 25 min to <10 min within 6 months",kr2:"Enrol 200+ active digital loyalty members within 3 months of launch"},
+      {objective:"Build foundation for expansion",kr1:"Toa Payoh running on digital operations for 6+ months before AMK opens",kr2:"Darren independently managing AMK outlet within 12 months"}
+    ],
+    features:"Phase A — Digital Order Flow (Month 1–3)\n· QR code ordering — customers order from phone\n· Kitchen display for Darren — replaces handwritten chits\n· Digital queue — WhatsApp/SMS notification when ready\n· Bulk pre-ordering for Jacky and office customers\n\nPhase B — Customer Loyalty (Month 3–6)\n· Digital loyalty programme — replaces paper stamps\n· Post-purchase feedback prompt\n· Analytics dashboard — John reviews sales weekly\n\nPhase C — Expansion Readiness (Month 6–9)\n· Multi-outlet management — one dashboard, two stalls\n· Darren-as-manager training module\n· Supplier portal — stock tracking across outlets",
+    risks_summary:"Risk: Mary/John resistance to digital — Mitigation: 2-week parallel paper run; simplest UI possible\nRisk: Upfront cost ($18K digital + $87K expansion) — Mitigation: SME Go Digital grant; phase the investment\nRisk: Internet outage during peak service — Mitigation: Offline mode + paper backup SOP\nRisk: Darren burnout before second hire — Mitigation: Part-time hire at Month 4 milestone\nRisk: Low elderly customer adoption — Mitigation: Mary personally onboards Mrs Selva cohort in first 2 weeks"
+  }
+};
+
+// ── Setup steps ──────────────────────────────────────────────────────────────
+
+function buildSteps(code) {
+  return [
+    {id:'register',  label:`Register team "${code}"`,
+      run: () => post('/register-team', {team_code: code})},
+    {id:'s_john',    label:'Seed John\'s interview session',
+      run: () => post('/save-session', {team_code:code, persona_id:'john',
+        messages:[], summary:SESSIONS.john.summary, summary_confirmed:true,
+        synthesis:SESSIONS.john.synthesis, synthesis_confirmed:true})},
+    {id:'s_mary',    label:'Seed Mary\'s interview session',
+      run: () => post('/save-session', {team_code:code, persona_id:'mary',
+        messages:[], summary:SESSIONS.mary.summary, summary_confirmed:true,
+        synthesis:SESSIONS.mary.synthesis, synthesis_confirmed:true})},
+    {id:'s_darren',  label:'Seed Darren\'s interview session',
+      run: () => post('/save-session', {team_code:code, persona_id:'darren',
+        messages:[], summary:SESSIONS.darren.summary, summary_confirmed:true,
+        synthesis:SESSIONS.darren.synthesis, synthesis_confirmed:true})},
+    {id:'s_selva',   label:'Seed Mrs Selva\'s interview session',
+      run: () => post('/save-session', {team_code:code, persona_id:'mrs_selva',
+        messages:[], summary:SESSIONS.mrs_selva.summary, summary_confirmed:true,
+        synthesis:SESSIONS.mrs_selva.synthesis, synthesis_confirmed:true})},
+    {id:'s_jacky',   label:'Seed Jacky\'s interview session',
+      run: () => post('/save-session', {team_code:code, persona_id:'jacky',
+        messages:[], summary:SESSIONS.jacky.summary, summary_confirmed:true,
+        synthesis:SESSIONS.jacky.synthesis, synthesis_confirmed:true})},
+    {id:'s_group',   label:'Seed group declaration (Phase 1 done, Scenario C1)',
+      run: () => post('/save-session', {team_code:code, persona_id:'group',
+        messages:[], declaration_done:true, scenario_selected:'C1'})},
+    {id:'pg1',       label:'Mark Phase 1 complete',
+      run: () => post('/phase-gates', {team_code:code, phase:1})},
+    {id:'pg2',       label:'Mark Phase 2 complete',
+      run: () => post('/phase-gates', {team_code:code, phase:2})},
+    {id:'pg3',       label:'Mark Phase 3 complete',
+      run: () => post('/phase-gates', {team_code:code, phase:3})},
+    {id:'d_inv',     label:'Seed Problem Inventory deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'problem_inventory',   content:DELIVERABLES.problem_inventory})},
+    {id:'d_pri',     label:'Seed Prioritisation Matrix deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'problem_priorities',  content:DELIVERABLES.problem_priorities})},
+    {id:'d_ps',      label:'Seed Problem Statement deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'problem_statement',   content:DELIVERABLES.problem_statement})},
+    {id:'d_vis',     label:'Seed Product Vision deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'product_vision',      content:DELIVERABLES.product_vision})},
+    {id:'d_risk',    label:'Seed Risk Assessment deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'risk_assessment',     content:DELIVERABLES.risk_assessment})},
+    {id:'d_road',    label:'Seed Product Roadmap deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'product_roadmap',     content:DELIVERABLES.product_roadmap})},
+    {id:'d_canv',    label:'Seed Solution Canvas deliverable',
+      run: () => post('/deliverables', {team_code:code, deliverable_id:'solution_canvas',     content:DELIVERABLES.solution_canvas})},
+  ];
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+async function post(path, body) {
+  const r = await fetch(API_URL + path, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(`${path} → HTTP ${r.status}`);
+  return r.json();
+}
+
+let running = false;
+
+async function initDemo() {
+  if (running) return;
+  running = true;
+  const code = getTeamCode();
+
+  document.getElementById('init-btn').disabled = true;
+  document.getElementById('team-code-input').disabled = true;
+  document.getElementById('reset-btn').style.display = 'none';
+  document.getElementById('goto-btn').style.display = 'none';
+  document.getElementById('hub').classList.remove('show');
+
+  const steps = buildSteps(code);
+  const listEl = document.getElementById('step-list');
+  const barEl  = document.getElementById('progress-bar');
+  document.getElementById('progress-section').classList.add('show');
+
+  listEl.innerHTML = steps.map(s =>
+    `<div class="step" id="step-${s.id}"><span class="step-icon">○</span><span>${s.label}</span></div>`
+  ).join('');
+
+  let done = 0, errors = 0;
+  for (const s of steps) {
+    const el = document.getElementById(`step-${s.id}`);
+    el.classList.add('running');
+    el.querySelector('.step-icon').textContent = '…';
+    try {
+      await s.run();
+      el.classList.remove('running'); el.classList.add('done');
+      el.querySelector('.step-icon').textContent = '✓';
+    } catch(e) {
+      el.classList.remove('running'); el.classList.add('error');
+      el.querySelector('.step-icon').textContent = '✗';
+      el.querySelector('span:last-child').textContent += ` — ${e.message}`;
+      errors++;
+    }
+    done++;
+    barEl.style.width = `${Math.round(done/steps.length*100)}%`;
+    await new Promise(r=>setTimeout(r,80));
+  }
+
+  // Store in localStorage so clicking any link auto-logs in as this team
+  localStorage.setItem('teafellas_team_code', code);
+
+  document.getElementById('hub-team-name').textContent = code;
+  document.getElementById('info-team').textContent = code;
+  document.getElementById('hub').classList.add('show');
+  document.getElementById('goto-btn').style.display = '';
+  document.getElementById('reset-btn').style.display = '';
+  document.getElementById('init-btn').disabled = false;
+  document.getElementById('team-code-input').disabled = false;
+  running = false;
+}
+
+function resetDemo() {
+  document.getElementById('hub').classList.remove('show');
+  document.getElementById('progress-section').classList.remove('show');
+  document.getElementById('goto-btn').style.display = 'none';
+  document.getElementById('reset-btn').style.display = 'none';
+  initDemo();
+}
+
+function gotoApp() {
+  window.open('index.html', '_blank');
+}
+</script>
+</body>
+</html>
