@@ -10,11 +10,10 @@
   --amber:#C17A2A;--amber-xl:#FFF8E6;
   --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
   --text:#2C2416;--muted:#6B5A3E;
-  --red:#C0392B;--red-xl:#FFEBEE;--blue:#1565C0;--blue-xl:#E3F2FD;
+  --red:#C0392B;--red-xl:#FFEBEE;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
-body{padding-left:210px;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);padding-left:210px;}
 
 /* ── Sidebar ── */
 #sidebar{position:fixed;top:0;left:0;bottom:0;width:210px;background:#2D5A27;display:flex;flex-direction:column;z-index:100;}
@@ -36,11 +35,11 @@ body{padding-left:210px;}
 .sb-footer-btn{display:block;width:100%;padding:8px 10px;border:none;background:none;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;text-align:left;cursor:pointer;}
 .sb-footer-btn:hover{background:rgba(255,255,255,.08);color:white;}
 
-.page{max-width:1040px;margin:0 auto;padding:28px 32px 80px;}
+.page{max-width:1160px;margin:0 auto;padding:28px 32px 80px;}
 .back-link{font-size:13px;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:18px;}
 .back-link:hover{color:var(--green);}
 .page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
-.page-sub{font-size:14px;color:var(--muted);margin-bottom:20px;}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
 .save-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
   padding:3px 10px;border-radius:20px;margin-left:12px;transition:opacity .3s;opacity:0;}
 .save-badge.show{opacity:1;}
@@ -48,78 +47,27 @@ body{padding-left:210px;}
 .save-badge.saving{background:#E3F2FD;color:#1565C0;}
 .save-badge.error{background:var(--red-xl);color:var(--red);}
 
-.top-row{display:flex;gap:14px;margin-bottom:22px;flex-wrap:wrap;align-items:flex-end;}
+.top-row{display:flex;gap:14px;margin-bottom:24px;flex-wrap:wrap;align-items:flex-end;}
 .top-field{display:flex;flex-direction:column;gap:5px;}
 .top-field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
 .top-field input,.top-field select{border:1px solid var(--border);border-radius:7px;padding:9px 13px;
   font-size:14px;font-family:inherit;background:white;}
 .top-field input:focus,.top-field select:focus{border-color:var(--green);outline:none;}
 .top-field input{min-width:340px;}
-.ai-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:10px 18px;
-  font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;align-self:flex-end;}
-.ai-btn:hover{opacity:.88;}
-.ai-btn:disabled{opacity:.5;cursor:not-allowed;}
-.ai-spinner{display:none;}
-.ai-btn.loading .ai-spinner{display:inline;}
-.ai-btn.loading .ai-text{display:none;}
 
-/* Canvas grid */
-.canvas-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
-.canvas-quad{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
-.cq-hdr{padding:11px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:white;}
-.cq-hdr.green{background:var(--green);}
-.cq-hdr.amber{background:var(--amber);}
-.cq-hdr.blue {background:var(--blue);}
-.cq-hdr.slate{background:#37474F;}
-.cq-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:12px;}
-.cq-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:3px;}
-.cq-ta{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;
-  font-size:13px;font-family:inherit;line-height:1.65;resize:vertical;min-height:90px;background:white;}
-.cq-ta:focus{border-color:var(--green);outline:none;}
-.cq-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 12px;
-  font-size:13px;font-family:inherit;background:white;}
-.cq-input:focus{border-color:var(--green);outline:none;}
-
-/* OKR editor */
-.okr-list{display:flex;flex-direction:column;gap:10px;}
-.okr-item{background:var(--green-xl);border-radius:8px;padding:10px 12px;}
-.okr-obj-input{width:100%;border:1px solid var(--border);border-radius:5px;padding:7px 10px;
-  font-size:13px;font-weight:600;font-family:inherit;background:white;margin-bottom:7px;}
-.okr-obj-input:focus{border-color:var(--green);outline:none;}
-.okr-krs{display:flex;flex-direction:column;gap:5px;}
-.okr-kr-row{display:flex;align-items:center;gap:6px;}
-.okr-kr-label{font-size:11px;font-weight:700;color:var(--green);white-space:nowrap;}
-.okr-kr-input{flex:1;border:1px solid var(--border);border-radius:5px;padding:5px 9px;
-  font-size:12px;font-family:inherit;background:white;}
-.okr-kr-input:focus{border-color:var(--green);outline:none;}
-.okr-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;}
-.okr-del:hover{color:var(--red);}
-.add-okr-btn{font-size:12px;color:var(--green);background:none;border:none;cursor:pointer;font-weight:700;text-decoration:underline;margin-top:4px;}
-
-/* Preview */
-.preview-section{margin-top:12px;}
-.preview-toggle{background:none;border:1px solid var(--border);border-radius:7px;padding:8px 16px;
-  font-size:13px;cursor:pointer;color:var(--text);font-family:inherit;margin-bottom:14px;}
-.preview-toggle:hover{background:var(--green-xl);}
-.preview-card{background:white;border:2px solid var(--green);border-radius:14px;overflow:hidden;
-  display:none;font-size:13px;}
-.preview-card.show{display:block;}
-.pc-banner{background:var(--green);color:white;padding:16px 22px;}
-.pc-title{font-size:18px;font-weight:800;margin-bottom:2px;}
-.pc-sc{font-size:12px;opacity:.75;}
-.pc-grid{display:grid;grid-template-columns:1fr 1fr;}
-.pc-quad{padding:16px 20px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
-.pc-quad:nth-child(2n){border-right:none;}
-.pc-quad:nth-child(3),.pc-quad:nth-child(4){border-bottom:none;}
-.pc-qhdr{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
-.pc-qhdr.g{color:var(--green);}
-.pc-qhdr.a{color:var(--amber);}
-.pc-qhdr.b{color:var(--blue);}
-.pc-qhdr.s{color:#37474F;}
-.pc-body{font-size:12px;line-height:1.65;color:var(--text);white-space:pre-wrap;}
-.print-btn{background:var(--green);color:white;border:none;border-radius:7px;padding:8px 16px;
-  font-size:13px;font-weight:700;cursor:pointer;margin-top:12px;}
-.print-btn:hover{opacity:.88;}
+/* ── 6-panel canvas grid ── */
+.canvas-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
+.canvas-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;}
+.cp-hdr{padding:11px 16px;background:var(--green);display:flex;align-items:center;gap:10px;}
+.cp-num{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.6);
+  color:white;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cp-hdr-text{color:white;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;}
+.cp-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:14px;}
+.cp-field{display:flex;flex-direction:column;gap:4px;}
+.cp-q{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--green);}
+.cp-ta{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 11px;
+  font-size:13px;font-family:inherit;line-height:1.6;resize:vertical;min-height:72px;background:white;}
+.cp-ta:focus{border-color:var(--green);outline:none;}
 
 .proceed-wrap{margin-top:32px;padding-top:20px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap;}
 .proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:11px 22px;
@@ -128,15 +76,12 @@ body{padding-left:210px;}
 .proceed-btn.secondary{background:var(--amber);}
 
 @media print{
-  #phase-nav-bar,.back-link,.top-row,.ai-btn,.preview-toggle,.print-btn,.proceed-wrap{display:none!important;}
-  body{padding-top:0!important;}
-  .preview-card{display:block!important;border:none;}
-  .page{padding:0;}
+  #sidebar,.back-link,.top-row,.proceed-wrap{display:none!important;}
+  body{padding-left:0!important;}
+  .canvas-grid{gap:8px;}
 }
-@media(max-width:720px){
+@media(max-width:800px){
   .canvas-grid{grid-template-columns:1fr;}
-  .pc-grid{grid-template-columns:1fr;}
-  .pc-quad{border-right:none;}
 }
 </style>
 </head>
@@ -154,105 +99,173 @@ body{padding-left:210px;}
     <button class="sb-footer-btn" onclick="signOut()">Log out</button>
   </div>
 </div>
+
 <div class="page">
   <a href="phase3.html" class="back-link">← Back to Phase 3</a>
   <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-    <div class="page-title">Solution Concept Canvas</div>
+    <div class="page-title">3.1 — Solution Concept Canvas</div>
     <span class="save-badge" id="save-badge"></span>
   </div>
-  <div class="page-sub">Phase 3.3 — Summarise your solution in a single canvas</div>
+  <div class="page-sub">Phase 3 — Ideate · Capture your solution concept across six dimensions</div>
 
   <div class="top-row">
     <div class="top-field" style="flex:1;">
-      <label>Solution name</label>
-      <input id="sol-name" type="text" placeholder="e.g. Tea Fellas Digital — Operational Excellence & Expansion Readiness" oninput="scheduleSave();updatePreview()">
+      <label>Solution name / working title</label>
+      <input id="sol-name" type="text" placeholder="e.g. Tea Fellas Digital — Operational Excellence" oninput="scheduleSave()">
     </div>
     <div class="top-field">
       <label>Recommended scenario</label>
-      <select id="sc-sel" onchange="scheduleSave();updatePreview()">
+      <select id="sc-sel" onchange="scheduleSave()">
         <option value="">— Select —</option>
         <option value="A1">A1 — Basic digital</option>
         <option value="A2">A2 — Full integrated</option>
         <option value="B1">B1 — AMK Food Centre</option>
         <option value="B2">B2 — AMK Hub B1</option>
-        <option value="C1">C1 — Conservative ⭐</option>
+        <option value="C1">C1 — Conservative</option>
         <option value="C2">C2 — Aggressive</option>
       </select>
     </div>
-    <button class="ai-btn" id="ai-btn" onclick="generateAI()">
-      <span class="ai-spinner">⏳ </span><span class="ai-text">✨ Generate with AI</span>
-    </button>
   </div>
 
   <div class="canvas-grid">
-    <!-- Q1 Vision -->
-    <div class="canvas-quad">
-      <div class="cq-hdr green">Q1 — Product Vision</div>
-      <div class="cq-body">
-        <div>
-          <div class="cq-label">Vision Statement</div>
-          <textarea class="cq-ta" id="q1-vision" rows="5" placeholder="What is the future state Tea Fellas is designing towards?" oninput="scheduleSave();updatePreview()"></textarea>
-        </div>
-        <div>
-          <div class="cq-label">Designed for</div>
-          <input class="cq-input" id="q1-for" type="text" placeholder="e.g. Aunty Mary, Darren, Uncle John; Mrs Selva, Jacky" oninput="scheduleSave();updatePreview()">
-        </div>
-      </div>
-    </div>
 
-    <!-- Q2 OKRs -->
-    <div class="canvas-quad">
-      <div class="cq-hdr amber">Q2 — Success Metrics / OKRs</div>
-      <div class="cq-body">
-        <div class="okr-list" id="okr-list"></div>
-        <button class="add-okr-btn" onclick="addOKR()">+ Add OKR</button>
+    <!-- Panel 1: Customer Need -->
+    <div class="canvas-panel">
+      <div class="cp-hdr">
+        <div class="cp-num">1</div>
+        <span class="cp-hdr-text">Customer Need</span>
       </div>
-    </div>
-
-    <!-- Q3 Features -->
-    <div class="canvas-quad">
-      <div class="cq-hdr blue">Q3 — Key Features</div>
-      <div class="cq-body">
-        <div>
-          <div class="cq-label">Feature list (one per line; group by phase)</div>
-          <textarea class="cq-ta" id="q3-features" rows="8" placeholder="Phase A — Digital Order Flow (Month 1–3)&#10;· QR code ordering&#10;· Kitchen display for Darren&#10;&#10;Phase B — Customer Loyalty (Month 3–6)&#10;· Digital loyalty programme" oninput="scheduleSave();updatePreview()"></textarea>
+      <div class="cp-body">
+        <div class="cp-field">
+          <div class="cp-q">What is the core problem or unmet need?</div>
+          <textarea class="cp-ta" id="p1-problem" oninput="scheduleSave()" placeholder="Describe the fundamental problem customers face…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">What evidence do we have?</div>
+          <textarea class="cp-ta" id="p1-evidence" oninput="scheduleSave()" placeholder="Research, observations, data points that confirm this need…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">Who experiences this most acutely?</div>
+          <textarea class="cp-ta" id="p1-who" oninput="scheduleSave()" placeholder="Primary persona(s) most affected…"></textarea>
         </div>
       </div>
     </div>
 
-    <!-- Q4 Risk Summary -->
-    <div class="canvas-quad">
-      <div class="cq-hdr slate">Q4 — Risk Summary</div>
-      <div class="cq-body">
-        <div>
-          <div class="cq-label">Key risks and mitigations (one per line)</div>
-          <textarea class="cq-ta" id="q4-risks" rows="8" placeholder="Risk: Mary/John resistance to digital change — Mitigation: Simplest possible interface; 2-week parallel run&#10;Risk: Upfront cost ($25K) strains surplus — Mitigation: Apply for SME Go Digital grant" oninput="scheduleSave();updatePreview()"></textarea>
+    <!-- Panel 2: Value Proposition -->
+    <div class="canvas-panel">
+      <div class="cp-hdr">
+        <div class="cp-num">2</div>
+        <span class="cp-hdr-text">Value Proposition</span>
+      </div>
+      <div class="cp-body">
+        <div class="cp-field">
+          <div class="cp-q">What do customers get from this solution?</div>
+          <textarea class="cp-ta" id="p2-get" oninput="scheduleSave()" placeholder="Tangible benefits and gains for the customer…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">How does it directly answer their need?</div>
+          <textarea class="cp-ta" id="p2-answer" oninput="scheduleSave()" placeholder="The link between customer need and this solution…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">Why would they choose this over alternatives?</div>
+          <textarea class="cp-ta" id="p2-switch" oninput="scheduleSave()" placeholder="Differentiators / reasons to switch…"></textarea>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Preview -->
-  <div class="preview-section">
-    <button class="preview-toggle" onclick="togglePreview()">👁 Toggle print preview</button>
-    <div class="preview-card" id="preview-card">
-      <div class="pc-banner">
-        <div class="pc-title" id="pv-title">Solution Concept Canvas</div>
-        <div class="pc-sc" id="pv-sc"></div>
+    <!-- Panel 3: Solution Overview -->
+    <div class="canvas-panel">
+      <div class="cp-hdr">
+        <div class="cp-num">3</div>
+        <span class="cp-hdr-text">Solution Overview</span>
       </div>
-      <div class="pc-grid">
-        <div class="pc-quad"><div class="pc-qhdr g">Product Vision</div><div class="pc-body" id="pv-vision"></div></div>
-        <div class="pc-quad"><div class="pc-qhdr a">Success Metrics / OKRs</div><div class="pc-body" id="pv-okrs"></div></div>
-        <div class="pc-quad"><div class="pc-qhdr b">Key Features</div><div class="pc-body" id="pv-features"></div></div>
-        <div class="pc-quad"><div class="pc-qhdr s">Risk Summary</div><div class="pc-body" id="pv-risks"></div></div>
+      <div class="cp-body">
+        <div class="cp-field">
+          <div class="cp-q">What are we proposing to build or change?</div>
+          <textarea class="cp-ta" id="p3-proposing" oninput="scheduleSave()" placeholder="High-level description of the solution…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">How does it meet the need identified?</div>
+          <textarea class="cp-ta" id="p3-meets" oninput="scheduleSave()" placeholder="Mechanism by which the solution addresses the need…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">What is explicitly out of scope?</div>
+          <textarea class="cp-ta" id="p3-out" oninput="scheduleSave()" placeholder="Boundaries — what this solution will NOT do…"></textarea>
+        </div>
       </div>
     </div>
-    <button class="print-btn" onclick="window.print()">🖨 Print / Save as PDF</button>
-  </div>
+
+    <!-- Panel 4: Key Features -->
+    <div class="canvas-panel">
+      <div class="cp-hdr">
+        <div class="cp-num">4</div>
+        <span class="cp-hdr-text">Key Features</span>
+      </div>
+      <div class="cp-body">
+        <div class="cp-field">
+          <div class="cp-q">Must have (Day 1 essentials)</div>
+          <textarea class="cp-ta" id="p4-must" oninput="scheduleSave()" placeholder="Core features required for launch…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">Nice to have (Phase 2+)</div>
+          <textarea class="cp-ta" id="p4-nice" oninput="scheduleSave()" placeholder="Valuable but not critical for initial release…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">Release / go-live criteria</div>
+          <textarea class="cp-ta" id="p4-release" oninput="scheduleSave()" placeholder="Definition of done — what conditions must be met before launch…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 5: Expected Outcomes -->
+    <div class="canvas-panel">
+      <div class="cp-hdr">
+        <div class="cp-num">5</div>
+        <span class="cp-hdr-text">Expected Outcomes</span>
+      </div>
+      <div class="cp-body">
+        <div class="cp-field">
+          <div class="cp-q">What changes for the customer?</div>
+          <textarea class="cp-ta" id="p5-them" oninput="scheduleSave()" placeholder="Improvements in customer experience, behaviour, or satisfaction…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">What changes for the business?</div>
+          <textarea class="cp-ta" id="p5-us" oninput="scheduleSave()" placeholder="Operational, financial, or strategic improvements for Tea Fellas…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">How does this connect to the long-term vision?</div>
+          <textarea class="cp-ta" id="p5-vision" oninput="scheduleSave()" placeholder="Link to Tea Fellas' strategic direction…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 6: Success Measures -->
+    <div class="canvas-panel">
+      <div class="cp-hdr">
+        <div class="cp-num">6</div>
+        <span class="cp-hdr-text">Success Measures</span>
+      </div>
+      <div class="cp-body">
+        <div class="cp-field">
+          <div class="cp-q">What will we measure?</div>
+          <textarea class="cp-ta" id="p6-measures" oninput="scheduleSave()" placeholder="KPIs and metrics that indicate success…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">What are our targets?</div>
+          <textarea class="cp-ta" id="p6-targets" oninput="scheduleSave()" placeholder="Specific, time-bound targets for each measure…"></textarea>
+        </div>
+        <div class="cp-field">
+          <div class="cp-q">How and when will we check progress?</div>
+          <textarea class="cp-ta" id="p6-check" oninput="scheduleSave()" placeholder="Review cadence, checkpoints, and accountability…"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /canvas-grid -->
 
   <div class="proceed-wrap">
     <a href="phase3.html" class="proceed-btn">← Back to Phase 3 overview</a>
-    <a href="phase3.html#phase-gate" class="proceed-btn secondary">Mark Phase 3 complete →</a>
+    <a href="phase3-roadmap.html" class="proceed-btn secondary">Next: Product Roadmap →</a>
   </div>
 </div>
 
@@ -268,119 +281,52 @@ if (!teamCode) location.href = 'index.html';
 
 let phaseGates = {1:false,2:false,3:false,4:false};
 let saveTimer = null;
-let okrs = [
-  {objective:'Eliminate operational errors',kr1:'Reduce order error rate from ~15% to <3% within 6 months',kr2:'Reduce Darren\'s chit interruptions to zero within 3 months'},
-  {objective:'Improve customer experience',kr1:'Reduce peak-hour wait from 25 min to <10 min within 6 months',kr2:'Enrol 200+ active digital loyalty members within 3 months'},
-  {objective:'Build foundation for expansion',kr1:'Toa Payoh running on digital flow for 6+ months before second outlet opens',kr2:'Darren able to run AMK outlet independently within 12 months'},
-];
 
-function renderOKRs() {
-  document.getElementById('okr-list').innerHTML = okrs.map((o,i) => `
-    <div class="okr-item">
-      <input class="okr-obj-input" placeholder="Objective…" value="${esc(o.objective)}" oninput="okrs[${i}].objective=this.value;scheduleSave();updatePreview()">
-      <div class="okr-krs">
-        <div class="okr-kr-row"><span class="okr-kr-label">KR1</span><input class="okr-kr-input" placeholder="Key result 1…" value="${esc(o.kr1)}" oninput="okrs[${i}].kr1=this.value;scheduleSave();updatePreview()"></div>
-        <div class="okr-kr-row"><span class="okr-kr-label">KR2</span><input class="okr-kr-input" placeholder="Key result 2…" value="${esc(o.kr2)}" oninput="okrs[${i}].kr2=this.value;scheduleSave();updatePreview()">
-          <button class="okr-del" onclick="okrs.splice(${i},1);renderOKRs();scheduleSave();updatePreview()">×</button></div>
-      </div>
-    </div>`).join('');
-}
-function addOKR() {
-  okrs.push({objective:'',kr1:'',kr2:''});
-  renderOKRs(); scheduleSave();
-}
-function esc(s){return(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+const FIELDS = ['p1-problem','p1-evidence','p1-who','p2-get','p2-answer','p2-switch',
+  'p3-proposing','p3-meets','p3-out','p4-must','p4-nice','p4-release',
+  'p5-them','p5-us','p5-vision','p6-measures','p6-targets','p6-check'];
 
-function updatePreview() {
-  const name = document.getElementById('sol-name').value || 'Solution Concept Canvas';
-  const sc   = document.getElementById('sc-sel').value;
-  document.getElementById('pv-title').textContent = name;
-  document.getElementById('pv-sc').textContent = sc ? `Recommended scenario: ${sc}` : '';
-  document.getElementById('pv-vision').textContent = (document.getElementById('q1-vision').value||'') + (document.getElementById('q1-for').value ? `\n\nDesigned for: ${document.getElementById('q1-for').value}` : '');
-  document.getElementById('pv-okrs').textContent = okrs.map((o,i)=>`Obj ${i+1}: ${o.objective}\n  KR1: ${o.kr1}\n  KR2: ${o.kr2}`).join('\n\n');
-  document.getElementById('pv-features').textContent = document.getElementById('q3-features').value;
-  document.getElementById('pv-risks').textContent    = document.getElementById('q4-risks').value;
-}
-
-function togglePreview() {
-  updatePreview();
-  document.getElementById('preview-card').classList.toggle('show');
-}
-
-// AI generate
-async function generateAI() {
-  const sc = document.getElementById('sc-sel').value || 'C1';
-  const btn = document.getElementById('ai-btn');
-  btn.disabled = true; btn.classList.add('loading');
-  const prompt = `You are helping workshop participants complete a Solution Concept Canvas for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Their recommended scenario is ${sc}. The 9 pain points are: handwriting errors causing order mistakes, no pre-ordering so everyone queues, memory-based drink collection causing wrong handouts, no customer notifications, paper loyalty stamp cards, bulk order labelling confusion, single barista bottleneck, no feedback mechanism, supply chain cannot scale to a second outlet. Generate the 4 canvas sections as a JSON object with keys: vision (2-3 sentences, specific to Tea Fellas and scenario ${sc}), designed_for (short list of personas), okrs (array of 3 objects each with keys objective, kr1, kr2 as strings), features (multiline string grouping features by phase like "Phase A — Digital Order Flow (Month 1-3)\\n· Feature\\n· Feature"), risks_summary (multiline string, one risk per line as "Risk: X — Mitigation: Y"). Return ONLY valid JSON, no markdown, no explanation.`;
-  try {
-    const resp = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,
-        messages:[{role:'user',content:prompt}]})});
-    const data = await resp.json();
-    const raw = data.content?.[0]?.text || '';
-    const json = JSON.parse(raw.replace(/```json?|```/g,'').trim());
-    if (json.vision)         document.getElementById('q1-vision').value   = json.vision;
-    if (json.designed_for)   document.getElementById('q1-for').value      = json.designed_for;
-    if (json.okrs?.length)   { okrs = json.okrs; renderOKRs(); }
-    if (json.features)       document.getElementById('q3-features').value = json.features;
-    if (json.risks_summary)  document.getElementById('q4-risks').value    = json.risks_summary;
-    updatePreview(); scheduleSave();
-  } catch(e){ alert('AI generation failed — check your connection and try again.'); }
-  btn.disabled = false; btn.classList.remove('loading');
-}
-
-// Save/load
 function scheduleSave() {
   clearTimeout(saveTimer);
   setBadge('saving');
   saveTimer = setTimeout(saveData, 1500);
 }
 function setBadge(state) {
-  const b=document.getElementById('save-badge');
-  b.className=`save-badge ${state} show`;
-  b.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
-  if(state==='saved') setTimeout(()=>b.classList.remove('show'),2500);
+  const b = document.getElementById('save-badge');
+  b.className = `save-badge ${state} show`;
+  b.textContent = state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
+  if (state==='saved') setTimeout(()=>b.classList.remove('show'), 2500);
 }
 async function saveData() {
-  const content = {
-    scenario: document.getElementById('sc-sel').value,
-    solution_name: document.getElementById('sol-name').value,
-    vision: document.getElementById('q1-vision').value,
-    designed_for: document.getElementById('q1-for').value,
-    okrs, features: document.getElementById('q3-features').value,
-    risks_summary: document.getElementById('q4-risks').value,
-  };
+  const content = { solution_name: document.getElementById('sol-name').value, scenario: document.getElementById('sc-sel').value };
+  FIELDS.forEach(id => { content[id.replace(/-/g,'_')] = document.getElementById(id).value; });
   try {
-    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},
+    const r = await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({team_code:teamCode,deliverable_id:DEL_ID,content})});
     setBadge(r.ok?'saved':'error');
-  } catch(_){setBadge('error');}
+  } catch(_){ setBadge('error'); }
 }
 async function loadData() {
   try {
-    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=${DEL_ID}`);
-    const d=await r.json();
-    const c=d.deliverables?.[DEL_ID]?.content;
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=${DEL_ID}`);
+    const d = await r.json();
+    const c = d.deliverables?.[DEL_ID]?.content;
     if (c) {
-      if (c.solution_name)  document.getElementById('sol-name').value    = c.solution_name;
-      if (c.scenario)       document.getElementById('sc-sel').value      = c.scenario;
-      if (c.vision)         document.getElementById('q1-vision').value   = c.vision;
-      if (c.designed_for)   document.getElementById('q1-for').value      = c.designed_for;
-      if (c.okrs?.length)   { okrs = c.okrs; }
-      if (c.features)       document.getElementById('q3-features').value = c.features;
-      if (c.risks_summary)  document.getElementById('q4-risks').value    = c.risks_summary;
+      if (c.solution_name) document.getElementById('sol-name').value = c.solution_name;
+      if (c.scenario)      document.getElementById('sc-sel').value   = c.scenario;
+      FIELDS.forEach(id => {
+        const key = id.replace(/-/g,'_');
+        if (c[key]) document.getElementById(id).value = c[key];
+      });
     }
   } catch(_){}
-  renderOKRs(); updatePreview();
 }
 
-// Phase nav
 async function loadPhaseGates() {
   try {
-    const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
-    const d=await r.json();
-    if(d.gates) phaseGates={...phaseGates,...d.gates};
+    const r = await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d = await r.json();
+    if (d.gates) phaseGates = {...phaseGates,...d.gates};
   } catch(_){}
 }
 function signOut() {
