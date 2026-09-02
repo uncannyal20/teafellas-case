@@ -389,6 +389,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Reset session
       </button>
+      <button class="sidebar-nav-btn" id="nav-logout" onclick="logOut()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Log out
+      </button>
     </div>
   </div>
 
@@ -718,6 +722,22 @@ function confirmReset() {
   state.synPain = ''; state.synProblem = ''; state.synVision = '';
   state.currentPersona = null;
   state.declarationDone = false;
+  showPhase1();
+}
+
+function logOut() {
+  sessionStorage.removeItem('teafellas_team_code');
+  state.teamCode = '';
+  PERSONAS.forEach(p => {
+    state.histories[p.id] = [];
+    if (state.timerIntervals[p.id]) clearInterval(state.timerIntervals[p.id]);
+    state.timers[p.id] = { seconds: 15 * 60, running: false };
+    state.summaries[p.id] = null;
+  });
+  state.currentPersona = null;
+  state.declarationDone = false;
+  document.getElementById('tc-input').value = '';
+  document.getElementById('team-code-overlay').classList.remove('hidden');
   showPhase1();
 }
 
@@ -1541,8 +1561,8 @@ function renderAsIsDoc() {
   el.innerHTML = `
     <div class="asis-doc">
       <div class="asis-doc-header">
-        <div class="asis-doc-title">Tea Fellas, Toa Payoh — Current State of Operations</div>
-        <div class="asis-doc-sub">As at 2025. All figures are estimates based on field observations.</div>
+        <div class="asis-doc-title">Tea Fellas, Toa Payoh — Current State of Business</div>
+        <div class="asis-doc-sub">As at 2025. Reference document for your research phase.</div>
       </div>
       <div class="asis-doc-body">
         <div>
@@ -1555,16 +1575,18 @@ function renderAsIsDoc() {
           </div>
         </div>
         <div>
-          <div class="asis-section-title">Current Order Flow (As-Is Process)</div>
+          <div class="asis-section-title">Monthly Financials (Estimated)</div>
           <table class="asis-table">
-            <thead><tr><th>Step</th><th>Who</th><th>How</th><th>Known Issues</th></tr></thead>
+            <thead><tr><th>Item</th><th>Monthly (SGD)</th><th>Notes</th></tr></thead>
             <tbody>
-              <tr><td>1. Customer orders</td><td>Aunty Mary (cashier)</td><td>Verbal — Mary handwrites chit</td><td>Errors when busy; unclear handwriting</td></tr>
-              <tr><td>2. Chit to system</td><td>Barista A</td><td>Keys handwritten chit into tablet; prints sticker</td><td>Delay step; misread chits cause wrong orders</td></tr>
-              <tr><td>3. Drinks prepared</td><td>Darren (barista)</td><td>Makes all drinks manually</td><td>Peak hour overwhelm; unclear chits break flow</td></tr>
-              <tr><td>4. Cups labelled</td><td>Barista A → Barista C</td><td>Sticker applied; cup wiped; passed to counter</td><td>Labels sometimes hard to read at collection</td></tr>
-              <tr><td>5. Collection</td><td>Uncle John</td><td>Calls out names / order numbers from memory</td><td>No ticketing system; confusion for bulk orders</td></tr>
-              <tr><td>6. Payment</td><td>Aunty Mary</td><td>Cash or PayNow; no POS; no receipt issued</td><td>No digital record; no order history</td></tr>
+              <tr><td><strong>Revenue</strong></td><td>~$30,000</td><td>~250 orders/day × avg $4.80 × 25 operating days</td></tr>
+              <tr><td>Ingredients &amp; supplies</td><td>~$9,000</td><td>~30% of revenue; rising due to fuel pass-throughs from supplier</td></tr>
+              <tr><td>Staff wages</td><td>~$8,500</td><td>2 full-time (John &amp; Mary draw modest salary); 3 part-time</td></tr>
+              <tr><td>Rental (HDB commercial)</td><td>~$3,200</td><td>Subsidised HDB rate; below market</td></tr>
+              <tr><td>Utilities</td><td>~$800</td><td>Electricity (fridges, equipment), water</td></tr>
+              <tr><td>Misc (packaging, maintenance)</td><td>~$600</td><td>Cups, straws, serviettes, small repairs</td></tr>
+              <tr><td><strong>Total Operating Costs</strong></td><td><strong>~$22,100</strong></td><td></td></tr>
+              <tr><td><strong>Estimated Net Profit</strong></td><td><strong>~$7,900</strong></td><td>~26% margin — healthy for F&amp;B, but thinning with cost increases</td></tr>
             </tbody>
           </table>
         </div>
@@ -1577,20 +1599,9 @@ function renderAsIsDoc() {
               <tr><td>Delivery</td><td>Fixed weekly delivery on Wednesday — same items, same quantities</td></tr>
               <tr><td>Inventory</td><td>No system. John estimates by eye. No stockout issues at current scale</td></tr>
               <tr><td>Supplier relationship</td><td>30-year relationship. John will not switch even if cheaper alternatives exist</td></tr>
-              <tr><td>Cost pressure</td><td>Ingredient costs rising (fuel pass-through). John absorbs quietly; has not raised prices</td></tr>
+              <tr><td>Cost pressure</td><td>Ingredient costs rising (fuel pass-through). John absorbs quietly; has not raised prices to customers</td></tr>
             </tbody>
           </table>
-        </div>
-        <div>
-          <div class="asis-section-title">Key Pain Points Observed</div>
-          <div class="asis-pain-list">
-            <div class="asis-pain-item">Manual paper-based ordering creates errors and slows down peak-hour throughput</div>
-            <div class="asis-pain-item">No pre-ordering or phone ordering means customers must queue in person</div>
-            <div class="asis-pain-item">Bulk orders (e.g. office teams) are particularly painful — verbal recitation, no labelling by person</div>
-            <div class="asis-pain-item">No receipts or digital records — customers cannot track orders; shop cannot analyse demand</div>
-            <div class="asis-pain-item">Rising ingredient costs silently eroding margins; no pricing strategy in place</div>
-            <div class="asis-pain-item">Expansion risk: one-supplier, one-outlet model cannot scale to a second outlet without operational overhaul</div>
-          </div>
         </div>
       </div>
     </div>`;
