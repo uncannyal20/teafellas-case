@@ -1268,6 +1268,10 @@ function selectTeam(code) {
   state.teamCode = code;
   sessionStorage.setItem('teafellas_team_code', code);
   document.getElementById('team-code-overlay').classList.add('hidden');
+  fetch(`${API_URL}/register-team`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ team_code: code })
+  }).catch(() => {});
   loadTeamSession().then(() => showPhase1());
 }
 
@@ -1296,9 +1300,8 @@ async function loadTeamSession() {
       }
     }
     if (gateResp.ok) {
-      const gates = await gateResp.json();
-      const completed = (gates.phases || []).map(Number);
-      if (completed.includes(1)) state.declarationDone = true;
+      const { gates } = await gateResp.json();
+      if (gates && gates[1]) state.declarationDone = true;
     }
   } catch (e) {
     console.warn('Could not load session:', e);
