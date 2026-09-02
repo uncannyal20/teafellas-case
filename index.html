@@ -296,6 +296,7 @@
   .pnav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
   .pnav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
   .pnav-btn.locked { opacity: 0.4; cursor: not-allowed; }
+  .pnav-btn.done { color: rgba(255,255,255,0.9); border-left-color: #4CAF50; }
   .pnav-icon { font-size: 14px; flex-shrink: 0; }
   .pnav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--tea-amber); color: #fff; border-radius: 10px; padding: 1px 6px; flex-shrink: 0; }
 
@@ -734,7 +735,8 @@ const state = {
   summaries: {},
   synPain: '', synProblem: '', synVision: '',
   teamCode: '',
-  declarationDone: false
+  declarationDone: false,
+  phaseGates: { 1: false, 2: false, 3: false, 4: false }
 };
 
 PERSONAS.forEach(p => {
@@ -799,29 +801,42 @@ function renderPhaseNavList() {
   const inPhase1 = ['phase1', 'chat', 'summary'].includes(state.view);
   el.innerHTML = '';
 
+  // Phase 1 — always accessible
   const p1 = document.createElement('button');
-  p1.className = 'pnav-btn' + (inPhase1 ? ' active' : '');
-  p1.innerHTML = `<span class="pnav-icon">🔍</span> Phase 1 — Research` +
+  p1.className = 'pnav-btn' + (inPhase1 ? ' active' : (state.phaseGates[1] ? ' done' : ''));
+  p1.innerHTML = `<span class="pnav-icon">${state.phaseGates[1] && !inPhase1 ? '✓' : '🔍'}</span> Phase 1 — Research` +
     (doneCount > 0 ? `<span class="pnav-badge">${doneCount}/5</span>` : '');
   p1.onclick = () => showPhase1();
   el.appendChild(p1);
 
+  // Phase 2 — unlock when P1 declared
   const p2 = document.createElement('button');
-  const p2locked = !state.declarationDone;
-  p2.className = 'pnav-btn' + (p2locked ? ' locked' : '');
-  p2.title = p2locked ? 'Complete Phase 1 declaration to unlock' : '';
-  p2.innerHTML = `<span class="pnav-icon">📋</span> Phase 2 — Define`;
-  p2.onclick = () => { if (!p2locked) window.location.href = 'phase2.html'; };
+  const p2done = state.phaseGates[2];
+  const p2unlocked = state.declarationDone;
+  p2.className = 'pnav-btn' + (p2done ? ' done' : p2unlocked ? '' : ' locked');
+  p2.title = !p2unlocked ? 'Complete Phase 1 declaration to unlock' : '';
+  p2.innerHTML = `<span class="pnav-icon">${p2done ? '✓' : '📋'}</span> Phase 2 — Define`;
+  p2.onclick = () => { if (p2unlocked) window.location.href = 'phase2.html'; };
   el.appendChild(p2);
 
+  // Phase 3 — unlock when P2 complete
   const p3 = document.createElement('button');
-  p3.className = 'pnav-btn locked';
-  p3.innerHTML = `<span class="pnav-icon">💡</span> Phase 3 — Ideate`;
+  const p3done = state.phaseGates[3];
+  const p3unlocked = state.phaseGates[2];
+  p3.className = 'pnav-btn' + (p3done ? ' done' : p3unlocked ? '' : ' locked');
+  p3.title = !p3unlocked ? 'Complete Phase 2 to unlock' : '';
+  p3.innerHTML = `<span class="pnav-icon">${p3done ? '✓' : '💡'}</span> Phase 3 — Ideate`;
+  p3.onclick = () => { if (p3unlocked) window.location.href = 'phase3.html'; };
   el.appendChild(p3);
 
+  // Phase 4 — unlock when P3 complete
   const p4 = document.createElement('button');
-  p4.className = 'pnav-btn locked';
-  p4.innerHTML = `<span class="pnav-icon">🚀</span> Phase 4 — Build`;
+  const p4done = state.phaseGates[4];
+  const p4unlocked = state.phaseGates[3];
+  p4.className = 'pnav-btn' + (p4done ? ' done' : p4unlocked ? '' : ' locked');
+  p4.title = !p4unlocked ? 'Complete Phase 3 to unlock' : '';
+  p4.innerHTML = `<span class="pnav-icon">${p4done ? '✓' : '🚀'}</span> Phase 4 — Validate`;
+  p4.onclick = () => { if (p4unlocked) window.location.href = 'phase4.html'; };
   el.appendChild(p4);
 }
 
@@ -1301,7 +1316,10 @@ async function loadTeamSession() {
     }
     if (gateResp.ok) {
       const { gates } = await gateResp.json();
-      if (gates && gates[1]) state.declarationDone = true;
+      if (gates) {
+        if (gates[1]) state.declarationDone = true;
+        state.phaseGates = { 1: !!gates[1], 2: !!gates[2], 3: !!gates[3], 4: !!gates[4] };
+      }
     }
   } catch (e) {
     console.warn('Could not load session:', e);
@@ -1729,6 +1747,7 @@ async function saveDeclaration() {
 
 async function markPhaseComplete(phase) {
   if (!state.teamCode) return;
+  state.phaseGates[phase] = true;
   try {
     await fetch(`${API_URL}/phase-gates`, {
       method: 'POST',
