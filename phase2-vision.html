@@ -200,7 +200,7 @@ const CURRENT_PHASE=2;
 const PHASE_PAGES={1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
 const PHASE_LABELS={1:'Research',2:'Define',3:'Ideate',4:'Validate'};
 
-const teamCode=localStorage.getItem('teafellas_team_code');
+const teamCode=sessionStorage.getItem('teafellas_team_code');
 if(!teamCode){location.href='index.html';}
 
 let phaseGates={1:false,2:false,3:false,4:false};
@@ -284,7 +284,7 @@ function renderPhaseNav(){
     const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
     return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
   }).join('');
-  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span><div class="pnb-phases">${phases}</div><div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span><div class="pnb-phases">${phases}</div><div class="pnb-right"><button class="pnb-logout" onclick="sessionStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
 }
 
 async function init(){

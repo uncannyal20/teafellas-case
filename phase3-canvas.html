@@ -250,7 +250,7 @@ const PHASE_PAGES  = {1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.h
 const PHASE_LABELS = {1:'Research',2:'Define',3:'Ideate',4:'Validate'};
 const DEL_ID = 'solution_canvas';
 
-let teamCode = localStorage.getItem('teafellas_team_code');
+let teamCode = sessionStorage.getItem('teafellas_team_code');
 if (!teamCode) location.href = 'index.html';
 
 let phaseGates = {1:false,2:false,3:false,4:false};
@@ -385,7 +385,7 @@ function renderPhaseNav() {
   }).join('');
   bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
     <div class="pnb-phases">${ph}</div>
-    <div class="pnb-right"><button class="pnb-logout" onclick="localStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
+    <div class="pnb-right"><button class="pnb-logout" onclick="sessionStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
 }
 
 loadPhaseGates().then(()=>{ renderPhaseNav(); loadData(); });
