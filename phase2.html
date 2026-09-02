@@ -14,39 +14,31 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--cream); color: var(--text); }
-body.has-phase-nav { padding-top: 46px; }
+body { padding-left: 210px; }
 
-/* ── Phase nav bar (shared) ── */
-#phase-nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
-  background: #1E3D1A; display: flex; align-items: center;
-  padding: 0 18px; gap: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-#phase-nav-bar.pnb-hidden { display: none; }
-.pnb-brand { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9);
-  letter-spacing: 0.3px; white-space: nowrap; margin-right: 18px; }
-.pnb-team  { font-size: 11px; font-weight: 700; color: #E8A94A;
-  background: rgba(193,122,42,0.25); border-radius: 4px; padding: 2px 7px;
-  margin-left: 8px; letter-spacing: 0.5px; }
-.pnb-phases { display: flex; align-items: center; flex: 1; }
-.pnb-phase { display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 46px;
-  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.38); cursor: default;
-  white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.15s; text-decoration: none; }
-.pnb-phase.pnb-active { color: white; border-bottom-color: #E8A94A; }
-.pnb-phase.pnb-done   { color: rgba(255,255,255,0.75); border-bottom-color: #4CAF50; cursor: pointer; }
-.pnb-phase.pnb-done:hover { background: rgba(255,255,255,0.07); }
-.pnb-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.pnb-phase.pnb-locked .pnb-num { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
-.pnb-phase.pnb-active .pnb-num { background: #C17A2A; color: white; }
-.pnb-phase.pnb-done   .pnb-num { background: #4CAF50; color: white; }
-.pnb-sep { color: rgba(255,255,255,0.2); font-size: 14px; padding: 0 2px; }
-.pnb-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-.pnb-logout { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: none;
-  cursor: pointer; padding: 4px 8px; border-radius: 4px; }
-.pnb-logout:hover { color: white; background: rgba(255,255,255,0.1); }
+/* ── Sidebar ── */
+#sidebar{position:fixed;top:0;left:0;bottom:0;width:210px;background:#2D5A27;display:flex;flex-direction:column;z-index:100;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12);}
+.sb-brand-name{font-size:15px;font-weight:900;color:white;letter-spacing:-.01em;display:block;}
+.sb-team-badge{font-size:10px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.3);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;}
+#sb-nav{padding:10px 8px;flex:1;}
+.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);padding:0 8px;margin-bottom:6px;display:block;}
+.pnav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;font-weight:600;text-align:left;text-decoration:none;margin-bottom:2px;transition:background .15s;box-sizing:border-box;}
+.pnav-btn:hover{background:rgba(255,255,255,.08);}
+.pnav-btn.p-active{background:rgba(255,255,255,.18);color:white;}
+.pnav-btn.p-done{color:rgba(255,255,255,.82);}
+.pnav-btn.p-locked{cursor:default;pointer-events:none;opacity:.5;}
+.pnav-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
+.pnav-btn.p-active .pnav-badge{background:#C17A2A;color:white;}
+.pnav-btn.p-done .pnav-badge{background:#4CAF50;color:white;}
+.pnav-btn.p-locked .pnav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.4);}
+#sb-footer{padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.12);}
+.sb-footer-btn{display:block;width:100%;padding:8px 10px;border:none;background:none;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;text-align:left;cursor:pointer;}
+.sb-footer-btn:hover{background:rgba(255,255,255,.08);color:white;}
 
 /* ── Lock screen ── */
 #lock-screen { display: flex; align-items: center; justify-content: center;
-  min-height: calc(100vh - 46px); }
+  min-height: 100vh; }
 .lock-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
   padding: 48px 40px; text-align: center; max-width: 460px; width: 90%; }
 .lock-icon { font-size: 48px; margin-bottom: 16px; }
@@ -118,6 +110,30 @@ body.has-phase-nav { padding-top: 46px; }
   align-items: center; justify-content: center; flex-shrink: 0; }
 .cs-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 6px 0; }
 
+/* ── RICE Table ── */
+.rice-wrap { overflow-x: auto; margin: 0 -2px; }
+.rice-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 680px; }
+.rice-table th { background: var(--green); color: white; padding: 8px 10px; text-align: left;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+.rice-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.rice-table tr:last-child td { border-bottom: none; }
+.rice-table tr:hover td { background: var(--cream); }
+.rice-num { color: var(--muted); font-size: 11px; font-weight: 700; text-align: center; }
+.rice-prob { font-size: 12px; color: var(--text); line-height: 1.45; font-weight: 500; }
+.rice-input { width: 66px; border: 1px solid var(--border); border-radius: 5px; padding: 5px 6px;
+  font-size: 12px; font-family: inherit; text-align: center; background: white; }
+.rice-input:focus { border-color: var(--green); outline: none; }
+.rice-select { border: 1px solid var(--border); border-radius: 5px; padding: 4px 5px;
+  font-size: 12px; font-family: inherit; background: white; width: 100%; }
+.rice-select:focus { border-color: var(--green); outline: none; }
+.rice-score { font-size: 13px; font-weight: 800; color: var(--green); text-align: center; }
+.rice-score.empty { color: var(--muted); font-weight: 400; font-style: italic; }
+.rice-rank { text-align: center; }
+.rice-rank-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px;
+  font-weight: 700; background: var(--green-xl); color: var(--green); white-space: nowrap; }
+.rice-rank-badge.rank-1 { background: #FFF3E0; color: #E65100; }
+.rice-save-row { padding: 10px 0 2px; display: flex; align-items: center; gap: 10px; }
+
 /* ── Phase gate ── */
 .phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
   padding: 24px 28px; margin-top: 40px; }
@@ -146,7 +162,19 @@ body.has-phase-nav { padding-top: 46px; }
 </head>
 <body>
 
-<div id="phase-nav-bar" class="pnb-hidden"></div>
+<div id="sidebar">
+  <div class="sb-brand">
+    <span class="sb-brand-name">Tea Fellas</span>
+    <span class="sb-team-badge" id="sb-team-code">—</span>
+  </div>
+  <nav id="sb-nav">
+    <span class="sb-nav-label">Phases</span>
+    <div id="sb-phase-list"></div>
+  </nav>
+  <div id="sb-footer">
+    <button class="sb-footer-btn" onclick="signOut()">Log out</button>
+  </div>
+</div>
 
 <div id="lock-screen">
   <div class="lock-box">
@@ -170,16 +198,34 @@ body.has-phase-nav { padding-top: 46px; }
     <div class="learning-note-body">Refer back to your interview summaries in the <a href="index.html" style="color:var(--amber);font-weight:700;">Research phase →</a> as evidence for everything you write below.</div>
   </div>
 
-  <!-- Section 1: Pain Points Prioritisation -->
+  <!-- Section 2.1: Problem Prioritisation — RICE -->
   <div class="content-section">
     <div class="cs-hdr">
-      <span class="cs-hdr-title">2.1 — Pain Point Prioritisation</span>
-      <a href="phase2-prioritise.html" class="cs-hdr-link">Full 2×2 matrix editor ↗</a>
+      <span class="cs-hdr-title">2.1 — Problem Prioritisation (RICE)</span>
     </div>
     <div class="cs-body">
-      <div class="cs-label">Your top prioritised pain points (ranked most critical first)</div>
-      <div id="ranked-display"></div>
-      <div class="cs-hint">Use the <a href="phase2-prioritise.html" style="color:var(--amber);font-weight:700;">full editor</a> to plot pain points on the Severity × Frequency matrix — your ranked list will appear here. You can also use the <a href="phase2-inventory.html" style="color:var(--amber);font-weight:700;">Problem Inventory</a> to rate all 9 pain points first.</div>
+      <p class="cs-hint" style="margin-bottom:14px;">Score each problem using RICE — <strong>Reach</strong> (people affected per day), <strong>Impact</strong> (scale 0.25–3), <strong>Confidence</strong> (evidence level), <strong>Effort</strong> (months). Score = R × I × C ÷ E. Higher = higher priority.</p>
+      <div class="rice-wrap">
+        <table class="rice-table">
+          <thead>
+            <tr>
+              <th style="width:28px">#</th>
+              <th>Problem Statement</th>
+              <th style="width:76px">Reach<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">people/day</span></th>
+              <th style="width:112px">Impact<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">0.25–3</span></th>
+              <th style="width:112px">Confidence<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">0.5/0.8/1.0</span></th>
+              <th style="width:76px">Effort<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">months</span></th>
+              <th style="width:68px">RICE<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">Score</span></th>
+              <th style="width:56px">Rank</th>
+            </tr>
+          </thead>
+          <tbody id="rice-body"></tbody>
+        </table>
+      </div>
+      <div class="rice-save-row">
+        <span class="cs-save-badge" id="rice-badge"></span>
+      </div>
+      <div class="cs-hint">Tip: problems with the same root cause may score identically — focus on <em>why</em> a score came out the way it did, not just the number.</div>
     </div>
   </div>
 
@@ -245,23 +291,20 @@ let teamCode  = sessionStorage.getItem('teafellas_team_code') || null;
 let phaseGates = { 1: false, 2: false, 3: false, 4: false };
 
 function renderPhaseNav() {
-  const bar = document.getElementById('phase-nav-bar');
-  if (!teamCode) { bar.classList.add('pnb-hidden'); return; }
-  bar.classList.remove('pnb-hidden');
-  document.body.classList.add('has-phase-nav');
-  const phases = [1,2,3,4].map((p, i, arr) => {
-    const done   = phaseGates[p];
-    const active = p === CURRENT_PHASE;
-    const cls    = done ? 'pnb-done' : active ? 'pnb-active' : 'pnb-locked';
-    const icon   = done ? '✓' : active ? p : '🔒';
-    const href   = (done && p !== CURRENT_PHASE) ? ` href="${PHASE_PAGES[p]}"` : '';
-    const tag    = (done && p !== CURRENT_PHASE) ? 'a' : 'span';
-    const sep    = i < arr.length - 1 ? '<span class="pnb-sep">›</span>' : '';
-    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  const badge = document.getElementById('sb-team-code');
+  if (badge) badge.textContent = teamCode || '—';
+  const list = document.getElementById('sb-phase-list');
+  if (!list) return;
+  list.innerHTML = [1,2,3,4].map(p => {
+    const done = phaseGates[p], active = p === CURRENT_PHASE;
+    const cls = done ? 'p-done' : active ? 'p-active' : 'p-locked';
+    const lbl = `Phase ${p} — ${PHASE_LABELS[p]}`;
+    const icon = done ? '✓' : String(p);
+    if (done || active) {
+      return `<a href="${PHASE_PAGES[p]}" class="pnav-btn ${cls}"><span class="pnav-badge">${icon}</span>${lbl}</a>`;
+    }
+    return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
   }).join('');
-  bar.innerHTML = `<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
-    <div class="pnb-phases">${phases}</div>
-    <div class="pnb-right"><button class="pnb-logout" onclick="signOut()">Sign out</button></div>`;
 }
 
 async function loadPhaseGates() {
@@ -349,16 +392,9 @@ async function loadDeliverables() {
     const d = await r.json();
     const dels = d.deliverables || {};
 
-    // Pain points ranked list
-    const pri = dels.problem_priorities?.content;
-    const ranked = pri?.ranked || [];
-    const rdEl = document.getElementById('ranked-display');
-    if (ranked.length) {
-      rdEl.innerHTML = `<ul class="cs-ranked-list">${ranked.map((r,i) =>
-        `<li><span class="rank-num">${i+1}</span><span>${r}</span></li>`).join('')}</ul>`;
-    } else {
-      rdEl.innerHTML = `<div class="cs-empty">No prioritised list yet — use the full editor to complete your 2×2 matrix.</div>`;
-    }
+    // RICE data
+    const rice = dels.d2_1_rice?.content;
+    if (rice?.rows && Array.isArray(rice.rows)) riceData = rice.rows;
 
     // Problem statement
     const ps = dels.problem_statement?.content;
@@ -366,8 +402,112 @@ async function loadDeliverables() {
 
     // Vision
     const vis = dels.product_vision?.content;
-    if (vis?.vision) document.getElementById('vis-ta').value = vis.vision;
+    if (vis?.vision_statement || vis?.vision) document.getElementById('vis-ta').value = vis.vision_statement || vis.vision;
   } catch(_) {}
+}
+
+// ── RICE Scoring ──────────────────────────────────────────────
+const RICE_PROBLEMS = [
+  'Handwritten chits cause order errors downstream',
+  'No pre-ordering creates 15–30 min peak queues',
+  'Memory-based collection leads to wrong drinks given out',
+  'No customer notification — customers hover or miss collection',
+  'Single barista bottleneck — Darren prepares every drink alone',
+  'Paper loyalty stamp cards frequently lost or forgotten',
+  'Bulk order confusion — wrong drinks labelled or distributed to team',
+  "Supply chain can't scale — manual ordering won't support two outlets",
+];
+
+let riceData = Array.from({length: 8}, () => ({reach:'', impact:'', confidence:'', effort:''}));
+let riceTimer = null;
+
+function buildRiceTable() {
+  const tbody = document.getElementById('rice-body');
+  if (!tbody) return;
+  tbody.innerHTML = RICE_PROBLEMS.map((prob, i) => `
+    <tr>
+      <td class="rice-num">${i+1}</td>
+      <td class="rice-prob">${prob}</td>
+      <td><input class="rice-input" type="number" min="0" id="r-reach-${i}"
+        value="${riceData[i]?.reach || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
+      <td><select class="rice-select" id="r-impact-${i}" onchange="onRiceInput(${i})">
+        <option value="">–</option>
+        <option value="3">3 — Massive</option>
+        <option value="2">2 — High</option>
+        <option value="1">1 — Medium</option>
+        <option value="0.5">0.5 — Low</option>
+        <option value="0.25">0.25 — Minimal</option>
+      </select></td>
+      <td><select class="rice-select" id="r-conf-${i}" onchange="onRiceInput(${i})">
+        <option value="">–</option>
+        <option value="1.0">1.0 — High</option>
+        <option value="0.8">0.8 — Medium</option>
+        <option value="0.5">0.5 — Low</option>
+      </select></td>
+      <td><input class="rice-input" type="number" min="0" step="0.5" id="r-effort-${i}"
+        value="${riceData[i]?.effort || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
+      <td class="rice-score empty" id="r-score-${i}">—</td>
+      <td class="rice-rank" id="r-rank-${i}"></td>
+    </tr>`).join('');
+  RICE_PROBLEMS.forEach((_, i) => {
+    const impSel  = document.getElementById(`r-impact-${i}`);
+    const confSel = document.getElementById(`r-conf-${i}`);
+    if (impSel  && riceData[i]?.impact)      impSel.value  = riceData[i].impact;
+    if (confSel && riceData[i]?.confidence)  confSel.value = riceData[i].confidence;
+  });
+  recalcRice();
+}
+
+function onRiceInput(i) {
+  riceData[i] = {
+    reach:      document.getElementById(`r-reach-${i}`)?.value  || '',
+    impact:     document.getElementById(`r-impact-${i}`)?.value || '',
+    confidence: document.getElementById(`r-conf-${i}`)?.value   || '',
+    effort:     document.getElementById(`r-effort-${i}`)?.value || '',
+  };
+  recalcRice();
+  scheduleRice();
+}
+
+function recalcRice() {
+  const scores = riceData.map(d => {
+    const r = parseFloat(d.reach), im = parseFloat(d.impact),
+          c = parseFloat(d.confidence), e = parseFloat(d.effort);
+    if (!r || !im || !c || !e) return null;
+    return Math.round((r * im * c / e) * 10) / 10;
+  });
+  const sorted = [...new Set(scores.filter(s => s !== null))].sort((a, b) => b - a);
+  const rankMap = new Map(sorted.map((v, i) => [v, i + 1]));
+  scores.forEach((score, i) => {
+    const scoreEl = document.getElementById(`r-score-${i}`);
+    const rankEl  = document.getElementById(`r-rank-${i}`);
+    if (!scoreEl || !rankEl) return;
+    if (score === null) {
+      scoreEl.textContent = '—'; scoreEl.className = 'rice-score empty';
+      rankEl.innerHTML = '';
+    } else {
+      scoreEl.textContent = score; scoreEl.className = 'rice-score';
+      const rk = rankMap.get(score);
+      const sfx = rk === 1 ? 'st' : rk === 2 ? 'nd' : rk === 3 ? 'rd' : 'th';
+      rankEl.innerHTML = `<span class="rice-rank-badge${rk === 1 ? ' rank-1' : ''}">${rk}${sfx}</span>`;
+    }
+  });
+}
+
+function scheduleRice() {
+  clearTimeout(riceTimer);
+  setBadge('rice-badge', 'saving');
+  riceTimer = setTimeout(saveRice, 1500);
+}
+
+async function saveRice() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ team_code: teamCode, deliverable_id: 'd2_1_rice', content: { rows: riceData } })
+    });
+    setBadge('rice-badge', r.ok ? 'saved' : 'error');
+  } catch(_) { setBadge('rice-badge', 'error'); }
 }
 
 function checkGate2() {
@@ -419,6 +559,7 @@ async function init() {
   document.getElementById('phase-content').style.display = 'block';
 
   await loadDeliverables();
+  buildRiceTable();
 
   if (phaseGates[2]) {
     document.getElementById('gate2-btn').disabled = true;
