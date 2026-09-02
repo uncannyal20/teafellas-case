@@ -254,6 +254,13 @@
   .tc-hint { font-size: 11px; color: var(--tea-muted); }
   .tc-error { font-size: 12px; color: var(--tea-danger); margin-top: 8px; display: none; }
   .tc-error.show { display: block; }
+  .tc-team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+  .tc-team-btn { background: var(--tea-card); border: 2px solid var(--tea-border); border-radius: 12px;
+    padding: 16px 8px 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s; }
+  .tc-team-btn:hover { border-color: var(--tea-green); background: #EAF2E8; transform: translateY(-2px); }
+  .tc-team-letter { font-size: 26px; font-weight: 800; color: var(--tea-green); font-family: 'Courier New', monospace; line-height: 1; }
+  .tc-team-label { font-size: 11px; font-weight: 600; color: var(--tea-muted); }
 
   /* ── PDF button ── */
   .pdf-btn { background: var(--tea-card); color: var(--tea-green); border: 1px solid var(--tea-green);
@@ -332,15 +339,30 @@
   <div class="tc-box">
     <div class="tc-logo">🍵</div>
     <div class="tc-title">Tea Fellas</div>
-    <div class="tc-sub">Enter your team code to begin. Your progress will be saved and synced across all devices in your team.</div>
-    <div class="tc-input-wrap">
-      <input type="text" class="tc-input" id="tc-input" maxlength="20" placeholder="TEAM-A"
-        onkeydown="if(event.key==='Enter')enterTeamCode()"
-        oninput="this.value=this.value.toUpperCase()">
-      <button class="tc-enter" onclick="enterTeamCode()">Enter →</button>
+    <div class="tc-sub">Select your team to begin. Your progress will be saved and synced across all devices in your team.</div>
+    <div class="tc-team-grid">
+      <button class="tc-team-btn" onclick="selectTeam('TEAM-A')">
+        <span class="tc-team-letter">A</span>
+        <span class="tc-team-label">Team A</span>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('TEAM-B')">
+        <span class="tc-team-letter">B</span>
+        <span class="tc-team-label">Team B</span>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('TEAM-C')">
+        <span class="tc-team-letter">C</span>
+        <span class="tc-team-label">Team C</span>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('TEAM-D')">
+        <span class="tc-team-letter">D</span>
+        <span class="tc-team-label">Team D</span>
+      </button>
+      <button class="tc-team-btn" onclick="selectTeam('TEAM-E')">
+        <span class="tc-team-letter">E</span>
+        <span class="tc-team-label">Team E</span>
+      </button>
     </div>
-    <div class="tc-hint">Use the same code on all devices in your team.</div>
-    <div class="tc-error" id="tc-error">Please enter a team code.</div>
+    <div class="tc-hint">All members of your team should select the same team.</div>
   </div>
 </div>
 
@@ -736,7 +758,6 @@ function logOut() {
   });
   state.currentPersona = null;
   state.declarationDone = false;
-  document.getElementById('tc-input').value = '';
   document.getElementById('team-code-overlay').classList.remove('hidden');
   showPhase1();
 }
@@ -1227,14 +1248,10 @@ function copySynthesis() {
   });
 }
 
-// ── Team code ──────────────────────────────────────────────────
-function enterTeamCode() {
-  const val = document.getElementById('tc-input').value.trim().toUpperCase();
-  const errEl = document.getElementById('tc-error');
-  if (!val) { errEl.classList.add('show'); return; }
-  errEl.classList.remove('show');
-  state.teamCode = val;
-  sessionStorage.setItem('teafellas_team_code', val);
+// ── Team selection ─────────────────────────────────────────────
+function selectTeam(code) {
+  state.teamCode = code;
+  sessionStorage.setItem('teafellas_team_code', code);
   document.getElementById('team-code-overlay').classList.add('hidden');
   loadTeamSession().then(() => showPhase1());
 }
