@@ -15,36 +15,30 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--cream); color: var(--text); }
-body.has-phase-nav { padding-top: 46px; }
+body{padding-left:210px;}
 
-/* ── Phase nav bar (shared) ── */
-#phase-nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
-  background: #1E3D1A; display: flex; align-items: center;
-  padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-#phase-nav-bar.pnb-hidden { display: none; }
-.pnb-brand { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); white-space: nowrap; margin-right: 18px; }
-.pnb-team  { font-size: 11px; font-weight: 700; color: #E8A94A; background: rgba(193,122,42,0.25);
-  border-radius: 4px; padding: 2px 7px; margin-left: 8px; }
-.pnb-phases { display: flex; align-items: center; flex: 1; }
-.pnb-phase { display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 46px;
-  font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.38); cursor: default;
-  white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.15s; text-decoration: none; }
-.pnb-phase.pnb-active { color: white; border-bottom-color: #E8A94A; }
-.pnb-phase.pnb-done   { color: rgba(255,255,255,0.75); border-bottom-color: #4CAF50; cursor: pointer; }
-.pnb-phase.pnb-done:hover { background: rgba(255,255,255,0.07); }
-.pnb-num { width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.pnb-phase.pnb-locked .pnb-num { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.35); }
-.pnb-phase.pnb-active .pnb-num { background: #C17A2A; color: white; }
-.pnb-phase.pnb-done   .pnb-num { background: #4CAF50; color: white; }
-.pnb-sep { color: rgba(255,255,255,0.2); font-size: 14px; padding: 0 2px; }
-.pnb-right { margin-left: auto; }
-.pnb-logout { font-size: 11px; color: rgba(255,255,255,0.5); background: none; border: none;
-  cursor: pointer; padding: 4px 8px; border-radius: 4px; }
-.pnb-logout:hover { color: white; background: rgba(255,255,255,0.1); }
+/* ── Sidebar ── */
+#sidebar{position:fixed;top:0;left:0;bottom:0;width:210px;background:#2D5A27;display:flex;flex-direction:column;z-index:100;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12);}
+.sb-brand-name{font-size:15px;font-weight:900;color:white;letter-spacing:-.01em;display:block;}
+.sb-team-badge{font-size:10px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.3);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;}
+#sb-nav{padding:10px 8px;flex:1;}
+.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);padding:0 8px;margin-bottom:6px;display:block;}
+.pnav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;font-weight:600;text-align:left;text-decoration:none;margin-bottom:2px;transition:background .15s;box-sizing:border-box;}
+.pnav-btn:hover{background:rgba(255,255,255,.08);}
+.pnav-btn.p-active{background:rgba(255,255,255,.18);color:white;}
+.pnav-btn.p-done{color:rgba(255,255,255,.82);}
+.pnav-btn.p-locked{cursor:default;pointer-events:none;opacity:.5;}
+.pnav-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
+.pnav-btn.p-active .pnav-badge{background:#C17A2A;color:white;}
+.pnav-btn.p-done .pnav-badge{background:#4CAF50;color:white;}
+.pnav-btn.p-locked .pnav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.4);}
+#sb-footer{padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.12);}
+.sb-footer-btn{display:block;width:100%;padding:8px 10px;border:none;background:none;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;text-align:left;cursor:pointer;}
+.sb-footer-btn:hover{background:rgba(255,255,255,.08);color:white;}
 
 /* ── Lock screen ── */
-#lock-screen { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 46px); }
+#lock-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 .lock-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
   padding: 48px 40px; text-align: center; max-width: 460px; width: 90%; }
 .lock-icon { font-size: 48px; margin-bottom: 16px; }
@@ -129,7 +123,19 @@ body.has-phase-nav { padding-top: 46px; }
 </head>
 <body>
 
-<div id="phase-nav-bar" class="pnb-hidden"></div>
+<div id="sidebar">
+  <div class="sb-brand">
+    <span class="sb-brand-name">Tea Fellas</span>
+    <span class="sb-team-badge" id="sb-team-code">—</span>
+  </div>
+  <nav id="sb-nav">
+    <span class="sb-nav-label">Phases</span>
+    <div id="sb-phase-list"></div>
+  </nav>
+  <div id="sb-footer">
+    <button class="sb-footer-btn" onclick="signOut()">Log out</button>
+  </div>
+</div>
 
 <div id="lock-screen">
   <div class="lock-box">
@@ -199,11 +205,11 @@ body.has-phase-nav { padding-top: 46px; }
   <div class="section-heading">Step 3 — Design your solution</div>
   <div class="step-grid">
     <div class="step-card">
-      <div class="step-card-hdr">3.1 — Risk Assessment</div>
+      <div class="step-card-hdr">3.1 — Solution Concept Canvas</div>
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
-        <div class="step-card-desc">Assess the key risks of your recommended scenario using a Probability × Impact matrix.</div>
-        <a href="phase3-risk.html" class="step-btn green">Open →</a>
+        <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
+        <a href="phase3-canvas.html" class="step-btn green">Open →</a>
       </div>
     </div>
     <div class="step-card">
@@ -215,11 +221,11 @@ body.has-phase-nav { padding-top: 46px; }
       </div>
     </div>
     <div class="step-card">
-      <div class="step-card-hdr">3.3 — Solution Concept Canvas</div>
+      <div class="step-card-hdr">3.3 — Risk Assessment</div>
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
-        <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
-        <a href="phase3-canvas.html" class="step-btn green">Open →</a>
+        <div class="step-card-desc">Assess the key risks of your recommended scenario using a Probability × Impact matrix.</div>
+        <a href="phase3-risk.html" class="step-btn green">Open →</a>
       </div>
     </div>
   </div>
@@ -247,23 +253,20 @@ let teamCode  = sessionStorage.getItem('teafellas_team_code') || null;
 let phaseGates = { 1: false, 2: false, 3: false, 4: false };
 
 function renderPhaseNav() {
-  const bar = document.getElementById('phase-nav-bar');
-  if (!teamCode) { bar.classList.add('pnb-hidden'); return; }
-  bar.classList.remove('pnb-hidden');
-  document.body.classList.add('has-phase-nav');
-  const phases = [1,2,3,4].map((p, i, arr) => {
-    const done   = phaseGates[p];
-    const active = p === CURRENT_PHASE;
-    const cls    = done ? 'pnb-done' : active ? 'pnb-active' : 'pnb-locked';
-    const icon   = done ? '✓' : active ? p : '🔒';
-    const href   = (done && p !== CURRENT_PHASE) ? ` href="${PHASE_PAGES[p]}"` : '';
-    const tag    = (done && p !== CURRENT_PHASE) ? 'a' : 'span';
-    const sep    = i < arr.length - 1 ? '<span class="pnb-sep">›</span>' : '';
-    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  const badge = document.getElementById('sb-team-code');
+  if (badge) badge.textContent = teamCode || '—';
+  const list = document.getElementById('sb-phase-list');
+  if (!list) return;
+  list.innerHTML = [1,2,3,4].map(p => {
+    const done = phaseGates[p], active = p === CURRENT_PHASE;
+    const cls = done ? 'p-done' : active ? 'p-active' : 'p-locked';
+    const lbl = `Phase ${p} — ${PHASE_LABELS[p]}`;
+    const icon = done ? '✓' : String(p);
+    if (done || active) {
+      return `<a href="${PHASE_PAGES[p]}" class="pnav-btn ${cls}"><span class="pnav-badge">${icon}</span>${lbl}</a>`;
+    }
+    return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
   }).join('');
-  bar.innerHTML = `<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
-    <div class="pnb-phases">${phases}</div>
-    <div class="pnb-right"><button class="pnb-logout" onclick="signOut()">Sign out</button></div>`;
 }
 
 async function loadPhaseGates() {

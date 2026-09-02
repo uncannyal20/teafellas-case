@@ -14,26 +14,27 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
-body.has-phase-nav{padding-top:46px;}
-#phase-nav-bar{position:fixed;top:0;left:0;right:0;height:46px;z-index:150;
-  background:#1E3D1A;display:flex;align-items:center;padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,.3);}
-#phase-nav-bar.pnb-hidden{display:none;}
-.pnb-brand{font-size:13px;font-weight:800;color:rgba(255,255,255,.9);white-space:nowrap;margin-right:18px;}
-.pnb-team{font-size:11px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.25);border-radius:4px;padding:2px 7px;margin-left:8px;}
-.pnb-phases{display:flex;align-items:center;flex:1;}
-.pnb-phase{display:flex;align-items:center;gap:7px;padding:0 14px;height:46px;font-size:12px;font-weight:600;
-  color:rgba(255,255,255,.38);cursor:default;white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;text-decoration:none;}
-.pnb-phase.pnb-active{color:white;border-bottom-color:#E8A94A;}
-.pnb-phase.pnb-done{color:rgba(255,255,255,.75);border-bottom-color:#4CAF50;cursor:pointer;}
-.pnb-phase.pnb-done:hover{background:rgba(255,255,255,.07);}
-.pnb-num{width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.pnb-phase.pnb-locked .pnb-num{background:rgba(255,255,255,.1);color:rgba(255,255,255,.35);}
-.pnb-phase.pnb-active .pnb-num{background:#C17A2A;color:white;}
-.pnb-phase.pnb-done   .pnb-num{background:#4CAF50;color:white;}
-.pnb-sep{color:rgba(255,255,255,.2);font-size:14px;padding:0 2px;}
-.pnb-right{margin-left:auto;}
-.pnb-logout{font-size:11px;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;}
-.pnb-logout:hover{color:white;background:rgba(255,255,255,.1);}
+body{padding-left:210px;}
+
+/* ── Sidebar ── */
+#sidebar{position:fixed;top:0;left:0;bottom:0;width:210px;background:#2D5A27;display:flex;flex-direction:column;z-index:100;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12);}
+.sb-brand-name{font-size:15px;font-weight:900;color:white;letter-spacing:-.01em;display:block;}
+.sb-team-badge{font-size:10px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.3);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;}
+#sb-nav{padding:10px 8px;flex:1;}
+.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);padding:0 8px;margin-bottom:6px;display:block;}
+.pnav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;font-weight:600;text-align:left;text-decoration:none;margin-bottom:2px;transition:background .15s;box-sizing:border-box;}
+.pnav-btn:hover{background:rgba(255,255,255,.08);}
+.pnav-btn.p-active{background:rgba(255,255,255,.18);color:white;}
+.pnav-btn.p-done{color:rgba(255,255,255,.82);}
+.pnav-btn.p-locked{cursor:default;pointer-events:none;opacity:.5;}
+.pnav-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
+.pnav-btn.p-active .pnav-badge{background:#C17A2A;color:white;}
+.pnav-btn.p-done .pnav-badge{background:#4CAF50;color:white;}
+.pnav-btn.p-locked .pnav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.4);}
+#sb-footer{padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.12);}
+.sb-footer-btn{display:block;width:100%;padding:8px 10px;border:none;background:none;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;text-align:left;cursor:pointer;}
+.sb-footer-btn:hover{background:rgba(255,255,255,.08);color:white;}
 
 .page{max-width:1040px;margin:0 auto;padding:28px 32px 80px;}
 .back-link{font-size:13px;color:var(--muted);text-decoration:none;display:inline-block;margin-bottom:18px;}
@@ -140,7 +141,19 @@ body.has-phase-nav{padding-top:46px;}
 </style>
 </head>
 <body>
-<div id="phase-nav-bar" class="pnb-hidden"></div>
+<div id="sidebar">
+  <div class="sb-brand">
+    <span class="sb-brand-name">Tea Fellas</span>
+    <span class="sb-team-badge" id="sb-team-code">—</span>
+  </div>
+  <nav id="sb-nav">
+    <span class="sb-nav-label">Phases</span>
+    <div id="sb-phase-list"></div>
+  </nav>
+  <div id="sb-footer">
+    <button class="sb-footer-btn" onclick="signOut()">Log out</button>
+  </div>
+</div>
 <div class="page">
   <a href="phase3.html" class="back-link">← Back to Phase 3</a>
   <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
@@ -370,22 +383,25 @@ async function loadPhaseGates() {
     if(d.gates) phaseGates={...phaseGates,...d.gates};
   } catch(_){}
 }
+function signOut() {
+  sessionStorage.removeItem('teafellas_team_code');
+  location.href = 'index.html';
+}
 function renderPhaseNav() {
-  const bar=document.getElementById('phase-nav-bar');
-  bar.classList.remove('pnb-hidden');
-  document.body.classList.add('has-phase-nav');
-  const ph=[1,2,3,4].map((p,i,arr)=>{
-    const done=phaseGates[p],active=p===CURRENT_PHASE;
-    const cls=done?'pnb-done':active?'pnb-active':'pnb-locked';
-    const icon=done?'✓':active?p:'🔒';
-    const href=(done&&p!==CURRENT_PHASE)?` href="${PHASE_PAGES[p]}"`:''
-    const tag=(done&&p!==CURRENT_PHASE)?'a':'span';
-    const sep=i<arr.length-1?'<span class="pnb-sep">›</span>':'';
-    return `<${tag} class="pnb-phase ${cls}"${href}><span class="pnb-num">${icon}</span><span>Phase ${p} — ${PHASE_LABELS[p]}</span></${tag}>${sep}`;
+  const badge = document.getElementById('sb-team-code');
+  if (badge) badge.textContent = teamCode || '—';
+  const list = document.getElementById('sb-phase-list');
+  if (!list) return;
+  list.innerHTML = [1,2,3,4].map(p => {
+    const done = phaseGates[p], active = p === CURRENT_PHASE;
+    const cls = done ? 'p-done' : active ? 'p-active' : 'p-locked';
+    const lbl = `Phase ${p} — ${PHASE_LABELS[p]}`;
+    const icon = done ? '✓' : String(p);
+    if (done || active) {
+      return `<a href="${PHASE_PAGES[p]}" class="pnav-btn ${cls}"><span class="pnav-badge">${icon}</span>${lbl}</a>`;
+    }
+    return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
   }).join('');
-  bar.innerHTML=`<span class="pnb-brand">Tea Fellas <span class="pnb-team">${teamCode}</span></span>
-    <div class="pnb-phases">${ph}</div>
-    <div class="pnb-right"><button class="pnb-logout" onclick="sessionStorage.removeItem('teafellas_team_code');location.href='index.html'">Sign out</button></div>`;
 }
 
 loadPhaseGates().then(()=>{ renderPhaseNav(); loadData(); });
