@@ -277,6 +277,12 @@
   .phase-section { padding: 28px 32px; border-bottom: 1px solid var(--tea-border); }
   .phase-section-alt { background: var(--tea-cream); }
   .ps-hdr-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+  .ps-hdr-toggle { cursor: pointer; user-select: none; margin-bottom: 0; }
+  .ps-hdr-toggle:hover .ps-title { color: var(--tea-green-light); }
+  .ps-chevron { width: 20px; height: 20px; flex-shrink: 0; color: var(--tea-muted); margin-top: 3px; transition: transform 0.2s; }
+  .ps-chevron.collapsed { transform: rotate(-90deg); }
+  .ps-body { overflow: hidden; transition: max-height 0.25s ease; }
+  .ps-body.collapsed { max-height: 0 !important; }
   .ps-num { font-size: 24px; font-weight: 700; color: var(--tea-amber); flex-shrink: 0; min-width: 36px; margin-top: 2px; }
   .ps-title { font-size: 17px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
   .ps-sub { font-size: 13px; color: var(--tea-muted); line-height: 1.5; }
@@ -425,32 +431,41 @@
 
       <!-- 1.1 Interviews -->
       <div class="phase-section">
-        <div class="ps-hdr-row">
+        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-1')">
           <span class="ps-num">1.1</span>
-          <div><div class="ps-title">Stakeholder Interviews</div>
+          <div style="flex:1"><div class="ps-title">Stakeholder Interviews</div>
           <div class="ps-sub">Click a card to open an interview. Completed interviews show a ✓ — click them to review the confirmed summary.</div></div>
+          <svg class="ps-chevron" id="ps-chev-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div class="profile-grid" id="profile-cards"></div>
+        <div class="ps-body" id="ps-body-1">
+          <div class="profile-grid" id="profile-cards"></div>
+        </div>
       </div>
 
       <!-- 1.2 As-Is Document -->
       <div class="phase-section phase-section-alt">
-        <div class="ps-hdr-row">
+        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-2')">
           <span class="ps-num">1.2</span>
-          <div><div class="ps-title">Where We Are Today</div>
+          <div style="flex:1"><div class="ps-title">Where We Are Today</div>
           <div class="ps-sub">Tea Fellas Toa Payoh — Current State Reference. Use this as your baseline during research.</div></div>
+          <svg class="ps-chevron" id="ps-chev-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div id="asis-doc"></div>
+        <div class="ps-body" id="ps-body-2">
+          <div id="asis-doc"></div>
+        </div>
       </div>
 
       <!-- 1.3 Declaration -->
       <div class="phase-section" id="p1-decl-section">
-        <div class="ps-hdr-row">
+        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-3')">
           <span class="ps-num">1.3</span>
-          <div><div class="ps-title">Phase 1 Declaration</div>
+          <div style="flex:1"><div class="ps-title">Phase 1 Declaration</div>
           <div class="ps-sub">Tick all three boxes as a group to unlock Phase 2 — Define.</div></div>
+          <svg class="ps-chevron" id="ps-chev-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div id="declaration-area"></div>
+        <div class="ps-body" id="ps-body-3">
+          <div id="declaration-area"></div>
+        </div>
       </div>
     </div>
 
@@ -1559,6 +1574,27 @@ function generateSynthesisPDF() {
   }
 
   doc.save('TeaFellas-Synthesis.pdf');
+}
+
+// ── Collapsible sections ───────────────────────────────────────
+function toggleSection(bodyId) {
+  const body = document.getElementById(bodyId);
+  const num = bodyId.replace('ps-body-', '');
+  const chev = document.getElementById('ps-chev-' + num);
+  if (!body) return;
+  const isCollapsed = body.classList.contains('collapsed');
+  if (isCollapsed) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    chev && chev.classList.remove('collapsed');
+    setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.classList.add('collapsed');
+      chev && chev.classList.add('collapsed');
+    });
+  }
 }
 
 // ── Phase 1 view ───────────────────────────────────────────────
