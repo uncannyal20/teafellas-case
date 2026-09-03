@@ -104,14 +104,24 @@ body { padding-left: 210px; }
 .matrix-cell.monitor{background:#E8F5E9;color:#2E7D32;}
 .matrix-cell.deprioritise{background:#F5F5F5;color:#9E9E9E;}
 
-/* ── 4.2 validation method rows ── */
-.val-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
-.val-row-assump{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;padding:8px 12px;background:#FFEBEE;border-radius:6px;border-left:3px solid #C2185B;}
-.val-method-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px;}
-.val-method-sel{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;background:white;margin-bottom:6px;}
-.val-method-sel:focus{border-color:var(--green);outline:none;}
-.val-method-hint{font-size:12px;color:var(--muted);font-style:italic;}
+/* ── 4.1 save button ── */
+.assump-save-btn{background:var(--green);color:white;border:none;border-radius:7px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;}
+.assump-save-btn:hover{opacity:.88;}
+
+/* ── 4.2 validation matrix ── */
 .val-empty-msg{font-size:13px;color:var(--muted);font-style:italic;padding:16px 0;}
+.val-matrix{border-collapse:collapse;min-width:900px;font-size:12px;width:100%;}
+.val-matrix th{background:var(--green);color:white;padding:10px 8px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;}
+.val-matrix th.assump-col{text-align:left;min-width:220px;}
+.val-matrix td{padding:9px 8px;border:1px solid var(--border);vertical-align:middle;}
+.val-matrix td.assump-cell{font-size:12px;min-width:220px;line-height:1.4;}
+.val-matrix td.check-cell{text-align:center;}
+.val-matrix input[type=checkbox]{width:18px;height:18px;accent-color:var(--green);cursor:pointer;}
+.val-matrix tr:nth-child(even) td{background:#FAF7F2;}
+.val-finalise-btn{margin-top:16px;background:var(--green);color:white;border:none;border-radius:8px;padding:11px 22px;font-size:13px;font-weight:800;cursor:pointer;display:block;}
+.val-finalise-btn:hover{opacity:.88;}
+.val-done-banner{background:#E8F5E9;border:2px solid #4CAF50;border-radius:10px;padding:14px 18px;margin-top:16px;display:flex;align-items:center;gap:12px;}
+.val-done-text{font-size:13px;font-weight:700;color:#2E7D32;}
 .methods-ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px;}
 .methods-ref-table th{background:var(--green);color:white;padding:8px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;}
 .methods-ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);}
@@ -218,7 +228,10 @@ body { padding-left: 210px; }
           <tbody id="assump-body"></tbody>
         </table>
         <button class="assump-add-btn" onclick="addAssumption()">+ Add assumption</button>
-        <div style="margin-top:6px;"><span class="save-badge" id="assump-badge"></span></div>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:10px;">
+          <button class="assump-save-btn" onclick="saveAssumptions()">Save assumptions</button>
+          <span class="save-badge" id="assump-badge"></span>
+        </div>
         <div style="font-size:12px;color:var(--muted);margin-top:8px;">Tip: focus on assumptions that — if wrong — would change your recommendation entirely.</div>
       </div>
     </div>
@@ -234,7 +247,14 @@ body { padding-left: 210px; }
     </div>
     <div class="acc-body collapsed" id="acc-body-42" style="max-height:0;">
       <div class="acc-body-inner">
-        <div id="val-rows-wrap" style="margin-top:14px;"></div>
+        <div id="val-matrix-wrap" style="margin-top:14px;"></div>
+        <div id="val-42-done-banner" class="val-done-banner" style="display:none;">
+          <span style="font-size:22px;">&#x2705;</span>
+          <div>
+            <div class="val-done-text">Validation methods plan finalised!</div>
+            <div style="font-size:12px;color:#388E3C;margin-top:2px;">Your team has selected validation methods for each assumption.</div>
+          </div>
+        </div>
         <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:20px;margin-bottom:8px;">Reference — Validation Methods</div>
         <table class="methods-ref-table">
           <thead><tr><th>Method</th><th>Best used to test…</th></tr></thead>
@@ -249,7 +269,6 @@ body { padding-left: 210px; }
             <tr><td>Experiment / A/B test</td><td>Behavioural or outcome-based assumptions</td></tr>
           </tbody>
         </table>
-        <span class="save-badge" id="methods-badge"></span>
       </div>
     </div>
   </div>
@@ -297,6 +316,7 @@ let assumptions = [
 ];
 let nextId = 4;
 let methodsData = {};
+let methods42Done = false;
 
 const METHOD_HINTS = {
   'User interviews':       'Needs, motivations and pain points',
@@ -310,6 +330,7 @@ const METHOD_HINTS = {
 };
 
 const METHODS = Object.keys(METHOD_HINTS);
+const METHOD_SHORT = ['User Interviews','Surveys','Concept Testing','Prototype Testing','Tech POC / Spike','Process Simulation','Pilot / MVP','Experiment / A/B'];
 
 // ── Priority logic ──
 function getPriority(a) {
@@ -369,14 +390,12 @@ function onAssumpChange(id, field, value) {
   const a = assumptions.find(x => x.id === id);
   if (a) a[field] = value;
   buildAssumpTable();
-  buildValRows();
-  scheduleAssumpSave();
+  buildValMatrix();
 }
 
 function addAssumption() {
   assumptions.push({id: nextId++, text:'', certainty:'', impact:''});
   buildAssumpTable();
-  scheduleAssumpSave();
 }
 
 function deleteAssumption(id) {
@@ -384,50 +403,59 @@ function deleteAssumption(id) {
   assumptions = assumptions.filter(a => a.id !== id);
   delete methodsData[id];
   buildAssumpTable();
-  buildValRows();
-  scheduleAssumpSave();
+  buildValMatrix();
 }
 
-// ── 4.2 Validation method rows ──
-function buildValRows() {
-  const wrap = document.getElementById('val-rows-wrap');
+// ── 4.2 Validation matrix ──
+function onCheckMethod(assumpId, methodIdx, checked) {
+  if (!methodsData[assumpId]) methodsData[assumpId] = {};
+  methodsData[assumpId][METHODS[methodIdx]] = checked;
+}
+
+function buildValMatrix() {
+  const wrap = document.getElementById('val-matrix-wrap');
   if (!wrap) return;
-  const priority = assumptions.filter(a => getPriority(a) === 'validate-first');
-  if (priority.length === 0) {
-    wrap.innerHTML = '<div class="val-empty-msg">No high-priority assumptions yet — score your assumptions in 4.1 first. Assumptions rated <strong>Low Certainty + High Impact</strong> will appear here.</div>';
+  const filled = assumptions.filter(a => a.text.trim());
+  if (methods42Done) {
+    renderValMatrixReadOnly(wrap, filled);
     return;
   }
-  wrap.innerHTML = priority.map(a => {
-    const selected = methodsData[a.id] || '';
-    const hint = selected ? METHOD_HINTS[selected] : '';
-    return `<div class="val-row">
-      <div class="val-row-assump">${escHtml(a.text) || '<em style="opacity:.5">Assumption text not yet filled in</em>'}</div>
-      <div class="val-method-label">Validation Method</div>
-      <select class="val-method-sel" onchange="onMethodChange(${a.id},this.value)">
-        <option value="">— Select a method —</option>
-        ${METHODS.map(m=>`<option value="${escHtml(m)}" ${selected===m?'selected':''}>${escHtml(m)}</option>`).join('')}
-      </select>
-      <div class="val-method-hint" id="hint-${a.id}">${hint ? 'Best used to test: ' + escHtml(hint) : ''}</div>
-    </div>`;
+  if (filled.length === 0) {
+    wrap.innerHTML = '<div class="val-empty-msg">Fill in your assumptions in 4.1 first — they will appear here as rows.</div>';
+    return;
+  }
+  const hdrCells = METHOD_SHORT.map(s => `<th>${escHtml(s)}</th>`).join('');
+  const rows = filled.map(a => {
+    const mdata = methodsData[a.id] || {};
+    const cells = METHODS.map((m, mi) => {
+      const checked = mdata[m] ? 'checked' : '';
+      return `<td class="check-cell"><input type="checkbox" ${checked} onchange="onCheckMethod(${a.id},${mi},this.checked)"></td>`;
+    }).join('');
+    return `<tr><td class="assump-cell">${escHtml(a.text)}</td>${cells}</tr>`;
   }).join('');
+  wrap.innerHTML = `<div style="overflow-x:auto;"><table class="val-matrix"><thead><tr><th class="assump-col">Assumption</th>${hdrCells}</tr></thead><tbody>${rows}</tbody></table></div><button class="val-finalise-btn" onclick="finaliseValMethods()">Finalise my validation methods plan</button>`;
 }
 
-function onMethodChange(id, value) {
-  methodsData[id] = value;
-  const hintEl = document.getElementById(`hint-${id}`);
-  if (hintEl) hintEl.textContent = value ? 'Best used to test: ' + METHOD_HINTS[value] : '';
-  scheduleAssumpSave();
+function renderValMatrixReadOnly(wrap, filled) {
+  if (filled.length === 0) { wrap.innerHTML = ''; return; }
+  const hdrCells = METHOD_SHORT.map(s => `<th>${escHtml(s)}</th>`).join('');
+  const rows = filled.map(a => {
+    const mdata = methodsData[a.id] || {};
+    const cells = METHODS.map(m => `<td class="check-cell" style="color:var(--green);font-size:15px;">${mdata[m] ? '&#x2713;' : ''}</td>`).join('');
+    return `<tr><td class="assump-cell">${escHtml(a.text)}</td>${cells}</tr>`;
+  }).join('');
+  wrap.innerHTML = `<div style="overflow-x:auto;"><table class="val-matrix"><thead><tr><th class="assump-col">Assumption</th>${hdrCells}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+async function finaliseValMethods() {
+  methods42Done = true;
+  const banner = document.getElementById('val-42-done-banner');
+  if (banner) banner.style.display = 'flex';
+  buildValMatrix();
+  await saveAssumptions();
 }
 
 // ── Save / Load ──
-let assumpTimer = null;
-
-function scheduleAssumpSave() {
-  clearTimeout(assumpTimer);
-  setBadge('assump-badge', 'saving');
-  assumpTimer = setTimeout(saveAssumptions, 1500);
-}
-
 async function saveAssumptions() {
   try {
     const r = await fetch(`${API_URL}/deliverables`, {
@@ -435,14 +463,12 @@ async function saveAssumptions() {
       body: JSON.stringify({
         team_code: teamCode,
         deliverable_id: 'd4_assumptions',
-        content: { assumptions, methods: methodsData, nextId }
+        content: { assumptions, methods: methodsData, nextId, methods42Done }
       })
     });
     setBadge('assump-badge', r.ok ? 'saved' : 'error');
-    setBadge('methods-badge', r.ok ? 'saved' : 'error');
   } catch(_) {
     setBadge('assump-badge', 'error');
-    setBadge('methods-badge', 'error');
   }
 }
 
@@ -453,12 +479,21 @@ async function loadAssumptions() {
     const c = d.deliverables?.d4_assumptions?.content;
     if (c?.assumptions && Array.isArray(c.assumptions) && c.assumptions.length > 0) {
       assumptions = c.assumptions;
-      methodsData = c.methods || {};
+      methods42Done = !!c.methods42Done;
+      const raw = c.methods || {};
+      methodsData = {};
+      for (const [id, val] of Object.entries(raw)) {
+        methodsData[id] = (typeof val === 'string') ? (val ? {[val]: true} : {}) : (val || {});
+      }
       nextId = c.nextId || (Math.max(...assumptions.map(a=>a.id)) + 1);
+      if (methods42Done) {
+        const banner = document.getElementById('val-42-done-banner');
+        if (banner) banner.style.display = 'flex';
+      }
     }
   } catch(_) {}
   buildAssumpTable();
-  buildValRows();
+  buildValMatrix();
 }
 
 function setBadge(id, state) {
