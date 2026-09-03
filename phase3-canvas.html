@@ -416,7 +416,7 @@ Generate a complete Solution Concept Canvas for this scenario. Return ONLY a val
   "p6_check": "Review cadence and accountability (2 sentences)"
 }`;
   try {
-    const r = await fetch(`${API_URL}/generate`, {
+    const r = await fetch(API_URL, {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({model:'claude-haiku-4-5-20251001', messages:[{role:'user',content:prompt}], max_tokens:3000})
     });
