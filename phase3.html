@@ -70,7 +70,7 @@ body{padding-left:210px;}
   color: var(--muted); margin: 28px 0 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
 /* ── Step cards ── */
-.step-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 10px; }
+.step-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 10px; }
 .step-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .step-card-hdr { background: var(--green); color: white; padding: 10px 14px;
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
@@ -213,7 +213,15 @@ body{padding-left:210px;}
       </div>
     </div>
     <div class="step-card">
-      <div class="step-card-hdr">3.2 — Product Roadmap</div>
+      <div class="step-card-hdr">3.2 — To-Be Process Map</div>
+      <div class="step-card-body">
+        <div class="step-status st-todo">Not started</div>
+        <div class="step-card-desc">Map the future-state process flow for Scenario C1 across 5 swim lanes: Customer, Cashier, System/Digital, Kitchen, and Collection.</div>
+        <a href="phase3-tobe.html" class="step-btn green" target="_blank">Open →</a>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-card-hdr">3.3 — Product Roadmap</div>
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
         <div class="step-card-desc">Build an 18-month delivery roadmap for your recommended scenario. When does what happen, and in what order?</div>
@@ -221,7 +229,7 @@ body{padding-left:210px;}
       </div>
     </div>
     <div class="step-card">
-      <div class="step-card-hdr">3.3 — Risk Assessment</div>
+      <div class="step-card-hdr">3.4 — Risk Assessment</div>
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
         <div class="step-card-desc">Assess the key risks of your recommended scenario using a Probability × Impact matrix.</div>
@@ -236,7 +244,7 @@ body{padding-left:210px;}
     <div class="gate-checks">
       <div class="gate-check"><input type="checkbox" id="gc3-1" onchange="checkGate3()"><label for="gc3-1">We have reviewed all 6 scenario briefings and selected our recommended option</label></div>
       <div class="gate-check"><input type="checkbox" id="gc3-2" onchange="checkGate3()"><label for="gc3-2">We have completed the CBA analysis for our chosen scenario</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc3-3" onchange="checkGate3()"><label for="gc3-3">We have produced a Risk Assessment, Product Roadmap, and Solution Canvas</label></div>
+      <div class="gate-check"><input type="checkbox" id="gc3-3" onchange="checkGate3()"><label for="gc3-3">We have produced a To-Be Process Map, Risk Assessment, Product Roadmap, and Solution Canvas</label></div>
     </div>
     <button class="gate-declare-btn" id="gate3-btn" disabled onclick="declarePhase3()">Complete Phase 3 — Move to Validate →</button>
     <div class="gate-done-banner" id="gate3-done">✓ Phase 3 complete — <a href="phase4.html" style="color:inherit;font-weight:800;">Open Phase 4: Validate →</a></div>

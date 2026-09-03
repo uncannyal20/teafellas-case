@@ -110,6 +110,23 @@ body { padding-left: 210px; }
   align-items: center; justify-content: center; flex-shrink: 0; }
 .cs-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 6px 0; }
 
+/* ── PS multi-row list ── */
+.ps-list-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.ps-row{display:flex;align-items:flex-start;gap:8px;}
+.ps-row-num{font-size:11px;font-weight:800;color:var(--green);background:var(--green-xl);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:10px;}
+.ps-row-ta{flex:1;border:1px solid var(--border);border-radius:7px;padding:9px 12px;font-size:13px;font-family:inherit;line-height:1.7;resize:vertical;min-height:80px;background:white;color:var(--text);}
+.ps-row-ta:focus{border-color:var(--green);outline:none;}
+.ps-del-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;flex-shrink:0;margin-top:8px;}
+.ps-del-btn:hover{background:#FFEBEE;color:var(--red);border-color:var(--red);}
+.ps-add-btn{background:none;border:1px dashed var(--green);color:var(--green);border-radius:7px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;}
+.ps-add-btn:hover{background:var(--green-xl);}
+
+/* ── OKR display ── */
+.okr-display-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px;}
+.okr-disp-item{background:var(--green-xl);border-radius:8px;padding:10px 14px;margin-bottom:8px;}
+.okr-disp-obj{font-size:13px;font-weight:800;color:var(--green);margin-bottom:5px;}
+.okr-disp-kr{font-size:12px;color:var(--text);line-height:1.6;padding-left:10px;border-left:2px solid var(--green);margin-bottom:3px;}
+
 /* ── RICE Table ── */
 .rice-wrap { overflow-x: auto; margin: 0 -2px; }
 .rice-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 680px; }
@@ -236,12 +253,11 @@ body { padding-left: 210px; }
       <a href="phase2-problem.html" class="cs-hdr-link">Full UX template editor ↗</a>
     </div>
     <div class="cs-body">
-      <div class="cs-label">Your agreed problem statement</div>
-      <textarea class="cs-ta" id="ps-ta" rows="5"
-        placeholder="We need to find a way for [user] to [goal] so that [outcome] — without [constraint]."
-        oninput="schedulePs()"></textarea>
+      <div class="cs-label">Your agreed problem statement(s)</div>
+      <div id="ps-list" class="ps-list-wrap"></div>
+      <button class="ps-add-btn" onclick="addPsRow()">+ Add problem statement</button>
       <span class="cs-save-badge" id="ps-badge"></span>
-      <div class="cs-hint">Write your core problem statement here. Use the <a href="phase2-problem.html" style="color:var(--amber);font-weight:700;">full editor</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
+      <div class="cs-hint">Add one or more candidate problem statements. Use the <a href="phase2-problem.html" style="color:var(--amber);font-weight:700;">full editor</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
     </div>
   </div>
 
@@ -257,7 +273,11 @@ body { padding-left: 210px; }
         placeholder="Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — [what it looks like, feels like, and stands for]."
         oninput="scheduleVis()"></textarea>
       <span class="cs-save-badge" id="vis-badge"></span>
-      <div class="cs-hint">Write your North Star vision here. Use the <a href="phase2-vision.html" style="color:var(--amber);font-weight:700;">full editor</a> to define outcome pillars and "What this is NOT" constraints.</div>
+      <div class="cs-hint">Write your North Star vision here. Use the <a href="phase2-vision.html" style="color:var(--amber);font-weight:700;">full editor</a> to define outcome pillars and generate OKRs.</div>
+      <div id="okr-display" style="display:none;margin-top:16px;">
+        <div class="okr-display-label">Objectives &amp; Key Results</div>
+        <div id="okr-disp-list"></div>
+      </div>
     </div>
   </div>
 
@@ -327,22 +347,56 @@ async function markPhaseComplete(phase) {
   } catch (_) {}
 }
 
-// ── Deliverable: problem statement ────────────────────────────
+// ── Deliverable: problem statement (multi-row) ────────────────
+let psStatements = [''];
 let psTimer = null;
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function buildPsList() {
+  const wrap = document.getElementById('ps-list');
+  if (!wrap) return;
+  wrap.innerHTML = psStatements.map((txt, i) => `
+    <div class="ps-row" id="ps-row-${i}">
+      <div class="ps-row-num">${i+1}</div>
+      <textarea class="ps-row-ta" id="ps-ta-${i}" rows="3"
+        placeholder="We need to find a way for [user] to [goal]…"
+        oninput="onPsInput(${i},this.value)">${escHtml(txt)}</textarea>
+      ${psStatements.length > 1 ? `<button class="ps-del-btn" onclick="removePsRow(${i})" title="Remove">×</button>` : ''}
+    </div>`).join('');
+}
+
+function addPsRow() {
+  psStatements.push('');
+  buildPsList();
+  const last = document.getElementById(`ps-ta-${psStatements.length-1}`);
+  if (last) last.focus();
+}
+
+function removePsRow(i) {
+  psStatements.splice(i, 1);
+  buildPsList();
+  schedulePs();
+}
+
+function onPsInput(i, val) {
+  psStatements[i] = val;
+  schedulePs();
+}
+
 function schedulePs() {
   clearTimeout(psTimer);
   setBadge('ps-badge','saving');
   psTimer = setTimeout(savePs, 1500);
 }
+
 async function savePs() {
-  const val = document.getElementById('ps-ta').value;
-  // Load existing content first so we don't overwrite structured fields
-  let content = { statement: val };
+  let content = { statements: psStatements, statement: psStatements[0] || '' };
   try {
     const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=problem_statement`);
     const d = await r.json();
     const existing = d.deliverables?.problem_statement?.content || {};
-    content = { ...existing, statement: val };
+    content = { ...existing, statements: psStatements, statement: psStatements[0] || '' };
   } catch(_) {}
   try {
     const r = await fetch(`${API_URL}/deliverables`, {
@@ -396,14 +450,36 @@ async function loadDeliverables() {
     const rice = dels.d2_1_rice?.content;
     if (rice?.rows && Array.isArray(rice.rows)) riceData = rice.rows;
 
-    // Problem statement
+    // Problem statements (multi-row)
     const ps = dels.problem_statement?.content;
-    if (ps?.statement) document.getElementById('ps-ta').value = ps.statement;
+    if (ps?.statements && Array.isArray(ps.statements) && ps.statements.length) {
+      psStatements = ps.statements;
+    } else if (ps?.statement) {
+      psStatements = [ps.statement];
+    }
+    buildPsList();
 
     // Vision
     const vis = dels.product_vision?.content;
     if (vis?.vision_statement || vis?.vision) document.getElementById('vis-ta').value = vis.vision_statement || vis.vision;
+
+    // OKRs
+    if (vis?.okrs && Array.isArray(vis.okrs) && vis.okrs.length) {
+      renderOkrDisplay(vis.okrs);
+    }
   } catch(_) {}
+}
+
+function renderOkrDisplay(okrs) {
+  const wrap = document.getElementById('okr-display');
+  const list = document.getElementById('okr-disp-list');
+  if (!wrap || !list) return;
+  list.innerHTML = okrs.map(o => `
+    <div class="okr-disp-item">
+      <div class="okr-disp-obj">${escHtml(o.objective||'')}</div>
+      ${(o.key_results||[]).map(kr=>`<div class="okr-disp-kr">→ ${escHtml(kr)}</div>`).join('')}
+    </div>`).join('');
+  wrap.style.display = 'block';
 }
 
 // ── RICE Scoring ──────────────────────────────────────────────
@@ -559,6 +635,7 @@ async function init() {
   document.getElementById('phase-content').style.display = 'block';
 
   await loadDeliverables();
+  buildPsList();
   buildRiceTable();
 
   if (phaseGates[2]) {

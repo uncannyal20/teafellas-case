@@ -85,6 +85,13 @@ textarea.secondary-ta:focus{outline:none;border-color:var(--green);}
 .proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
 .proceed-btn:hover{opacity:.88;}
 
+.gen-stmt-box{background:var(--green-xl);border:1px solid var(--green);border-radius:8px;padding:16px;margin-top:12px;}
+.gen-stmt-title{font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.gen-stmt-text{font-size:13px;line-height:1.7;color:var(--text);margin-bottom:12px;}
+.gen-stmt-actions{display:flex;gap:8px;}
+.gen-accept-btn{background:var(--green);color:white;border:none;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;}
+.gen-accept-btn:hover{opacity:.88;}
+
 @media(max-width:700px){.two-col{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -146,9 +153,20 @@ textarea.secondary-ta:focus{outline:none;border-color:var(--green);}
 
       <button class="ai-btn" id="ai-btn" onclick="generateAI()">
         <span class="spinner"></span>
-        <span id="ai-btn-text">✦ Generate with AI</span>
+        <span id="ai-btn-text">✦ Fill fields with AI</span>
+      </button>
+      <button class="ai-btn" id="gen-stmt-btn" onclick="generateStatement()" style="background:var(--green);margin-top:8px;">
+        <span class="spinner" id="gen-stmt-spinner"></span>
+        <span id="gen-stmt-text">✦ Generate my problem statement</span>
       </button>
       <div class="ai-error" id="ai-error">Could not reach AI — check connection.</div>
+      <div class="gen-stmt-box" id="gen-stmt-box" style="display:none;">
+        <div class="gen-stmt-title">Generated Problem Statement</div>
+        <div class="gen-stmt-text" id="gen-stmt-output"></div>
+        <div class="gen-stmt-actions">
+          <button class="gen-accept-btn" onclick="acceptGenStmt()">Accept → Copy to statement field</button>
+        </div>
+      </div>
     </div>
 
     <!-- Live preview -->
@@ -233,6 +251,37 @@ function showSave(state){
   el.className='save-indicator '+state;
   el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
   if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+async function generateStatement(){
+  const btn=document.getElementById('gen-stmt-btn');
+  const spinner=document.getElementById('gen-stmt-spinner');
+  const errEl=document.getElementById('ai-error');
+  btn.disabled=true;spinner.style.display='block';
+  document.getElementById('gen-stmt-text').textContent='Generating…';
+  errEl.style.display='none';
+  document.getElementById('gen-stmt-box').style.display='none';
+  const u=val('f-user'),e=val('f-emotion'),s=val('f-situation'),g=val('f-goal'),b=val('f-barrier'),im=val('f-impact');
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:300,
+      system:'You are helping workshop participants write a concise problem statement for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Return ONLY the problem statement text starting with "We need to find a way for" — no quotes, no labels, no explanation.',
+      messages:[{role:'user',content:`Write a problem statement using this information:\nUser: ${u||'the team'}\nEmotion: ${e}\nSituation: ${s}\nGoal: ${g}\nBarrier: ${b}\nImpact: ${im}\n\nReturn ONE sentence starting with "We need to find a way for..."`}]
+    })});
+    const data=await resp.json();
+    const text=data?.content?.[0]?.text?.trim()||'';
+    document.getElementById('gen-stmt-output').textContent=text;
+    document.getElementById('gen-stmt-box').style.display='block';
+  }catch{errEl.style.display='block';}
+  finally{btn.disabled=false;spinner.style.display='none';document.getElementById('gen-stmt-text').textContent='✦ Generate my problem statement';}
+}
+
+function acceptGenStmt(){
+  const text=document.getElementById('gen-stmt-output').textContent;
+  set('f-secondary',text);
+  document.getElementById('gen-stmt-box').style.display='none';
+  onFieldChange();
 }
 
 async function generateAI(){

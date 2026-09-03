@@ -19,7 +19,7 @@ The case briefing and background context for Tea Fellas is hidden or absent from
 
 ## 2 — Section 2.2: Allow additional Problem Statements
 **File:** `phase2.html` (section 2.2) + `phase2-problem.html`  
-**Status:** TODO
+**Status:** DONE
 
 Currently section 2.2 has a single problem statement textarea. Participants should be able to draft multiple candidate problem statements before converging on one.
 
@@ -33,7 +33,7 @@ Currently section 2.2 has a single problem statement textarea. Participants shou
 
 ## 3 — Problem Statement Editor: "Generate my problem statement" button
 **File:** `phase2-problem.html`  
-**Status:** TODO
+**Status:** DONE
 
 The problem statement editor currently requires participants to write the statement manually from structured fields. Add an AI-assisted generation step.
 
@@ -47,7 +47,7 @@ The problem statement editor currently requires participants to write the statem
 
 ## 4 — Vision Editor: Generate OKRs + editable pillar headers + remove Constraints section
 **File:** `phase2-vision.html`  
-**Status:** TODO
+**Status:** DONE
 
 Three changes in the vision editor:
 
@@ -74,7 +74,7 @@ Three changes in the vision editor:
 
 ## 6 — Phase 2 main page: Include OKRs in the 2.3 Vision box
 **File:** `phase2.html` (section 2.3)  
-**Status:** TODO
+**Status:** DONE
 
 The 2.3 Product Vision section in the main Phase 2 hub currently shows only the vision statement textarea. After OKRs are built (item 4a), they should also appear here.
 
@@ -96,11 +96,10 @@ The To-Be Process Map exists as artefact 3.2 (PDFs) but is missing from the `pha
 - `artefacts/Phase3_Ideate/3.2_To-Be_Process_Map_Participant_Template.pptx` — 5-lane swimlane with 10 numbered blank boxes, improvement prompts, legend
 - `artefacts/Phase3_Ideate/3.2_To-Be_Process_Map_Model_Answer.pptx` — completed model answer with all step labels, improvement callouts, flow arrows, facilitator note
 
-**Still to do (in-app):**
-- Add a **To-Be Process** deliverable card in `phase3.html` between Canvas (3.1) and Roadmap
-- Card should have a textarea for teams to describe future-state flow steps per swimlane
-- Save to D1 as deliverable `d3_2_tobe`
-- Renumber Roadmap to 3.3, Risk to 3.4 to match artefact numbering
+**In-app (DONE 2026-09-03):**
+- Added 3.2 To-Be Process Map card to `phase3.html` (2×2 grid)
+- Created `phase3-tobe.html` with 5 swim lane textareas + summary, saves to D1 `d3_2_tobe`
+- Renumbered Roadmap → 3.3, Risk → 3.4
 
 ---
 

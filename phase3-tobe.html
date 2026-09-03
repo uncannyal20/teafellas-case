@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — To-Be Process Map</title>
+<style>
+:root{
+  --green:#2D5A27;--green-l:#4A7C42;--green-xl:#EEF5ED;
+  --amber:#C17A2A;--amber-xl:#FFF8E6;
+  --cream:#F5F0E8;--card:#FDFAF4;--border:#D4C4A0;
+  --text:#2C2416;--muted:#6B5A3E;--red:#C0392B;--red-xl:#FFEBEE;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--cream);color:var(--text);}
+body{padding-left:210px;}
+
+/* ── Sidebar ── */
+#sidebar{position:fixed;top:0;left:0;bottom:0;width:210px;background:#2D5A27;display:flex;flex-direction:column;z-index:100;}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12);}
+.sb-brand-name{font-size:15px;font-weight:900;color:white;letter-spacing:-.01em;display:block;}
+.sb-team-badge{font-size:10px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.3);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;}
+#sb-nav{padding:10px 8px;flex:1;}
+.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);padding:0 8px;margin-bottom:6px;display:block;}
+.pnav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;font-weight:600;text-align:left;text-decoration:none;margin-bottom:2px;transition:background .15s;box-sizing:border-box;}
+.pnav-btn:hover{background:rgba(255,255,255,.08);}
+.pnav-btn.p-active{background:rgba(255,255,255,.18);color:white;}
+.pnav-btn.p-done{color:rgba(255,255,255,.82);}
+.pnav-btn.p-locked{cursor:default;pointer-events:none;opacity:.5;}
+.pnav-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
+.pnav-btn.p-active .pnav-badge{background:#C17A2A;color:white;}
+.pnav-btn.p-done .pnav-badge{background:#4CAF50;color:white;}
+.pnav-btn.p-locked .pnav-badge{background:rgba(255,255,255,.12);color:rgba(255,255,255,.4);}
+#sb-footer{padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.12);}
+.sb-footer-btn{display:block;width:100%;padding:8px 10px;border:none;background:none;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;text-align:left;cursor:pointer;}
+.sb-footer-btn:hover{background:rgba(255,255,255,.08);color:white;}
+
+/* Layout */
+.page{max-width:900px;margin:0 auto;padding:28px 32px 80px;}
+.back-link{font-size:13px;color:var(--green);text-decoration:none;display:inline-block;margin-bottom:20px;}
+.back-link:hover{text-decoration:underline;}
+.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.phase-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
+.page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.page-sub{font-size:14px;color:var(--muted);}
+.save-indicator{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:8px;}
+.save-indicator.saved{background:#E8F5E9;color:#2E7D32;}
+.save-indicator.saving{background:var(--amber-xl);color:var(--amber);}
+.save-indicator.error{background:var(--red-xl);color:var(--red);}
+.save-indicator.hidden{visibility:hidden;}
+
+/* Swim lane card */
+.lane-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.lane-hdr{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);}
+.lane-icon{font-size:20px;flex-shrink:0;}
+.lane-title{font-size:14px;font-weight:800;color:var(--green);}
+.lane-sub{font-size:12px;color:var(--muted);font-weight:500;}
+.lane-body{padding:14px 18px;}
+.lane-hint{font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+.lane-ta{width:100%;border:1px solid var(--border);border-radius:7px;padding:10px 13px;font-size:13px;font-family:inherit;line-height:1.7;resize:vertical;min-height:100px;background:white;color:var(--text);}
+.lane-ta:focus{border-color:var(--green);outline:none;}
+
+/* Summary card */
+.summary-card{background:var(--green-xl);border:1px solid var(--green);border-radius:12px;padding:18px 20px;margin-top:8px;}
+.summary-title{font-size:13px;font-weight:800;color:var(--green);margin-bottom:8px;}
+.summary-ta{width:100%;border:1px solid var(--green);border-radius:7px;padding:10px 13px;font-size:13px;font-family:inherit;line-height:1.7;resize:vertical;min-height:90px;background:white;color:var(--text);}
+.summary-ta:focus{border-color:var(--amber);outline:none;}
+
+/* Context note */
+.context-note{background:var(--amber-xl);border:1px solid #E8C97A;border-left:4px solid var(--amber);border-radius:8px;padding:14px 18px;margin-bottom:24px;}
+.context-note-title{font-size:12px;font-weight:700;color:var(--amber);margin-bottom:5px;}
+.context-note-body{font-size:13px;color:var(--text);line-height:1.65;}
+
+@media(max-width:680px){.page{padding:20px 14px 60px;}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-brand">
+    <span class="sb-brand-name">Tea Fellas</span>
+    <span class="sb-team-badge" id="sb-team-code">—</span>
+  </div>
+  <nav id="sb-nav">
+    <span class="sb-nav-label">Phases</span>
+    <div id="sb-phase-list"></div>
+  </nav>
+  <div id="sb-footer">
+    <button class="sb-footer-btn" onclick="signOut()">Log out</button>
+  </div>
+</div>
+
+<div class="page">
+  <a href="phase3.html" class="back-link">← Back to Phase 3</a>
+  <div class="page-header">
+    <div>
+      <div class="phase-tag">Phase 3.2</div>
+      <div class="page-title">To-Be Process Map</div>
+      <div class="page-sub">Map the future-state order fulfilment flow across 5 swim lanes for Scenario C1.</div>
+    </div>
+    <div class="save-indicator hidden" id="save-ind">Saved ✓</div>
+  </div>
+
+  <div class="context-note">
+    <div class="context-note-title">Scenario C1 — Sequential: Digital first, then expand</div>
+    <div class="context-note-body">Your To-Be map should reflect the fully digital version of Tea Fellas Toa Payoh — the state after Scenario A1 (basic digital system) is implemented, before expansion. Focus on what each actor does differently from today.</div>
+  </div>
+
+  <!-- Lane 1: Customer -->
+  <div class="lane-card">
+    <div class="lane-hdr">
+      <div class="lane-icon">🧑‍🤝‍🧑</div>
+      <div>
+        <div class="lane-title">Customer</div>
+        <div class="lane-sub">Mrs Selva, Jacky, bulk order teams</div>
+      </div>
+    </div>
+    <div class="lane-body">
+      <div class="lane-hint">Describe what the customer does in the new process — how they order, when they're notified, how they collect.</div>
+      <textarea class="lane-ta" id="ta-customer" placeholder="e.g. Customer scans QR code or uses the web app to place a pre-order. They receive a confirmation and a collection token. On arrival, they check the digital screen for their number and collect from Uncle John without queuing…" oninput="scheduleSave()"></textarea>
+    </div>
+  </div>
+
+  <!-- Lane 2: Cashier -->
+  <div class="lane-card">
+    <div class="lane-hdr">
+      <div class="lane-icon">🧓</div>
+      <div>
+        <div class="lane-title">Cashier — Aunty Mary</div>
+        <div class="lane-sub">Order intake, payment, handoff to kitchen</div>
+      </div>
+    </div>
+    <div class="lane-body">
+      <div class="lane-hint">Describe Aunty Mary's role in the new process — what changes from handwriting chits? What does she now do differently?</div>
+      <textarea class="lane-ta" id="ta-cashier" placeholder="e.g. Aunty Mary uses the tablet at the counter. Walk-in orders are entered digitally — no more handwriting. Pre-orders show up automatically. The system confirms each order to the kitchen screen immediately…" oninput="scheduleSave()"></textarea>
+    </div>
+  </div>
+
+  <!-- Lane 3: System/Digital -->
+  <div class="lane-card">
+    <div class="lane-hdr">
+      <div class="lane-icon">💻</div>
+      <div>
+        <div class="lane-title">System / Digital ★ NEW</div>
+        <div class="lane-sub">Order management, notifications, display</div>
+      </div>
+    </div>
+    <div class="lane-body">
+      <div class="lane-hint">Describe what the digital system does — order routing, queue management, customer notifications, and the kitchen display screen.</div>
+      <textarea class="lane-ta" id="ta-system" placeholder="e.g. The order management system receives orders from the web app and cashier tablet. It displays a queue on the kitchen screen and the collection counter screen. It sends an SMS/WhatsApp notification to the customer when their drink is ready…" oninput="scheduleSave()"></textarea>
+    </div>
+  </div>
+
+  <!-- Lane 4: Kitchen -->
+  <div class="lane-card">
+    <div class="lane-hdr">
+      <div class="lane-icon">🧑‍🍳</div>
+      <div>
+        <div class="lane-title">Kitchen — Darren</div>
+        <div class="lane-sub">Drink preparation, labelling</div>
+      </div>
+    </div>
+    <div class="lane-body">
+      <div class="lane-hint">Describe how Darren prepares drinks in the new process — what does he see on the kitchen screen, how are drinks labelled?</div>
+      <textarea class="lane-ta" id="ta-kitchen" placeholder="e.g. Darren sees a live queue on the kitchen display screen. Each order shows the drink, customisations, and collection token. He prints a label for each cup from the receipt printer and places it in the collection tray…" oninput="scheduleSave()"></textarea>
+    </div>
+  </div>
+
+  <!-- Lane 5: Collection -->
+  <div class="lane-card">
+    <div class="lane-hdr">
+      <div class="lane-icon">👴</div>
+      <div>
+        <div class="lane-title">Collection — Uncle John</div>
+        <div class="lane-sub">Order handoff, loyalty, customer management</div>
+      </div>
+    </div>
+    <div class="lane-body">
+      <div class="lane-hint">Describe Uncle John's role at the collection counter — how does he match drinks to customers, handle loyalty, and manage bulk orders?</div>
+      <textarea class="lane-ta" id="ta-collection" placeholder="e.g. Uncle John monitors the collection screen which shows ready orders by token number. When the number is called, he matches the token to the labelled cup and hands it over. Digital loyalty is credited automatically. Bulk orders are displayed as a grouped list…" oninput="scheduleSave()"></textarea>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-card">
+    <div class="summary-title">Summary — Key improvements from As-Is to To-Be</div>
+    <textarea class="summary-ta" id="ta-summary" placeholder="Summarise the 3–5 biggest improvements this new process delivers for Tea Fellas. How does it solve the core pain points identified in Phase 2?" oninput="scheduleSave()"></textarea>
+  </div>
+</div>
+
+<script>
+const API_URL='https://teafellas-proxy.uncannyal20.workers.dev';
+const CURRENT_PHASE=3;
+const PHASE_PAGES={1:'index.html',2:'phase2.html',3:'phase3.html',4:'phase4.html'};
+const PHASE_LABELS={1:'Research',2:'Define',3:'Ideate',4:'Validate'};
+
+const teamCode=sessionStorage.getItem('teafellas_team_code');
+if(!teamCode){location.href='index.html';}
+
+let phaseGates={1:false,2:false,3:false,4:false};
+let saveTimer=null;
+
+function val(id){return document.getElementById(id)?.value||'';}
+function set(id,v){const el=document.getElementById(id);if(el)el.value=v||'';}
+
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  showSave('saving');
+  saveTimer=setTimeout(doSave,1500);
+}
+
+async function doSave(){
+  const content={
+    customer:val('ta-customer'),
+    cashier:val('ta-cashier'),
+    system:val('ta-system'),
+    kitchen:val('ta-kitchen'),
+    collection:val('ta-collection'),
+    summary:val('ta-summary'),
+  };
+  try{
+    const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({team_code:teamCode,deliverable_id:'d3_2_tobe',content})});
+    if(!r.ok)throw new Error();
+    showSave('saved');
+  }catch{showSave('error');}
+}
+
+function showSave(state){
+  const el=document.getElementById('save-ind');
+  el.className='save-indicator '+state;
+  el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
+  if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+async function loadPhaseGates(){
+  try{
+    const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);
+    const d=await r.json();
+    if(d.gates)phaseGates={...phaseGates,...d.gates};
+  }catch{}
+}
+
+function renderPhaseNav(){
+  const badge=document.getElementById('sb-team-code');
+  if(badge)badge.textContent=teamCode||'—';
+  const list=document.getElementById('sb-phase-list');
+  if(!list)return;
+  list.innerHTML=[1,2,3,4].map(p=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'p-done':active?'p-active':'p-locked';
+    const lbl=`Phase ${p} — ${PHASE_LABELS[p]}`;
+    const icon=done?'✓':String(p);
+    if(done||active){return `<a href="${PHASE_PAGES[p]}" class="pnav-btn ${cls}"><span class="pnav-badge">${icon}</span>${lbl}</a>`;}
+    return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
+  }).join('');
+}
+
+function signOut(){
+  sessionStorage.removeItem('teafellas_team_code');
+  location.href='index.html';
+}
+
+async function init(){
+  await loadPhaseGates();
+  renderPhaseNav();
+  try{
+    const r=await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=d3_2_tobe`);
+    const d=await r.json();
+    const c=d.deliverables?.d3_2_tobe?.content;
+    if(c){
+      set('ta-customer',c.customer);
+      set('ta-cashier',c.cashier);
+      set('ta-system',c.system);
+      set('ta-kitchen',c.kitchen);
+      set('ta-collection',c.collection);
+      set('ta-summary',c.summary);
+    }
+  }catch{}
+}
+init();
+</script>
+</body>
+</html>

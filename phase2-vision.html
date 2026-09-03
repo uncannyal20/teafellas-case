@@ -73,6 +73,18 @@ body{padding-left:210px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ai-error{font-size:12px;color:var(--red);margin-top:8px;display:none;}
 
+/* OKR editor */
+.okr-item{background:var(--green-xl);border:1px solid var(--green);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+.okr-obj-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.okr-o-badge{font-size:10px;font-weight:800;color:white;background:var(--green);border-radius:4px;padding:2px 6px;flex-shrink:0;}
+.okr-obj-input{flex:1;border:none;border-bottom:1px dashed var(--green);background:transparent;font-size:13px;font-weight:700;color:var(--text);font-family:inherit;padding:2px 4px;}
+.okr-obj-input:focus{outline:none;border-bottom-color:var(--amber);}
+.okr-krs{display:flex;flex-direction:column;gap:5px;padding-left:8px;}
+.okr-kr-row{display:flex;align-items:center;gap:6px;}
+.okr-kr-badge{font-size:10px;font-weight:700;color:var(--green);flex-shrink:0;}
+.okr-kr-input{flex:1;border:none;border-bottom:1px dashed var(--border);background:transparent;font-size:12px;color:var(--text);font-family:inherit;padding:2px 4px;}
+.okr-kr-input:focus{outline:none;border-bottom-color:var(--amber);}
+
 /* Not sections */
 .not-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 
@@ -145,32 +157,30 @@ body{padding-left:210px;}
       <div style="margin-top:20px;">
         <div class="section-title" style="font-size:13px;">What "Good" Looks Like — 3 Outcome Pillars</div>
         <div class="field-group">
-          <div class="field-label">Pillar 1 — Operational accuracy</div>
-          <textarea class="field-input sm" id="f-p1" placeholder="Describe what operational accuracy looks like for Tea Fellas…" oninput="onChange()"></textarea>
+          <div class="field-label">Pillar 1 — Header</div>
+          <input class="field-input" id="f-h1" placeholder="e.g. Operational accuracy" oninput="onChange()" style="margin-bottom:6px;">
+          <textarea class="field-input sm" id="f-p1" placeholder="Describe what this pillar looks like for Tea Fellas…" oninput="onChange()"></textarea>
         </div>
         <div class="field-group">
-          <div class="field-label">Pillar 2 — Customer convenience</div>
+          <div class="field-label">Pillar 2 — Header</div>
+          <input class="field-input" id="f-h2" placeholder="e.g. Customer convenience" oninput="onChange()" style="margin-bottom:6px;">
           <textarea class="field-input sm" id="f-p2" placeholder="Describe the customer experience you're designing towards…" oninput="onChange()"></textarea>
         </div>
         <div class="field-group">
-          <div class="field-label">Pillar 3 — Scalable foundation</div>
+          <div class="field-label">Pillar 3 — Header</div>
+          <input class="field-input" id="f-h3" placeholder="e.g. Scalable foundation" oninput="onChange()" style="margin-bottom:6px;">
           <textarea class="field-input sm" id="f-p3" placeholder="What does a scalable Tea Fellas look like?" oninput="onChange()"></textarea>
         </div>
       </div>
 
       <div style="margin-top:20px;">
-        <div class="section-title" style="font-size:13px;">What This Is NOT — 3 Constraints</div>
-        <div class="not-grid">
-          <div class="field-group">
-            <input class="field-input" id="f-not1" placeholder="e.g. This is NOT about making Tea Fellas into a chain" oninput="onChange()">
-          </div>
-          <div class="field-group">
-            <input class="field-input" id="f-not2" placeholder="e.g. This is NOT the most expensive solution — it's the right one" oninput="onChange()">
-          </div>
-          <div class="field-group">
-            <input class="field-input" id="f-not3" placeholder="e.g. This is NOT technology for its own sake" oninput="onChange()">
-          </div>
-        </div>
+        <div class="section-title" style="font-size:13px;">Objectives &amp; Key Results (OKRs)</div>
+        <button class="ai-btn" id="okr-btn" onclick="generateOKRs()">
+          <span class="spinner" id="okr-spinner"></span>
+          <span id="okr-btn-text">✦ Generate my recommended OKRs</span>
+        </button>
+        <div class="ai-error" id="okr-error">Could not reach AI — check connection.</div>
+        <div id="okr-list" style="margin-top:12px;"></div>
       </div>
     </div>
 
@@ -182,23 +192,17 @@ body{padding-left:210px;}
         <div class="prev-vision" id="pv-vision"><span style="opacity:.4;font-style:italic">Vision statement will appear here…</span></div>
         <div class="prev-pillars">
           <div class="prev-pillar">
-            <div class="prev-pillar-label">Operational accuracy</div>
+            <div class="prev-pillar-label" id="pv-h1">Pillar 1</div>
             <div class="prev-pillar-text empty" id="pv-p1">Describe what good looks like…</div>
           </div>
           <div class="prev-pillar">
-            <div class="prev-pillar-label">Customer convenience</div>
+            <div class="prev-pillar-label" id="pv-h2">Pillar 2</div>
             <div class="prev-pillar-text empty" id="pv-p2">Describe the experience…</div>
           </div>
           <div class="prev-pillar">
-            <div class="prev-pillar-label">Scalable foundation</div>
+            <div class="prev-pillar-label" id="pv-h3">Pillar 3</div>
             <div class="prev-pillar-text empty" id="pv-p3">Describe scalability…</div>
           </div>
-        </div>
-        <div class="prev-nots">
-          <div class="prev-nots-label">This is NOT…</div>
-          <div class="prev-not-item empty" id="pv-not1">Constraint 1</div>
-          <div class="prev-not-item empty" id="pv-not2">Constraint 2</div>
-          <div class="prev-not-item empty" id="pv-not3">Constraint 3</div>
         </div>
       </div>
     </div>
@@ -224,18 +228,19 @@ function set(id,v){const el=document.getElementById(id);if(el)el.value=v||'';}
 function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 function updatePreview(){
-  const v=val('f-vision'),p1=val('f-p1'),p2=val('f-p2'),p3=val('f-p3'),n1=val('f-not1'),n2=val('f-not2'),n3=val('f-not3');
+  const v=val('f-vision'),p1=val('f-p1'),p2=val('f-p2'),p3=val('f-p3');
+  const h1=val('f-h1')||'Pillar 1',h2=val('f-h2')||'Pillar 2',h3=val('f-h3')||'Pillar 3';
   const pvv=document.getElementById('pv-vision');
   pvv.innerHTML=v?escHtml(v):'<span style="opacity:.4;font-style:italic">Vision statement will appear here…</span>';
   pvv.className='prev-vision'+(v?'':' empty');
+
+  const setH=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  setH('pv-h1',h1);setH('pv-h2',h2);setH('pv-h3',h3);
 
   const setP=(id,val,placeholder)=>{const el=document.getElementById(id);el.textContent=val||placeholder;el.className='prev-pillar-text'+(val?'':' empty');};
   setP('pv-p1',p1,'Describe what good looks like…');
   setP('pv-p2',p2,'Describe the experience…');
   setP('pv-p3',p3,'Describe scalability…');
-
-  const setN=(id,val,ph)=>{const el=document.getElementById(id);el.textContent=val||ph;el.className='prev-not-item'+(val?'':' empty');};
-  setN('pv-not1',n1,'Constraint 1');setN('pv-not2',n2,'Constraint 2');setN('pv-not3',n3,'Constraint 3');
 }
 
 function onChange(){updatePreview();scheduleSave();}
@@ -246,7 +251,12 @@ function scheduleSave(){
 }
 
 async function doSave(){
-  const content={vision_statement:val('f-vision'),pillar1:val('f-p1'),pillar2:val('f-p2'),pillar3:val('f-p3'),not1:val('f-not1'),not2:val('f-not2'),not3:val('f-not3')};
+  const content={
+    vision_statement:val('f-vision'),
+    pillar1_header:val('f-h1'),pillar2_header:val('f-h2'),pillar3_header:val('f-h3'),
+    pillar1:val('f-p1'),pillar2:val('f-p2'),pillar3:val('f-p3'),
+    okrs:okrData
+  };
   try{
     const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'product_vision',content})});
     if(!r.ok)throw new Error();
@@ -259,6 +269,58 @@ function showSave(state){
   el.className='save-indicator '+state;
   el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
   if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+}
+
+let okrData=[];
+
+function renderOKRs(){
+  const list=document.getElementById('okr-list');
+  if(!list) return;
+  list.innerHTML=okrData.map((o,oi)=>`
+    <div class="okr-item">
+      <div class="okr-obj-row">
+        <span class="okr-o-badge">O${oi+1}</span>
+        <input class="okr-obj-input" id="okr-obj-${oi}" value="${escHtml(o.objective||'')}" placeholder="Objective…" oninput="onOkrInput(${oi},'objective',this.value)">
+      </div>
+      <div class="okr-krs">
+        ${(o.key_results||[]).map((kr,ki)=>`
+          <div class="okr-kr-row">
+            <span class="okr-kr-badge">KR${ki+1}</span>
+            <input class="okr-kr-input" value="${escHtml(kr)}" placeholder="Key result…" oninput="onOkrInput(${oi},'kr',this.value,${ki})">
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function onOkrInput(oi, field, value, ki){
+  if(field==='objective') okrData[oi].objective=value;
+  else if(field==='kr') okrData[oi].key_results[ki]=value;
+  scheduleSave();
+}
+
+async function generateOKRs(){
+  const btn=document.getElementById('okr-btn');
+  const errEl=document.getElementById('okr-error');
+  btn.classList.add('loading');btn.disabled=true;
+  document.getElementById('okr-btn-text').textContent='Generating…';
+  errEl.style.display='none';
+  try{
+    const v=val('f-vision'),p1=val('f-p1'),p2=val('f-p2'),p3=val('f-p3');
+    const h1=val('f-h1')||'Pillar 1',h2=val('f-h2')||'Pillar 2',h3=val('f-h3')||'Pillar 3';
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',
+      max_tokens:700,
+      system:'You are helping workshop participants draft OKRs for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Return ONLY a valid JSON array of exactly 3 OKR objects, each with keys "objective" (string) and "key_results" (array of 3 strings). No markdown, no explanation.',
+      messages:[{role:'user',content:`Vision: ${v}\nPillar 1 (${h1}): ${p1}\nPillar 2 (${h2}): ${p2}\nPillar 3 (${h3}): ${p3}\n\nGenerate 3 OKRs (one per pillar). Return ONLY JSON array.`}]
+    })});
+    const data=await resp.json();
+    const text=data?.content?.[0]?.text||'';
+    const parsed=JSON.parse(text.replace(/```json\n?|\n?```/g,'').trim());
+    okrData=parsed;
+    renderOKRs();
+    scheduleSave();
+  }catch{errEl.style.display='block';}
+  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('okr-btn-text').textContent='✦ Generate my recommended OKRs';}
 }
 
 async function generateVision(){
@@ -315,8 +377,10 @@ async function init(){
     const d=await r.json();
     const c=d.deliverables?.product_vision?.content;
     if(c){
-      set('f-vision',c.vision_statement);set('f-p1',c.pillar1);set('f-p2',c.pillar2);set('f-p3',c.pillar3);
-      set('f-not1',c.not1);set('f-not2',c.not2);set('f-not3',c.not3);
+      set('f-vision',c.vision_statement);
+      set('f-h1',c.pillar1_header);set('f-h2',c.pillar2_header);set('f-h3',c.pillar3_header);
+      set('f-p1',c.pillar1);set('f-p2',c.pillar2);set('f-p3',c.pillar3);
+      if(c.okrs&&Array.isArray(c.okrs)&&c.okrs.length){okrData=c.okrs;renderOKRs();}
     }
   }catch{}
   updatePreview();
