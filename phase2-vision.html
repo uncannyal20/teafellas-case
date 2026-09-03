@@ -246,7 +246,15 @@ function updatePreview(){
   setP('pv-p3',p3,'Describe scalability…');
 }
 
-function onChange(){updatePreview();scheduleSave();}
+function checkOkrBtn(){
+  const filled=[val('f-p1'),val('f-p2'),val('f-p3')].some(v=>v.trim().length>0);
+  const btn=document.getElementById('okr-btn');
+  if(!btn)return;
+  btn.disabled=!filled;
+  btn.style.opacity=filled?'':'0.4';
+  btn.title=filled?'':'Fill in at least one pillar first';
+}
+function onChange(){updatePreview();checkOkrBtn();scheduleSave();}
 
 function scheduleSave(){
   clearTimeout(saveTimer);showSave('saving');
@@ -323,7 +331,7 @@ async function generateOKRs(){
     renderOKRs();
     scheduleSave();
   }catch{errEl.style.display='block';}
-  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('okr-btn-text').textContent='✦ Generate my recommended OKRs';}
+  finally{btn.classList.remove('loading');document.getElementById('okr-btn-text').textContent='✦ Generate my recommended OKRs';checkOkrBtn();}
 }
 
 async function generateVision(){
@@ -387,6 +395,7 @@ async function init(){
     }
   }catch{}
   updatePreview();
+  checkOkrBtn();
 }
 init();
 </script>
