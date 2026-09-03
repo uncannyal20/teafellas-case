@@ -84,6 +84,8 @@ body{padding-left:210px;}
 .step-btn.green { background: var(--green); }
 .step-btn.blue  { background: var(--blue); }
 .step-btn:hover { opacity: .88; }
+.step-btn-next { display: block; margin-top: 8px; text-align: center; background: none; border: 1px solid var(--border); border-radius: 7px; padding: 7px 14px; font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer; text-decoration: none; transition: border-color .15s, color .15s; }
+.step-btn-next:hover { border-color: var(--green); color: var(--green); }
 .step-status { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
   display: inline-block; margin-bottom: 9px; }
 .st-todo   { background: #F5F5F5; color: #9E9E9E; }
@@ -251,31 +253,34 @@ body{padding-left:210px;}
       <div class="acc-body-inner">
         <div class="step-grid" style="margin-top:16px;">
           <div class="step-card">
-            <div class="step-card-hdr">3.1 — Solution Concept Canvas</div>
+            <div class="step-card-hdr">3.3.1 — Solution Concept Canvas</div>
             <div class="step-card-body">
               <div class="step-status st-todo">Not started</div>
               <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
               <a href="#" class="step-btn green" onclick="openEditor('phase3-canvas.html');return false;">Open →</a>
+              <a href="#" class="step-btn-next" onclick="openEditor('phase3-tobe.html');return false;">Proceed to 3.3.2 — To-Be Process Map →</a>
             </div>
           </div>
           <div class="step-card">
-            <div class="step-card-hdr">3.2 — To-Be Process Map</div>
+            <div class="step-card-hdr">3.3.2 — To-Be Process Map</div>
             <div class="step-card-body">
               <div class="step-status st-todo">Not started</div>
               <div class="step-card-desc">Map the future-state process flow for Scenario C1 across 5 swim lanes: Customer, Cashier, System/Digital, Kitchen, and Collection.</div>
               <a href="#" class="step-btn" onclick="openEditor('phase3-tobe.html');return false;">Open →</a>
+              <a href="#" class="step-btn-next" onclick="openEditor('phase3-roadmap.html');return false;">Proceed to 3.3.3 — Product Roadmap →</a>
             </div>
           </div>
           <div class="step-card">
-            <div class="step-card-hdr amber">3.3 — Product Roadmap</div>
+            <div class="step-card-hdr amber">3.3.3 — Product Roadmap</div>
             <div class="step-card-body">
               <div class="step-status st-todo">Not started</div>
               <div class="step-card-desc">Plan the 18-month delivery roadmap across three phases: Foundation, Scale, and Optimise. Download the template and build it in PowerPoint.</div>
               <a href="#" class="step-btn" style="background:var(--amber);" onclick="openEditor('phase3-roadmap.html');return false;">Open →</a>
+              <a href="#" class="step-btn-next" onclick="openEditor('phase3-risk.html');return false;">Proceed to 3.3.4 — Risk Assessment →</a>
             </div>
           </div>
           <div class="step-card">
-            <div class="step-card-hdr amber">3.4 — Risk Assessment</div>
+            <div class="step-card-hdr amber">3.3.4 — Risk Assessment</div>
             <div class="step-card-body">
               <div class="step-status st-todo">Not started</div>
               <div class="step-card-desc">Identify, score, and plan mitigations for the key risks of your recommended scenario. Saved directly to your team's record.</div>
