@@ -336,6 +336,18 @@
 
   /* ── Read-only confirmed summary ── */
   .sp-readonly { background: var(--tea-cream); border-radius: 6px; padding: 10px 12px; font-size: 13px; color: var(--tea-text); line-height: 1.7; white-space: pre-wrap; }
+
+  /* ── Case Briefing ── */
+  .case-brief-section { padding: 22px 32px 24px; background: var(--tea-card); border-bottom: 1px solid var(--tea-border); flex-shrink: 0; }
+  .case-brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 14px; }
+  .case-brief-col-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--tea-green); margin-bottom: 8px; }
+  .case-brief-body { font-size: 13px; color: var(--tea-text); line-height: 1.65; }
+  .case-brief-body p { margin-bottom: 10px; }
+  .case-brief-body p:last-child { margin-bottom: 0; }
+  .case-char-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .case-char-emoji { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .case-char-name { font-size: 13px; font-weight: 600; color: var(--tea-text); }
+  .case-char-role { font-size: 11px; color: var(--tea-muted); margin-top: 1px; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -429,6 +441,60 @@
   <div id="main">
     <!-- Phase 1 — Research (3 sections) -->
     <div id="phase1-view" style="display:none;flex:1;overflow-y:auto;flex-direction:column;">
+
+      <!-- Case Briefing -->
+      <div class="case-brief-section">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div style="font-size:28px;">🍵</div>
+          <div>
+            <div style="font-size:17px;font-weight:700;color:var(--tea-green);">Tea Fellas — Case Briefing</div>
+            <div style="font-size:12px;color:var(--tea-muted);">Read this before beginning your stakeholder interviews</div>
+          </div>
+        </div>
+        <div class="case-brief-grid">
+          <div>
+            <div class="case-brief-col-title">Background</div>
+            <div class="case-brief-body">
+              <p><strong>Tea Fellas</strong> is a family-run bubble tea shop in a HDB estate in <strong>Toa Payoh, Singapore</strong>. Tagline: <em>"Good Tea. Good Day."</em> Opened in 2024.</p>
+              <p>It was founded by <strong>Uncle John</strong>, who was retrenched from a 20-year corporate career in his mid-50s and decided to build something of his own. His wife <strong>Aunty Mary</strong> quit her job to run the shop alongside him.</p>
+              <p>Tea Fellas is popular with HDB residents, office workers, and morning commuters. Peak hours are 7–9 am and 12–2 pm. Known for quality, less-sweet, authentic flavours.</p>
+              <p><strong>The challenge:</strong> All operations are fully manual and paper-based — no POS system, no app, no digital ordering. As the business grows, cracks are starting to show.</p>
+              <p><strong>Your objective:</strong> Interview the stakeholders to uncover real pain points and aspirations. Use your findings to define a problem statement, a product vision, and a recommended digital solution — then present it to the client.</p>
+            </div>
+          </div>
+          <div>
+            <div class="case-brief-col-title">Key Stakeholders</div>
+            <div style="margin-bottom:16px;">
+              <div class="case-char-row">
+                <span class="case-char-emoji">👴</span>
+                <div><div class="case-char-name">Uncle John</div><div class="case-char-role">Owner · Collection counter · Handles all supply ordering</div></div>
+              </div>
+              <div class="case-char-row">
+                <span class="case-char-emoji">👵</span>
+                <div><div class="case-char-name">Aunty Mary</div><div class="case-char-role">Cashier (John's wife) · Handwrites order chits · Customer-facing</div></div>
+              </div>
+              <div class="case-char-row">
+                <span class="case-char-emoji">👨‍🍳</span>
+                <div><div class="case-char-name">Darren</div><div class="case-char-role">Main barista · John's nephew · Recent SMU Business grad</div></div>
+              </div>
+              <div class="case-char-row">
+                <span class="case-char-emoji">🧑‍🦳</span>
+                <div><div class="case-char-name">Mrs Selva</div><div class="case-char-role">Loyal customer · 3–4 visits/week · Toa Payoh resident</div></div>
+              </div>
+              <div class="case-char-row">
+                <span class="case-char-emoji">👨‍💼</span>
+                <div><div class="case-char-name">Jacky</div><div class="case-char-role">HDB Senior Manager · Daily bulk buyer · Process-minded regular</div></div>
+              </div>
+            </div>
+            <div class="case-brief-col-title">Current Pain Points (Known)</div>
+            <div class="case-brief-body">
+              <p>Orders taken verbally → handwritten chits → keyed in manually → sticker labels printed. Every step is a potential error point.</p>
+              <p>No queue system, no pre-ordering, no digital loyalty programme. Customers queue even for one drink.</p>
+              <p>Uncle John matches drinks to customers from memory at the collection counter — no ticket numbers, no notifications.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- 1.1 Interviews -->
       <div class="phase-section">
