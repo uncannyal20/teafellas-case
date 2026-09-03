@@ -20,8 +20,8 @@ body{padding-left:210px;}
 .sb-brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12);}
 .sb-brand-name{font-size:15px;font-weight:900;color:white;letter-spacing:-.01em;display:block;}
 .sb-team-badge{font-size:10px;font-weight:700;color:#E8A94A;background:rgba(193,122,42,.3);border-radius:4px;padding:2px 7px;display:inline-block;margin-top:5px;}
-#sb-nav{padding:10px 8px;flex:1;}
-.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);padding:0 8px;margin-bottom:6px;display:block;}
+#sb-nav{padding:10px 8px;flex:1;overflow-y:auto;}
+.sb-nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);padding:0 8px;margin-bottom:6px;margin-top:10px;display:block;}
 .pnav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:none;background:none;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.5);font-size:12px;font-weight:600;text-align:left;text-decoration:none;margin-bottom:2px;transition:background .15s;box-sizing:border-box;}
 .pnav-btn:hover{background:rgba(255,255,255,.08);}
 .pnav-btn.p-active{background:rgba(255,255,255,.18);color:white;}
@@ -35,46 +35,69 @@ body{padding-left:210px;}
 .sb-footer-btn{display:block;width:100%;padding:8px 10px;border:none;background:none;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;text-align:left;cursor:pointer;}
 .sb-footer-btn:hover{background:rgba(255,255,255,.08);color:white;}
 
-/* Layout */
-.page-wrap{max-width:1000px;margin:0 auto;padding:28px 32px 80px;}
+/* ── Layout ── */
+.page-wrap{max-width:1020px;margin:0 auto;padding:28px 32px 80px;}
 .back-link{font-size:13px;color:var(--green);text-decoration:none;display:inline-block;margin-bottom:20px;}
 .back-link:hover{text-decoration:underline;}
-.page-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.page-header{margin-bottom:24px;}
 .phase-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:4px;}
 .page-title{font-size:26px;font-weight:900;color:var(--green);margin-bottom:4px;}
 .page-sub{font-size:14px;color:var(--muted);}
-.save-indicator{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:8px;}
-.save-indicator.saved{background:#E8F5E9;color:#2E7D32;}
-.save-indicator.saving{background:var(--amber-xl);color:var(--amber);}
-.save-indicator.error{background:#FFEBEE;color:var(--red);}
-.save-indicator.hidden{visibility:hidden;}
 
-/* Two-col */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
-.full-col{margin-bottom:24px;}
+/* ── Step progress bar ── */
+.step-bar{display:flex;align-items:center;margin-bottom:28px;}
+.step-dot{display:flex;align-items:center;gap:8px;}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;border:2px solid var(--border);background:white;color:var(--muted);transition:all .3s;}
+.step-circle.active{background:var(--green);border-color:var(--green);color:white;}
+.step-circle.done{background:#4CAF50;border-color:#4CAF50;color:white;}
+.step-bar-label{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;}
+.step-bar-label.active{color:var(--green);}
+.step-bar-label.done{color:#2E7D32;}
+.step-bar-line{flex:1;height:2px;background:var(--border);margin:0 10px;}
+.step-bar-line.done{background:#4CAF50;}
 
-/* Cards */
-.section-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
-.section-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:14px;}
+/* ── Step boxes ── */
+.step-box{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:box-shadow .2s;}
+.step-box.active{border-color:var(--green);box-shadow:0 2px 12px rgba(45,90,39,.12);}
+.step-box.done{border-color:#4CAF50;}
+.step-box-hdr{display:flex;align-items:center;gap:14px;padding:14px 20px;background:rgba(0,0,0,.02);border-bottom:1px solid var(--border);}
+.step-box.active .step-box-hdr{background:var(--green-xl);border-bottom-color:#C8DFC6;}
+.step-box.done .step-box-hdr{background:#F1FBF2;border-bottom-color:#B2DFB6;}
+.step-num-badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;background:var(--border);color:var(--muted);}
+.step-box.active .step-num-badge{background:var(--green);color:white;}
+.step-box.done .step-num-badge{background:#4CAF50;color:white;}
+.step-box-title{font-size:14px;font-weight:800;color:var(--muted);}
+.step-box.active .step-box-title{color:var(--green);}
+.step-box.done .step-box-title{color:#2E7D32;}
+.step-box-body{padding:22px 24px;}
+
+.step-connector{text-align:center;margin:0 0 12px;font-size:20px;color:var(--border);}
+.step-connector.done{color:#4CAF50;}
+
+/* ── Fields ── */
+.two-col-inner{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px;}
 .field-group{margin-bottom:14px;}
 .field-group:last-child{margin-bottom:0;}
 .field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:5px;}
 .field-input{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;resize:vertical;}
 .field-input:focus{outline:none;border-color:var(--green);}
-.field-input.lg{min-height:110px;}
-.field-input.sm{min-height:70px;}
+.field-input.lg{min-height:100px;}
+.field-input.md{min-height:72px;}
+.field-input.sm{min-height:56px;}
+.section-sub{font-size:13px;font-weight:700;color:var(--green);margin-bottom:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
 
-/* AI button */
-.ai-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;margin-top:14px;}
+/* ── AI button ── */
+.ai-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;margin-top:10px;}
 .ai-btn:hover{opacity:.88;}
 .ai-btn:disabled{background:#ccc;cursor:not-allowed;}
+.ai-btn.sm-btn{font-size:12px;padding:6px 12px;margin-top:6px;}
 .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
 .ai-btn.loading .spinner{display:block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ai-error{font-size:12px;color:var(--red);margin-top:8px;display:none;}
 
-/* OKR editor */
-.okr-item{background:var(--green-xl);border:1px solid var(--green);border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+/* ── OKR editor ── */
+.okr-item{background:var(--green-xl);border:1px solid #C8DFC6;border-radius:8px;padding:12px 14px;margin-bottom:10px;}
 .okr-obj-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .okr-o-badge{font-size:10px;font-weight:800;color:white;background:var(--green);border-radius:4px;padding:2px 6px;flex-shrink:0;}
 .okr-obj-input{flex:1;border:none;border-bottom:1px dashed var(--green);background:transparent;font-size:13px;font-weight:700;color:var(--text);font-family:inherit;padding:2px 4px;}
@@ -84,43 +107,50 @@ body{padding-left:210px;}
 .okr-kr-badge{font-size:10px;font-weight:700;color:var(--green);flex-shrink:0;}
 .okr-kr-input{flex:1;border:none;border-bottom:1px dashed var(--border);background:transparent;font-size:12px;color:var(--text);font-family:inherit;padding:2px 4px;}
 .okr-kr-input:focus{outline:none;border-bottom-color:var(--amber);}
+.okr-placeholder{font-size:13px;color:var(--muted);font-style:italic;padding:20px;text-align:center;background:#FAF7F2;border-radius:8px;border:1px dashed var(--border);}
 
-/* Not sections */
-.not-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+/* ── Action buttons ── */
+.action-btn{border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-top:16px;}
+.action-btn.green{background:var(--green);color:white;}
+.action-btn.amber{background:var(--amber);color:white;}
+.action-btn.accept{background:#1B5E20;color:white;}
+.action-btn:hover{opacity:.88;}
+.action-btn:disabled{background:#ccc;cursor:not-allowed;opacity:1;}
 
-/* Preview card */
-.preview-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
-.preview-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:16px;}
-.preview-inner{background:var(--green);border-radius:10px;padding:24px;color:white;}
-.prev-logo{font-size:13px;font-weight:800;opacity:.7;margin-bottom:14px;letter-spacing:.5px;}
-.prev-vision{font-size:15px;line-height:1.8;font-weight:500;margin-bottom:20px;border-left:3px solid rgba(255,255,255,0.4);padding-left:14px;font-style:italic;}
-.prev-vision.empty{color:rgba(255,255,255,0.4);font-style:italic;}
-.prev-pillars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
-.prev-pillar{background:rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;}
-.prev-pillar-label{font-size:10px;font-weight:800;opacity:.7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
-.prev-pillar-text{font-size:12px;line-height:1.55;}
-.prev-pillar-text.empty{opacity:.35;font-style:italic;}
-.prev-nots{border-top:1px solid rgba(255,255,255,0.15);padding-top:14px;}
-.prev-nots-label{font-size:10px;font-weight:800;opacity:.6;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-.prev-not-item{font-size:12px;opacity:.85;margin-bottom:4px;}
-.prev-not-item.empty{opacity:.3;font-style:italic;}
+/* ── Confirmed view (Box 3) ── */
+.confirmed-view{background:var(--green);border-radius:10px;padding:24px;color:white;}
+.cv-logo{font-size:11px;font-weight:800;opacity:.6;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;}
+.cv-vision{font-size:14px;line-height:1.75;border-left:3px solid rgba(255,255,255,.4);padding-left:14px;font-style:italic;margin-bottom:20px;}
+.cv-okr-label{font-size:10px;font-weight:800;opacity:.6;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-top:16px;border-top:1px solid rgba(255,255,255,.15);}
+.cv-okr-obj{font-size:13px;font-weight:700;margin-bottom:6px;margin-top:12px;}
+.cv-okr-kr{font-size:12px;opacity:.85;padding-left:14px;margin-bottom:3px;}
+.confirmed-placeholder{font-size:13px;color:var(--muted);font-style:italic;padding:24px;text-align:center;background:#FAF7F2;border-radius:10px;border:1px dashed var(--border);}
 
-.proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
-.proceed-btn:hover{opacity:.88;}
+/* ── Save badge ── */
+.save-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;opacity:0;transition:opacity .3s;display:inline-block;margin-top:8px;}
+.save-badge.show{opacity:1;}
+.save-badge.saved{background:#E8F5E9;color:#2E7D32;}
+.save-badge.saving{background:#E3F2FD;color:#1565C0;}
+.save-badge.error{background:#FFEBEE;color:#C0392B;}
 
-@media(max-width:780px){
-  .two-col,.not-grid,.prev-pillars{grid-template-columns:1fr;}
-  #phase-content{padding:16px 14px 60px;}
+@media(max-width:760px){
+  .two-col-inner{grid-template-columns:1fr;}
+  body{padding-left:0;}
+  #sidebar{display:none;}
 }
 </style>
 </head>
 <body>
+
 <div id="sidebar">
   <div class="sb-brand">
     <span class="sb-brand-name">Tea Fellas</span>
     <span class="sb-team-badge" id="sb-team-code">—</span>
   </div>
   <nav id="sb-nav">
+    <span class="sb-nav-label">Overview</span>
+    <a href="case-brief.html" class="pnav-btn"><span class="pnav-badge">📋</span>Case Briefing</a>
+    <a href="asis.html" class="pnav-btn"><span class="pnav-badge">📊</span>Where We Are Today</a>
     <span class="sb-nav-label">Phases</span>
     <div id="sb-phase-list"></div>
   </nav>
@@ -132,83 +162,129 @@ body{padding-left:210px;}
 <div class="page-wrap">
   <a href="phase2.html" class="back-link">← Back to Phase 2</a>
   <div class="page-header">
-    <div>
-      <div class="phase-tag">Phase 2.4</div>
-      <div class="page-title">Product Vision</div>
-      <div class="page-sub">Define the compelling future state Tea Fellas is designing towards — the North Star for Phase 3.</div>
-    </div>
-    <div class="save-indicator hidden" id="save-ind">Saved ✓</div>
+    <div class="phase-tag">Phase 2.3 — Define</div>
+    <div class="page-title">Product Vision</div>
+    <div class="page-sub">Define the compelling future state Tea Fellas is designing towards — the North Star for Phase 3.</div>
   </div>
 
-  <div class="two-col">
-    <!-- Vision statement input -->
-    <div class="section-card">
-      <div class="section-title">Vision Statement</div>
-      <div class="field-group">
-        <div class="field-label">What does the future look like if you succeed?</div>
-        <textarea class="field-input lg" id="f-vision" placeholder="Tea Fellas will be…" oninput="onChange()"></textarea>
-      </div>
-      <button class="ai-btn" id="ai-btn" onclick="generateVision()">
-        <span class="spinner"></span>
-        <span id="ai-btn-text">✦ Generate with AI</span>
-      </button>
-      <div class="ai-error" id="ai-error">Could not reach AI — check connection.</div>
+  <!-- Step progress bar -->
+  <div class="step-bar">
+    <div class="step-dot">
+      <div class="step-circle active" id="sc-1">1</div>
+      <span class="step-bar-label active" id="sl-1">Vision &amp; OKR Notes</span>
+    </div>
+    <div class="step-bar-line" id="sline-1"></div>
+    <div class="step-dot">
+      <div class="step-circle" id="sc-2">2</div>
+      <span class="step-bar-label" id="sl-2">Review OKRs</span>
+    </div>
+    <div class="step-bar-line" id="sline-2"></div>
+    <div class="step-dot">
+      <div class="step-circle" id="sc-3">3</div>
+      <span class="step-bar-label" id="sl-3">Confirmed Vision &amp; OKRs</span>
+    </div>
+  </div>
 
-      <div style="margin-top:20px;">
-        <div class="section-title" style="font-size:13px;">What "Good" Looks Like — 3 Outcome Pillars</div>
-        <div class="field-group">
-          <div class="field-label">Pillar 1 — Header</div>
-          <input class="field-input" id="f-h1" placeholder="e.g. Operational accuracy" oninput="onChange()" style="margin-bottom:6px;">
-          <textarea class="field-input sm" id="f-p1" placeholder="Describe what this pillar looks like for Tea Fellas…" oninput="onChange()"></textarea>
+  <!-- ── Box 1 ── -->
+  <div class="step-box active" id="box-1">
+    <div class="step-box-hdr">
+      <div class="step-num-badge">1</div>
+      <div>
+        <div class="step-box-title">Vision Statement &amp; OKR Notes</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px;">Draft your vision, outcome pillars, and jot down OKR ideas — then generate.</div>
+      </div>
+    </div>
+    <div class="step-box-body">
+      <div class="two-col-inner">
+        <!-- Left: vision statement -->
+        <div>
+          <div class="field-group">
+            <div class="field-label">Vision Statement</div>
+            <textarea class="field-input lg" id="f-vision" placeholder="Tea Fellas will be…" oninput="onChange()"></textarea>
+          </div>
+          <button class="ai-btn sm-btn" id="ai-btn" onclick="generateVision()">
+            <span class="spinner" id="vision-spinner"></span>
+            <span id="ai-btn-text">✦ Draft with AI</span>
+          </button>
+          <div class="ai-error" id="ai-error">Could not reach AI — check connection.</div>
         </div>
-        <div class="field-group">
-          <div class="field-label">Pillar 2 — Header</div>
-          <input class="field-input" id="f-h2" placeholder="e.g. Customer convenience" oninput="onChange()" style="margin-bottom:6px;">
-          <textarea class="field-input sm" id="f-p2" placeholder="Describe the customer experience you're designing towards…" oninput="onChange()"></textarea>
-        </div>
-        <div class="field-group">
-          <div class="field-label">Pillar 3 — Header</div>
-          <input class="field-input" id="f-h3" placeholder="e.g. Scalable foundation" oninput="onChange()" style="margin-bottom:6px;">
-          <textarea class="field-input sm" id="f-p3" placeholder="What does a scalable Tea Fellas look like?" oninput="onChange()"></textarea>
+
+        <!-- Right: pillars -->
+        <div>
+          <div class="field-label">3 Outcome Pillars — What "Good" Looks Like</div>
+          <div class="field-group" style="margin-top:6px;">
+            <input class="field-input" id="f-h1" placeholder="Pillar 1 header (e.g. Operational accuracy)" oninput="onChange()" style="margin-bottom:5px;">
+            <textarea class="field-input sm" id="f-p1" placeholder="What this looks like for Tea Fellas…" oninput="onChange()"></textarea>
+          </div>
+          <div class="field-group">
+            <input class="field-input" id="f-h2" placeholder="Pillar 2 header (e.g. Customer convenience)" oninput="onChange()" style="margin-bottom:5px;">
+            <textarea class="field-input sm" id="f-p2" placeholder="The customer experience you're designing towards…" oninput="onChange()"></textarea>
+          </div>
+          <div class="field-group">
+            <input class="field-input" id="f-h3" placeholder="Pillar 3 header (e.g. Scalable foundation)" oninput="onChange()" style="margin-bottom:5px;">
+            <textarea class="field-input sm" id="f-p3" placeholder="What a scalable Tea Fellas looks like…" oninput="onChange()"></textarea>
+          </div>
         </div>
       </div>
 
-      <div style="margin-top:20px;">
-        <div class="section-title" style="font-size:13px;">Objectives &amp; Key Results (OKRs)</div>
-        <button class="ai-btn" id="okr-btn" onclick="generateOKRs()">
+      <!-- Raw OKR notes (full-width) -->
+      <div style="border-top:1px solid var(--border);padding-top:16px;">
+        <div class="field-group">
+          <div class="field-label">Raw OKR Notes &amp; Ideas</div>
+          <textarea class="field-input md" id="f-raw-notes" placeholder="Jot down your team's initial OKR ideas before generating — e.g. reduce wait times by 40%, loyalty programme sign-ups, second outlet by 2026…" oninput="onChange()"></textarea>
+        </div>
+        <button class="action-btn amber" id="okr-gen-btn" onclick="generateOKRs()">
           <span class="spinner" id="okr-spinner"></span>
-          <span id="okr-btn-text">✦ Generate my recommended OKRs</span>
+          <span id="okr-btn-text">Generate my OKRs →</span>
         </button>
         <div class="ai-error" id="okr-error">Could not reach AI — check connection.</div>
-        <div id="okr-list" style="margin-top:12px;"></div>
-      </div>
-    </div>
-
-    <!-- Live preview -->
-    <div class="preview-card">
-      <div class="preview-title">Live Preview</div>
-      <div class="preview-inner">
-        <div class="prev-logo">☕ Tea Fellas — Product Vision</div>
-        <div class="prev-vision" id="pv-vision"><span style="opacity:.4;font-style:italic">Vision statement will appear here…</span></div>
-        <div class="prev-pillars">
-          <div class="prev-pillar">
-            <div class="prev-pillar-label" id="pv-h1">Pillar 1</div>
-            <div class="prev-pillar-text empty" id="pv-p1">Describe what good looks like…</div>
-          </div>
-          <div class="prev-pillar">
-            <div class="prev-pillar-label" id="pv-h2">Pillar 2</div>
-            <div class="prev-pillar-text empty" id="pv-p2">Describe the experience…</div>
-          </div>
-          <div class="prev-pillar">
-            <div class="prev-pillar-label" id="pv-h3">Pillar 3</div>
-            <div class="prev-pillar-text empty" id="pv-p3">Describe scalability…</div>
-          </div>
-        </div>
+        <span class="save-badge" id="save-badge"></span>
       </div>
     </div>
   </div>
 
-  <a href="phase2.html" class="proceed-btn">← Back to Phase 2 overview</a>
+  <div class="step-connector" id="conn-1">↓</div>
+
+  <!-- ── Box 2 ── -->
+  <div class="step-box" id="box-2">
+    <div class="step-box-hdr">
+      <div class="step-num-badge">2</div>
+      <div>
+        <div class="step-box-title">Review &amp; Validate OKRs</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px;">Edit the AI-generated OKRs until they reflect your team's intent.</div>
+      </div>
+    </div>
+    <div class="step-box-body">
+      <div id="okr-list">
+        <div class="okr-placeholder">Generate OKRs in Step 1 — they will appear here for review.</div>
+      </div>
+      <button class="action-btn green" id="confirm-btn" onclick="confirmVisionAndOKRs()" style="display:none;">
+        Confirm Vision Statement &amp; OKR →
+      </button>
+    </div>
+  </div>
+
+  <div class="step-connector" id="conn-2">↓</div>
+
+  <!-- ── Box 3 ── -->
+  <div class="step-box" id="box-3">
+    <div class="step-box-hdr">
+      <div class="step-num-badge">3</div>
+      <div>
+        <div class="step-box-title">Confirmed Product Vision &amp; OKRs</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:1px;">Final view — accept to copy this into your Phase 2.3 deliverable.</div>
+      </div>
+    </div>
+    <div class="step-box-body">
+      <div id="confirmed-view">
+        <div class="confirmed-placeholder">Confirm your OKRs in Step 2 — the final view will appear here.</div>
+      </div>
+      <button class="action-btn accept" id="accept-btn" onclick="acceptThis()" style="display:none;">
+        ✓ Accept this — copy to Phase 2.3
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -225,39 +301,38 @@ if(!teamCode){location.href='index.html';}
 
 let phaseGates={1:false,2:false,3:false,4:false};
 let saveTimer=null;
+let okrData=[];
+let visionConfirmed=false;
 
 function val(id){return document.getElementById(id)?.value||'';}
 function set(id,v){const el=document.getElementById(id);if(el)el.value=v||'';}
 function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-function updatePreview(){
-  const v=val('f-vision'),p1=val('f-p1'),p2=val('f-p2'),p3=val('f-p3');
-  const h1=val('f-h1')||'Pillar 1',h2=val('f-h2')||'Pillar 2',h3=val('f-h3')||'Pillar 3';
-  const pvv=document.getElementById('pv-vision');
-  pvv.innerHTML=v?escHtml(v):'<span style="opacity:.4;font-style:italic">Vision statement will appear here…</span>';
-  pvv.className='prev-vision'+(v?'':' empty');
-
-  const setH=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-  setH('pv-h1',h1);setH('pv-h2',h2);setH('pv-h3',h3);
-
-  const setP=(id,val,placeholder)=>{const el=document.getElementById(id);el.textContent=val||placeholder;el.className='prev-pillar-text'+(val?'':' empty');};
-  setP('pv-p1',p1,'Describe what good looks like…');
-  setP('pv-p2',p2,'Describe the experience…');
-  setP('pv-p3',p3,'Describe scalability…');
+// ── Step UI helpers ──
+function setStepState(stepNum, state) {
+  // state: 'pending' | 'active' | 'done'
+  const box = document.getElementById('box-'+stepNum);
+  const circle = document.getElementById('sc-'+stepNum);
+  const label = document.getElementById('sl-'+stepNum);
+  box.className = 'step-box' + (state==='active'?' active':state==='done'?' done':'');
+  circle.className = 'step-circle' + (state==='active'?' active':state==='done'?' done':'');
+  label.className = 'step-bar-label' + (state==='active'?' active':state==='done'?' done':'');
+  if(state==='done') circle.textContent='✓';
+  else circle.textContent=stepNum;
+  if(stepNum<3){
+    const line=document.getElementById('sline-'+stepNum);
+    const conn=document.getElementById('conn-'+stepNum);
+    if(state==='done'){line.classList.add('done');conn.classList.add('done');}
+    else{line.classList.remove('done');conn.classList.remove('done');}
+  }
 }
 
-function checkOkrBtn(){
-  const filled=[val('f-p1'),val('f-p2'),val('f-p3')].some(v=>v.trim().length>0);
-  const btn=document.getElementById('okr-btn');
-  if(!btn)return;
-  btn.disabled=!filled;
-  btn.style.opacity=filled?'':'0.4';
-  btn.title=filled?'':'Fill in at least one pillar first';
-}
-function onChange(){updatePreview();checkOkrBtn();scheduleSave();}
+// ── Auto-save ──
+function onChange(){scheduleSave();}
 
 function scheduleSave(){
-  clearTimeout(saveTimer);showSave('saving');
+  clearTimeout(saveTimer);
+  setBadge('save-badge','saving');
   saveTimer=setTimeout(doSave,1500);
 }
 
@@ -266,32 +341,55 @@ async function doSave(){
     vision_statement:val('f-vision'),
     pillar1_header:val('f-h1'),pillar2_header:val('f-h2'),pillar3_header:val('f-h3'),
     pillar1:val('f-p1'),pillar2:val('f-p2'),pillar3:val('f-p3'),
-    okrs:okrData
+    raw_notes:val('f-raw-notes'),
+    okrs:okrData,
+    confirmed:visionConfirmed
   };
   try{
     const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'product_vision',content})});
     if(!r.ok)throw new Error();
-    showSave('saved');
-  }catch{showSave('error');}
+    setBadge('save-badge','saved');
+  }catch{setBadge('save-badge','error');}
 }
 
-function showSave(state){
-  const el=document.getElementById('save-ind');
-  el.className='save-indicator '+state;
-  el.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save — check connection';
-  if(state==='saved')setTimeout(()=>el.classList.add('hidden'),2500);
+function setBadge(id,state){
+  const b=document.getElementById(id);if(!b)return;
+  b.className='save-badge '+state+' show';
+  b.textContent=state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
+  if(state==='saved')setTimeout(()=>b.classList.remove('show'),2500);
 }
 
-let okrData=[];
+// ── Vision AI generation ──
+async function generateVision(){
+  const btn=document.getElementById('ai-btn'),errEl=document.getElementById('ai-error');
+  btn.classList.add('loading');btn.disabled=true;
+  document.getElementById('ai-btn-text').textContent='Generating…';errEl.style.display='none';
+  try{
+    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-haiku-4-5-20251001',max_tokens:300,
+      system:'You are helping workshop participants write a product vision for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Return ONLY the vision statement text — 2 to 3 sentences, no labels, no formatting, no quotes.',
+      messages:[{role:'user',content:'Write a compelling product vision for Tea Fellas. It should be aspirational but realistic, specific to Tea Fellas (not generic), and end with the idea that a well-run Toa Payoh outlet creates the foundation for expansion. Return ONLY the vision text.'}]
+    })});
+    const data=await resp.json();
+    const text=data?.content?.[0]?.text?.trim()||'';
+    set('f-vision',text);onChange();
+  }catch{errEl.style.display='block';}
+  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('ai-btn-text').textContent='✦ Draft with AI';}
+}
 
+// ── OKR AI generation ──
 function renderOKRs(){
-  const list=document.getElementById('okr-list');
-  if(!list) return;
+  const list=document.getElementById('okr-list');if(!list)return;
+  if(!okrData.length){
+    list.innerHTML='<div class="okr-placeholder">Generate OKRs in Step 1 — they will appear here for review.</div>';
+    document.getElementById('confirm-btn').style.display='none';
+    return;
+  }
   list.innerHTML=okrData.map((o,oi)=>`
     <div class="okr-item">
       <div class="okr-obj-row">
         <span class="okr-o-badge">O${oi+1}</span>
-        <input class="okr-obj-input" id="okr-obj-${oi}" value="${escHtml(o.objective||'')}" placeholder="Objective…" oninput="onOkrInput(${oi},'objective',this.value)">
+        <input class="okr-obj-input" value="${escHtml(o.objective||'')}" placeholder="Objective…" oninput="onOkrInput(${oi},'objective',this.value)">
       </div>
       <div class="okr-krs">
         ${(o.key_results||[]).map((kr,ki)=>`
@@ -301,85 +399,99 @@ function renderOKRs(){
           </div>`).join('')}
       </div>
     </div>`).join('');
+  document.getElementById('confirm-btn').style.display='inline-flex';
 }
 
-function onOkrInput(oi, field, value, ki){
-  if(field==='objective') okrData[oi].objective=value;
-  else if(field==='kr') okrData[oi].key_results[ki]=value;
+function onOkrInput(oi,field,value,ki){
+  if(field==='objective')okrData[oi].objective=value;
+  else if(field==='kr')okrData[oi].key_results[ki]=value;
   scheduleSave();
 }
 
 async function generateOKRs(){
-  const btn=document.getElementById('okr-btn');
-  const errEl=document.getElementById('okr-error');
+  const btn=document.getElementById('okr-gen-btn'),errEl=document.getElementById('okr-error');
   btn.classList.add('loading');btn.disabled=true;
-  document.getElementById('okr-btn-text').textContent='Generating…';
-  errEl.style.display='none';
+  document.getElementById('okr-btn-text').textContent='Generating…';errEl.style.display='none';
   try{
     const v=val('f-vision'),p1=val('f-p1'),p2=val('f-p2'),p3=val('f-p3');
     const h1=val('f-h1')||'Pillar 1',h2=val('f-h2')||'Pillar 2',h3=val('f-h3')||'Pillar 3';
+    const raw=val('f-raw-notes');
     const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',
-      max_tokens:700,
+      model:'claude-haiku-4-5-20251001',max_tokens:800,
       system:'You are helping workshop participants draft OKRs for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Return ONLY a valid JSON array of exactly 3 OKR objects, each with keys "objective" (string) and "key_results" (array of 3 strings). No markdown, no explanation.',
-      messages:[{role:'user',content:`Vision: ${v}\nPillar 1 (${h1}): ${p1}\nPillar 2 (${h2}): ${p2}\nPillar 3 (${h3}): ${p3}\n\nGenerate 3 OKRs (one per pillar). Return ONLY JSON array.`}]
+      messages:[{role:'user',content:`Vision: ${v}\nPillar 1 (${h1}): ${p1}\nPillar 2 (${h2}): ${p2}\nPillar 3 (${h3}): ${p3}\n${raw?`\nTeam's raw OKR notes/ideas: ${raw}`:''}  \nGenerate 3 OKRs (one per pillar). Key results must be specific and measurable. Return ONLY JSON array.`}]
     })});
     const data=await resp.json();
     const text=data?.content?.[0]?.text||'';
     const parsed=JSON.parse(text.replace(/```json\n?|\n?```/g,'').trim());
-    okrData=parsed;
+    okrData=parsed;visionConfirmed=false;
     renderOKRs();
+    setStepState(1,'done');setStepState(2,'active');setStepState(3,'pending');
+    document.getElementById('confirmed-view').innerHTML='<div class="confirmed-placeholder">Confirm your OKRs in Step 2 — the final view will appear here.</div>';
+    document.getElementById('accept-btn').style.display='none';
+    document.getElementById('box-2').scrollIntoView({behavior:'smooth',block:'start'});
     scheduleSave();
   }catch{errEl.style.display='block';}
-  finally{btn.classList.remove('loading');document.getElementById('okr-btn-text').textContent='✦ Generate my recommended OKRs';checkOkrBtn();}
+  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('okr-btn-text').textContent='Generate my OKRs →';}
 }
 
-async function generateVision(){
-  const btn=document.getElementById('ai-btn'),errEl=document.getElementById('ai-error');
-  btn.classList.add('loading');btn.disabled=true;
-  document.getElementById('ai-btn-text').textContent='Generating…';
-  errEl.style.display='none';
+// ── Box 3: Confirm & Accept ──
+function confirmVisionAndOKRs(){
+  const vision=val('f-vision');
+  const html=`
+    <div class="confirmed-view">
+      <div class="cv-logo">☕ Tea Fellas — Product Vision</div>
+      <div class="cv-vision">${escHtml(vision)||'<em style="opacity:.5">No vision statement entered</em>'}</div>
+      <div class="cv-okr-label">Objectives &amp; Key Results</div>
+      ${okrData.map((o,i)=>`
+        <div class="cv-okr-obj">O${i+1}: ${escHtml(o.objective||'')}</div>
+        ${(o.key_results||[]).map((kr,ki)=>`<div class="cv-okr-kr">KR${ki+1}: ${escHtml(kr)}</div>`).join('')}
+      `).join('')}
+    </div>`;
+  document.getElementById('confirmed-view').innerHTML=html;
+  document.getElementById('accept-btn').style.display='inline-flex';
+  visionConfirmed=true;
+  setStepState(2,'done');setStepState(3,'active');
+  document.getElementById('box-3').scrollIntoView({behavior:'smooth',block:'start'});
+  scheduleSave();
+}
+
+async function acceptThis(){
+  const btn=document.getElementById('accept-btn');
+  btn.disabled=true;btn.textContent='Saving…';
+  const content={
+    vision_statement:val('f-vision'),
+    pillar1_header:val('f-h1'),pillar2_header:val('f-h2'),pillar3_header:val('f-h3'),
+    pillar1:val('f-p1'),pillar2:val('f-p2'),pillar3:val('f-p3'),
+    raw_notes:val('f-raw-notes'),
+    okrs:okrData,confirmed:true
+  };
   try{
-    const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',
-      max_tokens:300,
-      system:'You are helping workshop participants write a product vision for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore, run by John (owner, 61), Mary (cashier, 59), and Darren (barista, 25). The shop has no digital systems. Return ONLY the vision statement text — 2 to 3 sentences, no labels, no formatting, no quotes.',
-      messages:[{role:'user',content:'Write a compelling product vision for Tea Fellas. It should be aspirational but realistic, specific to Tea Fellas (not a generic statement), and end with the idea that a well-run Toa Payoh outlet creates the foundation for expansion. Return ONLY the vision text.'}]
-    })});
-    const data=await resp.json();
-    const text=data?.content?.[0]?.text?.trim()||'';
-    set('f-vision',text);
-    onChange();
-  }catch{errEl.style.display='block';}
-  finally{btn.classList.remove('loading');btn.disabled=false;document.getElementById('ai-btn-text').textContent='✦ Generate with AI';}
+    await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'product_vision',content})});
+  }catch{}
+  location.href='phase2.html';
 }
 
+// ── Phase nav ──
 async function loadPhaseGates(){
   try{const r=await fetch(`${API_URL}/phase-gates?team_code=${encodeURIComponent(teamCode)}`);const d=await r.json();if(d.gates)phaseGates={...phaseGates,...d.gates};}catch{}
 }
 
-function signOut() {
-  sessionStorage.removeItem('teafellas_team_code');
-  location.href = 'index.html';
-}
+function signOut(){sessionStorage.removeItem('teafellas_team_code');location.href='index.html';}
 
-function renderPhaseNav() {
-  const badge = document.getElementById('sb-team-code');
-  if (badge) badge.textContent = teamCode || '—';
-  const list = document.getElementById('sb-phase-list');
-  if (!list) return;
-  list.innerHTML = [1,2,3,4].map(p => {
-    const done = phaseGates[p], active = p === CURRENT_PHASE;
-    const cls = done ? 'p-done' : active ? 'p-active' : 'p-locked';
-    const lbl = `Phase ${p} — ${PHASE_LABELS[p]}`;
-    const icon = done ? '✓' : String(p);
-    if (done || active) {
-      return `<a href="${PHASE_PAGES[p]}" class="pnav-btn ${cls}"><span class="pnav-badge">${icon}</span>${lbl}</a>`;
-    }
-    return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
+function renderPhaseNav(){
+  const badge=document.getElementById('sb-team-code');if(badge)badge.textContent=teamCode||'—';
+  const list=document.getElementById('sb-phase-list');if(!list)return;
+  list.innerHTML=[1,2,3,4].map(p=>{
+    const done=phaseGates[p],active=p===CURRENT_PHASE;
+    const cls=done?'p-done':active?'p-active':'p-locked';
+    const icon=done?'✓':String(p);
+    if(done||active){return `<a href="${PHASE_PAGES[p]}" class="pnav-btn ${cls}"><span class="pnav-badge">${icon}</span>Phase ${p} — ${PHASE_LABELS[p]}</a>`;}
+    return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>Phase ${p} — ${PHASE_LABELS[p]}</span>`;
   }).join('');
 }
 
+// ── Init ──
 async function init(){
   await loadPhaseGates();
   renderPhaseNav();
@@ -388,14 +500,20 @@ async function init(){
     const d=await r.json();
     const c=d.deliverables?.product_vision?.content;
     if(c){
-      set('f-vision',c.vision_statement);
+      set('f-vision',c.vision_statement||c.vision);
       set('f-h1',c.pillar1_header);set('f-h2',c.pillar2_header);set('f-h3',c.pillar3_header);
       set('f-p1',c.pillar1);set('f-p2',c.pillar2);set('f-p3',c.pillar3);
-      if(c.okrs&&Array.isArray(c.okrs)&&c.okrs.length){okrData=c.okrs;renderOKRs();}
+      set('f-raw-notes',c.raw_notes);
+      if(c.okrs&&Array.isArray(c.okrs)&&c.okrs.length){
+        okrData=c.okrs;renderOKRs();
+        setStepState(1,'done');setStepState(2,'active');
+      }
+      if(c.confirmed){
+        visionConfirmed=true;
+        confirmVisionAndOKRs();
+      }
     }
   }catch{}
-  updatePreview();
-  checkOkrBtn();
 }
 init();
 </script>
