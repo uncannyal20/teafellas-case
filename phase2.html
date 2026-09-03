@@ -150,6 +150,19 @@ body { padding-left: 210px; }
   font-weight: 700; background: var(--green-xl); color: var(--green); white-space: nowrap; }
 .rice-rank-badge.rank-1 { background: #FFF3E0; color: #E65100; }
 .rice-save-row { padding: 10px 0 2px; display: flex; align-items: center; gap: 10px; }
+.rice-prob-input { width: 100%; border: 1px solid var(--border); border-radius: 5px; padding: 5px 8px;
+  font-size: 12px; font-family: inherit; resize: none; background: white; color: var(--text);
+  min-height: 42px; line-height: 1.45; }
+.rice-prob-input:focus { border-color: var(--green); outline: none; }
+.rice-gen-btn { background: var(--green); color: white; border: none; border-radius: 7px;
+  padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex;
+  align-items: center; gap: 6px; }
+.rice-gen-btn:hover { opacity: .88; }
+.rice-gen-btn:disabled { opacity: .45; cursor: not-allowed; }
+.rice-gen-spinner { width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.4);
+  border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+.rice-gen-btn.loading .rice-gen-spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Phase gate ── */
 .phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
@@ -221,7 +234,15 @@ body { padding-left: 210px; }
       <span class="cs-hdr-title">2.1 — Problem Prioritisation (RICE)</span>
     </div>
     <div class="cs-body">
-      <p class="cs-hint" style="margin-bottom:14px;">Score each problem using RICE — <strong>Reach</strong> (people affected per day), <strong>Impact</strong> (scale 0.25–3), <strong>Confidence</strong> (evidence level), <strong>Effort</strong> (months). Score = R × I × C ÷ E. Higher = higher priority.</p>
+      <p class="cs-hint" style="margin-bottom:12px;">Score each problem using RICE — <strong>Reach</strong> (people affected per day), <strong>Impact</strong> (scale 0.25–3), <strong>Confidence</strong> (evidence level), <strong>Effort</strong> (months). Score = R × I × C ÷ E. Higher = higher priority.</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <button class="rice-gen-btn" id="rice-gen-btn" onclick="generatePainPoints()">
+          <span class="rice-gen-spinner"></span>
+          <span id="rice-gen-text">✦ Auto-generate pain points</span>
+        </button>
+        <span style="font-size:12px;color:var(--muted);">or type your own in each row below</span>
+        <span id="rice-gen-error" style="font-size:12px;color:var(--red);display:none;">Could not generate — check connection.</span>
+      </div>
       <div class="rice-wrap">
         <table class="rice-table">
           <thead>
@@ -448,7 +469,15 @@ async function loadDeliverables() {
 
     // RICE data
     const rice = dels.d2_1_rice?.content;
-    if (rice?.rows && Array.isArray(rice.rows)) riceData = rice.rows;
+    if (rice?.rows && Array.isArray(rice.rows)) {
+      riceData = Array.from({length: RICE_ROWS}, (_, i) => ({
+        problem:    rice.rows[i]?.problem    || '',
+        reach:      rice.rows[i]?.reach      || '',
+        impact:     rice.rows[i]?.impact     || '',
+        confidence: rice.rows[i]?.confidence || '',
+        effort:     rice.rows[i]?.effort     || '',
+      }));
+    }
 
     // Problem statements (multi-row)
     const ps = dels.problem_statement?.content;
@@ -483,29 +512,23 @@ function renderOkrDisplay(okrs) {
 }
 
 // ── RICE Scoring ──────────────────────────────────────────────
-const RICE_PROBLEMS = [
-  'Handwritten chits cause order errors downstream',
-  'No pre-ordering creates 15–30 min peak queues',
-  'Memory-based collection leads to wrong drinks given out',
-  'No customer notification — customers hover or miss collection',
-  'Single barista bottleneck — Darren prepares every drink alone',
-  'Paper loyalty stamp cards frequently lost or forgotten',
-  'Bulk order confusion — wrong drinks labelled or distributed to team',
-  "Supply chain can't scale — manual ordering won't support two outlets",
-];
-
-let riceData = Array.from({length: 8}, () => ({reach:'', impact:'', confidence:'', effort:''}));
+const RICE_ROWS = 8;
+let riceData = Array.from({length: RICE_ROWS}, () => ({problem:'', reach:'', impact:'', confidence:'', effort:''}));
 let riceTimer = null;
 
 function buildRiceTable() {
   const tbody = document.getElementById('rice-body');
   if (!tbody) return;
-  tbody.innerHTML = RICE_PROBLEMS.map((prob, i) => `
+  tbody.innerHTML = riceData.map((d, i) => `
     <tr>
       <td class="rice-num">${i+1}</td>
-      <td class="rice-prob">${prob}</td>
+      <td style="min-width:200px;padding:6px 8px;">
+        <textarea class="rice-prob-input" id="r-prob-${i}" rows="2"
+          placeholder="Describe the pain point…"
+          oninput="onRiceInput(${i})">${escHtml(d.problem||'')}</textarea>
+      </td>
       <td><input class="rice-input" type="number" min="0" id="r-reach-${i}"
-        value="${riceData[i]?.reach || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
+        value="${d.reach || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
       <td><select class="rice-select" id="r-impact-${i}" onchange="onRiceInput(${i})">
         <option value="">–</option>
         <option value="3">3 — Massive</option>
@@ -521,28 +544,60 @@ function buildRiceTable() {
         <option value="0.5">0.5 — Low</option>
       </select></td>
       <td><input class="rice-input" type="number" min="0" step="0.5" id="r-effort-${i}"
-        value="${riceData[i]?.effort || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
+        value="${d.effort || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
       <td class="rice-score empty" id="r-score-${i}">—</td>
       <td class="rice-rank" id="r-rank-${i}"></td>
     </tr>`).join('');
-  RICE_PROBLEMS.forEach((_, i) => {
+  riceData.forEach((d, i) => {
     const impSel  = document.getElementById(`r-impact-${i}`);
     const confSel = document.getElementById(`r-conf-${i}`);
-    if (impSel  && riceData[i]?.impact)      impSel.value  = riceData[i].impact;
-    if (confSel && riceData[i]?.confidence)  confSel.value = riceData[i].confidence;
+    if (impSel  && d.impact)      impSel.value  = d.impact;
+    if (confSel && d.confidence)  confSel.value = d.confidence;
   });
   recalcRice();
 }
 
 function onRiceInput(i) {
   riceData[i] = {
-    reach:      document.getElementById(`r-reach-${i}`)?.value  || '',
-    impact:     document.getElementById(`r-impact-${i}`)?.value || '',
-    confidence: document.getElementById(`r-conf-${i}`)?.value   || '',
-    effort:     document.getElementById(`r-effort-${i}`)?.value || '',
+    problem:    document.getElementById(`r-prob-${i}`)?.value    || '',
+    reach:      document.getElementById(`r-reach-${i}`)?.value   || '',
+    impact:     document.getElementById(`r-impact-${i}`)?.value  || '',
+    confidence: document.getElementById(`r-conf-${i}`)?.value    || '',
+    effort:     document.getElementById(`r-effort-${i}`)?.value  || '',
   };
   recalcRice();
   scheduleRice();
+}
+
+async function generatePainPoints() {
+  const btn = document.getElementById('rice-gen-btn');
+  const errEl = document.getElementById('rice-gen-error');
+  btn.classList.add('loading'); btn.disabled = true;
+  document.getElementById('rice-gen-text').textContent = 'Generating…';
+  errEl.style.display = 'none';
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        system: 'You are helping workshop participants identify pain points for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. The shop is fully paper-based with a 7-step manual order process. Return ONLY a valid JSON array of exactly 8 short pain point strings (max 12 words each). No markdown, no explanation.',
+        messages: [{ role: 'user', content: 'Generate 8 distinct pain points for Tea Fellas to use in a RICE scoring exercise. Cover: order accuracy, queue times, collection, notification, loyalty, bulk orders, barista workload, and supply chain scalability. Keep each under 12 words. Return only the JSON array.' }]
+      })
+    });
+    const data = await resp.json();
+    const text = data?.content?.[0]?.text || '';
+    const problems = JSON.parse(text.replace(/```json\n?|\n?```/g,'').trim());
+    if (!Array.isArray(problems) || problems.length < 8) throw new Error('bad response');
+    problems.slice(0, RICE_ROWS).forEach((p, i) => { riceData[i].problem = p; });
+    buildRiceTable();
+    scheduleRice();
+  } catch {
+    errEl.style.display = 'inline';
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+    document.getElementById('rice-gen-text').textContent = '✦ Auto-generate pain points';
+  }
 }
 
 function recalcRice() {
