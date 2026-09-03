@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tea Fellas — Case Data Manager</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --tea-bg: #F5F0E8;
+    --tea-card: #FDFAF4;
+    --tea-green: #2D5A27;
+    --tea-green-light: #4A7C42;
+    --tea-amber: #C17A2A;
+    --tea-amber-light: #E8A94A;
+    --tea-cream: #EDE4D0;
+    --tea-border: #D4C4A0;
+    --tea-text: #2C2416;
+    --tea-muted: #6B5A3E;
+    --tea-danger: #C0392B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--tea-bg); color: var(--tea-text); min-height: 100vh; }
+
+  .page { max-width: 860px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .page-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+  .back-btn { display: flex; align-items: center; gap: 6px; color: var(--tea-green); font-size: 13px; font-weight: 600; text-decoration: none; padding: 7px 12px; border: 1px solid var(--tea-border); border-radius: 8px; background: var(--tea-card); transition: border-color 0.15s; white-space: nowrap; }
+  .back-btn:hover { border-color: var(--tea-green); }
+  .back-btn svg { width: 14px; height: 14px; }
+  .page-title { font-size: 20px; font-weight: 700; color: var(--tea-green); }
+  .page-sub { font-size: 13px; color: var(--tea-muted); margin-top: 2px; }
+
+  .status-bar { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+  .status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .status-dot.loading { background: var(--tea-border); }
+  .status-dot.default  { background: var(--tea-muted); }
+  .status-dot.custom   { background: var(--tea-green); }
+  .status-dot.error    { background: var(--tea-danger); }
+  .status-text { font-size: 13px; color: var(--tea-text); }
+  .status-text .sub { color: var(--tea-muted); font-size: 12px; display: block; margin-top: 2px; }
+
+  .info-note { background: var(--tea-cream); border-left: 3px solid var(--tea-amber); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: var(--tea-muted); line-height: 1.65; margin-bottom: 18px; }
+  .info-note strong { color: var(--tea-text); }
+
+  .card { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 12px; padding: 20px 22px; margin-bottom: 16px; }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--tea-green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+  .upload-zone { border: 2px dashed var(--tea-border); border-radius: 10px; padding: 34px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--tea-green); background: #EAF2E8; }
+  .upload-zone input[type="file"] { display: none; }
+  .upload-icon { font-size: 30px; margin-bottom: 10px; }
+  .upload-label { font-size: 14px; font-weight: 600; color: var(--tea-text); margin-bottom: 4px; }
+  .upload-label span { color: var(--tea-green); text-decoration: underline; }
+  .upload-hint { font-size: 12px; color: var(--tea-muted); }
+  .upload-filename { margin-top: 10px; font-size: 13px; color: var(--tea-green); font-weight: 600; display: none; }
+
+  .template-row { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--tea-border); flex-wrap: wrap; }
+  .template-text { flex: 1; min-width: 180px; font-size: 13px; color: var(--tea-muted); }
+  .template-btn { background: none; border: 1px solid var(--tea-border); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; color: var(--tea-text); cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .template-btn:hover { border-color: var(--tea-green); color: var(--tea-green); }
+  .template-btn svg { width: 14px; height: 14px; }
+
+  #preview-card { display: none; }
+  .preview-error { color: var(--tea-danger); font-size: 13px; padding: 6px 0; }
+  .section-block { margin-bottom: 16px; }
+  .section-block:last-child { margin-bottom: 0; }
+  .section-name { font-size: 12px; font-weight: 700; color: var(--tea-green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+  .section-count { font-size: 11px; background: var(--tea-cream); color: var(--tea-muted); border-radius: 20px; padding: 1px 8px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .section-bullets { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .section-bullets li { font-size: 13px; color: var(--tea-text); line-height: 1.55; padding-left: 16px; position: relative; }
+  .section-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--tea-muted); }
+
+  .pin-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .pin-label { font-size: 13px; color: var(--tea-text); white-space: nowrap; }
+  .pin-input { border: 1px solid var(--tea-border); border-radius: 8px; padding: 8px 12px; font-size: 14px; font-family: monospace; width: 140px; outline: none; background: #fff; }
+  .pin-input:focus { border-color: var(--tea-green-light); }
+  .pin-hint { font-size: 12px; color: var(--tea-muted); }
+
+  .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-primary:hover { background: var(--tea-green-light); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secondary { background: var(--tea-cream); color: var(--tea-text); border: 1px solid var(--tea-border); border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-secondary:hover { border-color: var(--tea-green); color: var(--tea-green); }
+  .btn-danger { background: none; color: var(--tea-danger); border: 1px solid var(--tea-danger); border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-danger:hover { background: #FEE; }
+  .save-toast { font-size: 13px; font-weight: 600; display: none; }
+  .save-toast.ok { display: inline; color: var(--tea-green); }
+  .save-toast.err { display: inline; color: var(--tea-danger); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <a href="index.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to interviews
+    </a>
+    <div>
+      <div class="page-title">Case Data Manager</div>
+      <div class="page-sub">Trainer-only — upload the official brief once, all groups receive it automatically</div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="status-bar">
+    <div class="status-dot loading" id="status-dot"></div>
+    <div class="status-text" id="status-text">Checking database…</div>
+  </div>
+
+  <div class="info-note">
+    <strong>How this works:</strong> All five interview personas share a common set of canonical facts — the authoritative Tea Fellas brief. Upload a CSV or Excel file here and save it. The data is written to the shared database and all participant groups will automatically use it the next time they load the interview page. No per-device setup needed.
+  </div>
+
+  <!-- Upload -->
+  <div class="card">
+    <div class="card-title">Upload Case Data</div>
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept=".csv,.xlsx,.xls" onchange="handleFile(this.files[0])">
+      <div class="upload-icon">📂</div>
+      <div class="upload-label">Drop file here or <span>browse</span></div>
+      <div class="upload-hint">Supported: .csv &nbsp;·&nbsp; .xlsx &nbsp;·&nbsp; .xls</div>
+      <div class="upload-filename" id="upload-filename"></div>
+    </div>
+    <div class="template-row">
+      <div class="template-text">Don't have a file yet? Download the template, fill in the case details, then upload it back here.</div>
+      <button class="template-btn" onclick="downloadTemplate()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download template (.csv)
+      </button>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="card" id="preview-card">
+    <div class="card-title">Preview — Parsed Data</div>
+    <div id="preview-content"></div>
+  </div>
+
+  <!-- Save -->
+  <div class="card">
+    <div class="card-title">Save to Database</div>
+    <div class="pin-row">
+      <span class="pin-label">Trainer PIN</span>
+      <input type="password" class="pin-input" id="pin-input" placeholder="Enter PIN" autocomplete="off">
+      <span class="pin-hint">Leave blank if no PIN has been set</span>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" id="save-btn" onclick="saveData()" disabled>Save &amp; Apply to all groups</button>
+      <button class="btn-secondary" onclick="previewCurrent()">Preview current DB data</button>
+      <button class="btn-danger" onclick="resetToDefaults()">Reset to defaults</button>
+      <span class="save-toast" id="save-toast"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_URL = 'https://teafellas-proxy.uncannyal20.workers.dev';
+
+const SECTION_ORDER = ['SHOP','ORIGIN_STORY','STAFF','SUPPLY_CHAIN','FINANCIALS','GUARDRAILS'];
+const SECTION_LABELS = { SHOP:'SHOP', ORIGIN_STORY:'ORIGIN STORY', STAFF:'STAFF', SUPPLY_CHAIN:'SUPPLY CHAIN', FINANCIALS:'FINANCIALS', GUARDRAILS:'GUARDRAILS' };
+
+let pendingData = null;
+
+// ── Template CSV ───────────────────────────────────────────────
+const TEMPLATE_CSV = `section,content
+SHOP,"Name: Tea Fellas. Tagline: ""Good Tea. Good Day."" Est. 2024"
+SHOP,"One outlet only, in a HDB estate in Toa Payoh"
+SHOP,"Small family-run mom-and-pop shop. Uncle John is the owner. Aunty Mary is his wife who quit her job to support him"
+SHOP,"Popular with HDB residents, nearby office workers, and morning commuters"
+SHOP,"Peak hours: morning rush 7–9am, lunch 12–2pm"
+SHOP,"Menu: bubble teas, milk teas, traditional teas, light snacks. Known for quality tea leaves, less-sweet authentic flavours"
+SHOP,"No app, no online ordering, no POS system — all manual paper-based processes"
+ORIGIN_STORY,"Uncle John worked in a corporate job for over 20 years. He was retrenched in his mid-50s"
+ORIGIN_STORY,"After the retrenchment, rather than look for another corporate role, he decided to start something of his own — something he could build with his hands and heart"
+ORIGIN_STORY,"He had always loved tea and knew the Toa Payoh community well, having lived there for decades"
+ORIGIN_STORY,"Aunty Mary was also in a corporate job. When John decided to start Tea Fellas, she quit her job to support him and run the shop together"
+ORIGIN_STORY,"Their two daughters are both based in Australia, living their own lives. The shop gives John and Mary purpose — they enjoy interacting with customers and being part of the community, even on the hectic days"
+ORIGIN_STORY,"The name ""Tea Fellas"" was John's idea — warm, approachable, a bit cheeky"
+STAFF,"Uncle John (owner): manages collection counter day-to-day. Also handles all supply ordering personally. The heart and decision-maker of the business"
+STAFF,"Aunty Mary (John's wife): cashier. Handles payments, handwrites order chits, passes to baristas. Warm and customer-facing"
+STAFF,"Darren: John's nephew, 25 years old. Just completed a Business Administration degree at SMU. Wants real-world experience and is figuring out his next step. Helps out as the main barista — prepares and makes all the drinks. He has good memory (which helps him recall complex orders) but occasionally forgets during peak hours, which frustrates him. He hates it when orders get mixed up — especially when unclear communication from Aunty Mary causes delays or mistakes. He is ambitious, hardworking, finds the experience of running a small business genuinely meaningful, and considers Uncle John his mentor. He dreams of expanding Tea Fellas one day but knows he needs more years in the business first"
+STAFF,"Barista A: part-time staff. Keys handwritten chits into system, prints sticker labels for cups"
+STAFF,"Barista C: part-time staff. Wipes and cleans cups before passing to Uncle John at collection"
+STAFF,"No other staff exist. Do not invent names, relatives, or additional roles"
+SUPPLY_CHAIN,"Uncle John personally handles ingredient ordering"
+SUPPLY_CHAIN,"Fixed weekly order from one trusted supplier in Chinatown — same items, same quantities each week"
+SUPPLY_CHAIN,"Calls supplier every Monday, delivery arrives Wednesday"
+SUPPLY_CHAIN,"John has used this same supplier for over 15 years (since before Tea Fellas — he knew them from his tea hobby days). Deep trust and loyalty. John would never switch suppliers even if there are cheaper alternatives"
+SUPPLY_CHAIN,"Current pain point: ingredient costs have been rising due to fuel price increases — the supplier has passed on some of these costs. John absorbs it quietly rather than raise prices or switch suppliers. He has not yet raised prices to customers and is not sure how long he can hold"
+SUPPLY_CHAIN,"Menu is simple and consistent so stock requirements are predictable — no stockouts at current scale"
+SUPPLY_CHAIN,"Expansion risk: if they open a second outlet, one phone call to one supplier will not scale. No inventory system, no way to track stock across locations. John is privately aware of this but does not raise it unless asked about expansion"
+FINANCIALS,"You do not know specific revenue or profit figures. If asked, say you are not sure or that Uncle John handles the finances."
+GUARDRAILS,"Never invent names, people, systems, events, or facts not in this brief"
+GUARDRAILS,"If asked about something not covered here, say you are not sure or deflect naturally"
+GUARDRAILS,"Do not volunteer all pain points and aspirations at once — let the interviewer draw them out"
+GUARDRAILS,"Answer only what is directly asked. Be natural and conversational, not a list of problems"
+GUARDRAILS,"You are being interviewed, not giving a presentation — react, reflect, sometimes pause to think"
+GUARDRAILS,"Keep answers to 3–5 sentences normally, longer only when a question genuinely warrants it"
+GUARDRAILS,"You may reference other staff by name but only in ways consistent with this brief"`;
+
+// ── Status (fetches live from DB) ──────────────────────────────
+async function updateStatus() {
+  const dot  = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  dot.className = 'status-dot loading';
+  text.innerHTML = 'Checking database…';
+  try {
+    const resp = await fetch(API_URL + '/case-data');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if (data.sections) {
+      const total = Object.values(data.sections).reduce((n, b) => n + b.length, 0);
+      const secs  = Object.keys(data.sections).length;
+      dot.className = 'status-dot custom';
+      text.innerHTML = `Custom case data active &mdash; <strong>${escHtml(data.filename || 'uploaded file')}</strong>
+        <span class="sub">${total} fact${total !== 1 ? 's' : ''} across ${secs} section${secs !== 1 ? 's' : ''} &mdash; saved ${new Date(data.savedAt).toLocaleString()}</span>`;
+    } else {
+      dot.className = 'status-dot default';
+      text.innerHTML = 'No custom data in database <span class="sub">All groups are using the default hardcoded brief</span>';
+    }
+  } catch(e) {
+    dot.className = 'status-dot error';
+    text.innerHTML = `Could not reach database <span class="sub">${escHtml(e.message)}</span>`;
+  }
+}
+
+// ── CSV parser (RFC 4180) ──────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if (c === '"') { inQ = false; }
+      else { field += c; }
+    } else {
+      if (c === '"') { inQ = true; }
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\r' || c === '\n') {
+        row.push(field); field = '';
+        if (c === '\r' && text[i+1] === '\n') i++;
+        if (row.some(f => f.trim())) rows.push(row);
+        row = [];
+      } else { field += c; }
+    }
+  }
+  if (field || row.length) { row.push(field); if (row.some(f => f.trim())) rows.push(row); }
+  return rows;
+}
+
+function rowsToSections(rows) {
+  if (rows.length < 2) throw new Error('File needs a header row and at least one data row');
+  const header = rows[0].map(h => h.trim().toLowerCase());
+  const si = header.indexOf('section'), ci = header.indexOf('content');
+  if (si === -1) throw new Error('Missing "section" column in the header row');
+  if (ci === -1) throw new Error('Missing "content" column in the header row');
+  const sections = {};
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const sec = (r[si] || '').trim().toUpperCase().replace(/\s+/g, '_');
+    const val = (r[ci] || '').trim();
+    if (sec && val) { if (!sections[sec]) sections[sec] = []; sections[sec].push(val); }
+  }
+  if (!Object.keys(sections).length) throw new Error('No valid rows found — check the section and content columns');
+  return sections;
+}
+
+// ── File handler ───────────────────────────────────────────────
+function handleFile(file) {
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const fn = document.getElementById('upload-filename');
+  fn.textContent = '📄 ' + file.name;
+  fn.style.display = 'block';
+  const reader = new FileReader();
+  if (ext === 'csv') {
+    reader.onload = e => tryProcess(() => rowsToSections(parseCSV(e.target.result)), file.name);
+    reader.readAsText(file, 'UTF-8');
+  } else if (ext === 'xlsx' || ext === 'xls') {
+    if (typeof XLSX === 'undefined') { showError('Excel library failed to load. Save as CSV and try again.'); return; }
+    reader.onload = e => tryProcess(() => {
+      const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+      return rowsToSections(parseCSV(XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]])));
+    }, file.name);
+    reader.readAsArrayBuffer(file);
+  } else {
+    showError('Unsupported file type. Please use .csv, .xlsx, or .xls');
+  }
+}
+
+function tryProcess(fn, filename) {
+  try {
+    const sections = fn();
+    pendingData = { sections, filename };
+    showPreview(sections);
+    document.getElementById('save-btn').disabled = false;
+  } catch(err) { showError(err.message); }
+}
+
+// ── Preview ────────────────────────────────────────────────────
+function showPreview(sections) {
+  const card    = document.getElementById('preview-card');
+  const content = document.getElementById('preview-content');
+  card.style.display = 'block';
+  const ordered = [...SECTION_ORDER.filter(s => sections[s]), ...Object.keys(sections).filter(s => !SECTION_ORDER.includes(s))];
+  if (!ordered.length) { content.innerHTML = '<div class="preview-error">No sections found.</div>'; return; }
+  content.innerHTML = ordered.map(s => {
+    const bullets = sections[s];
+    const label   = SECTION_LABELS[s] || s.replace(/_/g, ' ');
+    return `<div class="section-block">
+      <div class="section-name">${escHtml(label)} <span class="section-count">${bullets.length} item${bullets.length !== 1 ? 's' : ''}</span></div>
+      <ul class="section-bullets">${bullets.map(b => `<li>${escHtml(b)}</li>`).join('')}</ul>
+    </div>`;
+  }).join('');
+}
+
+function showError(msg) {
+  document.getElementById('preview-card').style.display = 'block';
+  document.getElementById('preview-content').innerHTML = `<div class="preview-error">⚠ ${escHtml(msg)}</div>`;
+  document.getElementById('save-btn').disabled = true;
+  pendingData = null;
+}
+
+async function previewCurrent() {
+  try {
+    const resp = await fetch(API_URL + '/case-data');
+    const data = await resp.json();
+    if (data.sections) { showPreview(data.sections); }
+    else {
+      document.getElementById('preview-card').style.display = 'block';
+      document.getElementById('preview-content').innerHTML = '<div style="font-size:13px;color:var(--tea-muted);padding:6px 0;">No custom data in the database — groups are using the default hardcoded brief.</div>';
+    }
+  } catch(e) { showError('Could not fetch from database: ' + e.message); }
+}
+
+// ── Save ───────────────────────────────────────────────────────
+async function saveData() {
+  if (!pendingData) return;
+  const pin  = document.getElementById('pin-input').value;
+  const btn  = document.getElementById('save-btn');
+  const toast = document.getElementById('save-toast');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  toast.className = 'save-toast';
+  try {
+    const resp = await fetch(API_URL + '/case-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin, sections: pendingData.sections, filename: pendingData.filename })
+    });
+    const result = await resp.json();
+    if (!resp.ok) throw new Error(result.error || 'HTTP ' + resp.status);
+    toast.textContent = 'Saved! All groups will use this data on next load.';
+    toast.className = 'save-toast ok';
+    await updateStatus();
+  } catch(e) {
+    toast.textContent = 'Error: ' + e.message;
+    toast.className = 'save-toast err';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Save & Apply to all groups';
+}
+
+// ── Reset ──────────────────────────────────────────────────────
+async function resetToDefaults() {
+  if (!confirm('Remove custom case data from the database? All groups will revert to the default hardcoded brief.')) return;
+  const pin   = document.getElementById('pin-input').value;
+  const toast = document.getElementById('save-toast');
+  toast.className = 'save-toast';
+  try {
+    const resp = await fetch(API_URL + '/case-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin, sections: null })
+    });
+    const result = await resp.json();
+    if (!resp.ok) throw new Error(result.error || 'HTTP ' + resp.status);
+    toast.textContent = 'Reset — groups will use the default brief.';
+    toast.className = 'save-toast ok';
+    pendingData = null;
+    document.getElementById('save-btn').disabled = true;
+    document.getElementById('upload-filename').style.display = 'none';
+    document.getElementById('file-input').value = '';
+    document.getElementById('preview-card').style.display = 'none';
+    await updateStatus();
+  } catch(e) {
+    toast.textContent = 'Error: ' + e.message;
+    toast.className = 'save-toast err';
+  }
+}
+
+// ── Template download ──────────────────────────────────────────
+function downloadTemplate() {
+  const blob = new Blob([TEMPLATE_CSV], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'teafellas_case_template.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ── Drag-and-drop ──────────────────────────────────────────────
+const zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+updateStatus();
+</script>
+</body>
+</html>
