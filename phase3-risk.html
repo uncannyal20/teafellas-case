@@ -68,8 +68,21 @@ table.risk-table tr:hover td{background:#FAF6EE;}
 .sc-low {background:#E8F5E9;color:#2E7D32;}
 .sc-nil {background:#F5F5F5;color:#9E9E9E;}
 .rt-rating{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap;}
-.rt-mit input{border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;width:100%;font-family:inherit;}
-.rt-mit input:focus{border-color:var(--green);outline:none;}
+.rt-mit-ta{border:1px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;
+  width:100%;font-family:inherit;resize:vertical;min-height:52px;line-height:1.5;}
+.rt-mit-ta:focus{border-color:var(--green);outline:none;}
+
+/* Generate button */
+.gen-btn{display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:white;
+  border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;
+  transition:opacity .15s;margin-bottom:20px;}
+.gen-btn:hover:not(:disabled){opacity:.88;}
+.gen-btn:disabled{opacity:.55;cursor:not-allowed;}
+.gen-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:white;
+  border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.gen-btn.loading .gen-spinner{display:block;}
+.gen-btn.loading .gen-icon{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
 .rt-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:2px 6px;}
 .rt-del:hover{color:var(--red);}
 .add-risk-btn{background:var(--amber);color:white;border:none;border-radius:7px;padding:8px 16px;
@@ -123,8 +136,13 @@ table.risk-table tr:hover td{background:#FAF6EE;}
     <div class="page-title">Risk Assessment</div>
     <span class="save-badge" id="save-badge">Saved ✓</span>
   </div>
-  <div class="page-sub">Phase 3.1 — Assess the key risks of your recommended scenario</div>
-  <div class="intro">Rate each risk by <strong>Probability (1–5)</strong> and <strong>Impact (1–5)</strong>. Score = P × I. High ≥ 12 (red), Medium 6–11 (amber), Low 1–5 (green).</div>
+  <div class="page-sub">3.4 — Assess the key risks of your recommended scenario</div>
+  <div class="intro">Rate each risk by <strong>Probability (1–5)</strong> and <strong>Impact (1–5)</strong>. Score = P × I. High ≥ 12 (red), Medium 6–11 (amber), Low 1–5 (green). All risk labels and mitigations are editable.</div>
+
+  <button class="gen-btn" id="gen-btn" onclick="generateRisks()">
+    <span class="gen-icon">✦ Auto-generate risks &amp; mitigations</span>
+    <span class="gen-spinner"></span>
+  </button>
 
   <div class="risk-table-wrap">
     <table class="risk-table" id="risk-table">
@@ -214,12 +232,9 @@ function renderTable() {
     const im = parseInt(r.impact) || 0;
     const s = p && im ? p * im : 0;
     const sc = scoreClass(s);
-    const lbl = r.canonical
-      ? `<span class="rt-label" style="padding:4px 6px;display:block;">${r.label}</span>`
-      : `<div class="rt-label"><input type="text" value="${esc(r.label)}" onchange="updateRisk(${r.id},'label',this.value);" placeholder="Describe the risk…"></div>`;
     return `<tr>
       <td class="rt-num">${i+1}</td>
-      <td>${lbl}</td>
+      <td><div class="rt-label"><input type="text" value="${esc(r.label)}" oninput="updateRisk(${r.id},'label',this.value)" placeholder="Describe the risk…"></div></td>
       <td><select class="rt-sel" onchange="updateRisk(${r.id},'probability',this.value)">
         <option value="">—</option>${[1,2,3,4,5].map(n=>`<option value="${n}"${r.probability==n?' selected':''}>${n}</option>`).join('')}
       </select></td>
@@ -228,7 +243,7 @@ function renderTable() {
       </select></td>
       <td style="text-align:center"><span class="rt-score ${sc}">${s||'—'}</span></td>
       <td>${ratingLabel(s)}</td>
-      <td class="rt-mit"><input type="text" value="${esc(r.mitigation)}" onchange="updateRisk(${r.id},'mitigation',this.value)" placeholder="How would you mitigate this?"></td>
+      <td><textarea class="rt-mit-ta" oninput="updateRisk(${r.id},'mitigation',this.value)" placeholder="How would you mitigate this?">${escHtml(r.mitigation)}</textarea></td>
       <td>${r.canonical ? '' : `<button class="rt-del" onclick="deleteRisk(${r.id})">×</button>`}</td>
     </tr>`;
   }).join('');
@@ -236,6 +251,7 @@ function renderTable() {
 }
 
 function esc(s) { return (s||'').replace(/"/g,'&quot;'); }
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function updateRisk(id, field, val) {
   const r = risks.find(x=>x.id===id);
@@ -330,6 +346,82 @@ function renderPhaseNav() {
     }
     return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
   }).join('');
+}
+
+async function generateRisks() {
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true; btn.classList.add('loading');
+
+  // Try to load the team's chosen scenario from saved solution canvas
+  let scenario = 'C1';
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=solution_canvas`);
+    const d = await r.json();
+    const sc = d.deliverables?.solution_canvas?.content?.scenario;
+    if (sc) scenario = sc;
+  } catch(_) {}
+
+  const scenarioLabels = {
+    A1:'A1 — Basic digital ordering ($25K): QR web-ordering + tablet POS + kitchen display at Toa Payoh only',
+    A2:'A2 — Full integrated system ($150K): A1 + loyalty app + analytics + inventory at Toa Payoh only',
+    B1:'B1 — New AMK Food Centre outlet ($80K): expansion only, no digital fix at Toa Payoh',
+    B2:'B2 — New AMK Hub B1 outlet ($150K): premium expansion only, no digital fix at Toa Payoh',
+    C1:'C1 — Sequential ($105K recommended): basic digital at Toa Payoh first (M1–6), then AMK expansion (M7–18)',
+    C2:'C2 — Simultaneous ($300K): full digital + AMK expansion at the same time',
+  };
+
+  const prompt = `You are a BPR consultant helping a team assess risks for Tea Fellas, a Singaporean hawker drinks stall.
+
+Scenario selected: ${scenarioLabels[scenario] || scenario}
+
+Context: Family-run business, Uncle John (61) and Aunty Mary (59), nephew Darren (25) as barista. Monthly revenue ~$30K, costs ~$25K, net profit ~$4.9K. Pain points: paper chit ordering, long queues, no digital loyalty.
+
+For each of the 9 risks below, suggest a Probability score (1–5), Impact score (1–5), and a short practical mitigation (2–3 sentences). Be realistic — consider the small family business context.
+
+Risks:
+1. Staff resistance to digital ordering (Mary, John)
+2. Upfront setup cost strains monthly surplus
+3. Customers refuse QR ordering, revert to counter queue
+4. Vendor lock-in or poor local F&B SaaS support
+5. Darren not ready to run second outlet independently
+6. Second outlet location unavailable when Tea Fellas is ready
+7. Ingredient cost increases erode margin further
+8. Digital system downtime during peak hours
+9. Customer data privacy concern with digital loyalty
+
+Return ONLY valid JSON — no markdown, no explanation:
+[
+  {"id":1,"probability":3,"impact":4,"mitigation":"..."},
+  {"id":2,"probability":2,"impact":5,"mitigation":"..."},
+  ...
+  {"id":9,"probability":1,"impact":3,"mitigation":"..."}
+]`;
+
+  try {
+    const r = await fetch(API_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001', messages:[{role:'user',content:prompt}], max_tokens:1500})
+    });
+    const data = await r.json();
+    const raw = data?.content?.[0]?.text || data?.text || '';
+    const jsonMatch = raw.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error('No JSON array in response');
+    const suggestions = JSON.parse(jsonMatch[0]);
+    suggestions.forEach(s => {
+      const r = risks.find(x => x.id === s.id);
+      if (r) {
+        if (s.probability) r.probability = String(s.probability);
+        if (s.impact)      r.impact      = String(s.impact);
+        if (s.mitigation)  r.mitigation  = s.mitigation;
+      }
+    });
+    renderTable();
+    scheduleSave();
+  } catch(e) {
+    alert('Could not generate risks. Please try again.');
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
 }
 
 loadPhaseGates().then(() => { renderPhaseNav(); loadData(); });
