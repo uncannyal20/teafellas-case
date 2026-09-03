@@ -189,6 +189,19 @@ body { padding-left: 210px; }
 .proceed-btn.show { display: block; }
 .proceed-btn:hover { opacity: .88; }
 
+/* ── Accordion sections ── */
+.acc-section{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.acc-hdr{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;}
+.acc-hdr:hover .acc-title{color:var(--green-l);}
+.acc-num{font-size:22px;font-weight:700;color:var(--amber);flex-shrink:0;min-width:38px;margin-top:1px;}
+.acc-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:3px;}
+.acc-sub{font-size:13px;color:var(--muted);line-height:1.5;}
+.acc-chevron{width:20px;height:20px;flex-shrink:0;color:var(--muted);margin-top:6px;transition:transform 0.2s;}
+.acc-chevron.collapsed{transform:rotate(-90deg);}
+.acc-body{overflow:hidden;transition:max-height 0.25s ease;}
+.acc-body.collapsed{max-height:0!important;}
+.acc-body-inner{padding:0 20px 20px;border-top:1px solid var(--border);}
+
 @media (max-width: 680px) {
   #phase-content { padding: 20px 14px 60px; }
   .deliverable-grid { grid-template-columns: 1fr; }
@@ -233,99 +246,121 @@ body { padding-left: 210px; }
     <div class="learning-note-body">Refer back to your interview summaries in the <a href="index.html" style="color:var(--amber);font-weight:700;">Research phase →</a> as evidence for everything you write below.</div>
   </div>
 
-  <!-- Section 2.1: Problem Prioritisation — RICE -->
-  <div class="content-section">
-    <div class="cs-hdr">
-      <span class="cs-hdr-title">2.1 — Problem Prioritisation (RICE)</span>
+  <!-- 2.1 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-21')">
+      <span class="acc-num">2.1</span>
+      <div style="flex:1"><div class="acc-title">Prioritise the Problems</div>
+      <div class="acc-sub">Score each pain point using RICE to determine what to tackle first.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <div class="cs-body">
-      <p class="cs-hint" style="margin-bottom:12px;">Score each problem using RICE — <strong>Reach</strong> (people affected per day), <strong>Impact</strong> (scale 0.25–3), <strong>Confidence</strong> (evidence level), <strong>Effort</strong> (months). Score = R × I × C ÷ E. Higher = higher priority.</p>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-        <button class="rice-gen-btn" id="rice-gen-btn" onclick="generatePainPoints()">
-          <span class="rice-gen-spinner"></span>
-          <span id="rice-gen-text">✦ Auto-generate pain points</span>
-        </button>
-        <span style="font-size:12px;color:var(--muted);">or type your own in each row below</span>
-        <span id="rice-gen-error" style="font-size:12px;color:var(--red);display:none;">Could not generate — check connection.</span>
-      </div>
-      <div class="rice-wrap">
-        <table class="rice-table">
-          <thead>
-            <tr>
-              <th style="width:28px">#</th>
-              <th>Pain Point</th>
-              <th style="width:76px">Reach<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">people/day</span></th>
-              <th style="width:112px">Impact<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">0.25–3</span></th>
-              <th style="width:112px">Confidence<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">0.5/0.8/1.0</span></th>
-              <th style="width:76px">Effort<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">months</span></th>
-              <th style="width:68px">RICE<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">Score</span></th>
-              <th style="width:56px">Rank</th>
-              <th style="width:32px"></th>
-            </tr>
-          </thead>
-          <tbody id="rice-body"></tbody>
-        </table>
-      </div>
-      <button class="rice-add-btn" onclick="addRiceRow()">+ Add pain point</button>
-      <div class="rice-save-row">
-        <span class="cs-save-badge" id="rice-badge"></span>
-      </div>
-      <div class="cs-hint">Tip: problems with the same root cause may score identically — focus on <em>why</em> a score came out the way it did, not just the number.</div>
-    </div>
-  </div>
-
-  <!-- Section 2: Problem Statement -->
-  <div class="content-section">
-    <div class="cs-hdr">
-      <span class="cs-hdr-title">2.2 — Problem Statement</span>
-      <a href="#" class="cs-hdr-link" onclick="openEditor('phase2-problem.html');return false;">Full UX template editor ↗</a>
-    </div>
-    <div class="cs-body">
-      <div class="cs-label">Your agreed problem statement(s)</div>
-      <div id="ps-list" class="ps-list-wrap"></div>
-      <button class="ps-add-btn" onclick="addPsRow()">+ Add problem statement</button>
-      <span class="cs-save-badge" id="ps-badge"></span>
-      <div class="cs-hint">Add one or more candidate problem statements. Use the <a href="#" onclick="openEditor('phase2-problem.html');return false;" style="color:var(--amber);font-weight:700;">full editor ↗</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
-    </div>
-  </div>
-
-  <!-- Section 3: Product Vision -->
-  <div class="content-section">
-    <div class="cs-hdr">
-      <span class="cs-hdr-title">2.3 — Product Vision</span>
-      <a href="#" class="cs-hdr-link" onclick="openEditor('phase2-vision.html');return false;">Full vision editor ↗</a>
-    </div>
-    <div class="cs-body">
-      <div class="cs-label">Your product vision for Tea Fellas</div>
-      <textarea class="cs-ta" id="vis-ta" rows="5"
-        placeholder="Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — [what it looks like, feels like, and stands for]."
-        oninput="scheduleVis()"></textarea>
-      <span class="cs-save-badge" id="vis-badge"></span>
-      <div class="cs-hint">Write your North Star vision here. Use the <a href="#" onclick="openEditor('phase2-vision.html');return false;" style="color:var(--amber);font-weight:700;">full editor ↗</a> to define outcome pillars and generate OKRs.</div>
-      <div id="okr-display" style="display:none;margin-top:16px;">
-        <div class="okr-display-label">Objectives &amp; Key Results</div>
-        <div id="okr-disp-list"></div>
+    <div class="acc-body collapsed" id="acc-body-21" style="max-height:0;">
+      <div class="acc-body-inner">
+        <p class="cs-hint" style="margin-bottom:12px;">Score each problem using RICE — <strong>Reach</strong> (people affected per day), <strong>Impact</strong> (scale 0.25–3), <strong>Confidence</strong> (evidence level), <strong>Effort</strong> (months). Score = R × I × C ÷ E. Higher = higher priority.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <button class="rice-gen-btn" id="rice-gen-btn" onclick="generatePainPoints()">
+            <span class="rice-gen-spinner"></span>
+            <span id="rice-gen-text">✦ Auto-generate pain points</span>
+          </button>
+          <span style="font-size:12px;color:var(--muted);">or type your own in each row below</span>
+          <span id="rice-gen-error" style="font-size:12px;color:var(--red);display:none;">Could not generate — check connection.</span>
+        </div>
+        <div class="rice-wrap">
+          <table class="rice-table">
+            <thead>
+              <tr>
+                <th style="width:28px">#</th>
+                <th>Pain Point</th>
+                <th style="width:76px">Reach<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">people/day</span></th>
+                <th style="width:112px">Impact<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">0.25–3</span></th>
+                <th style="width:112px">Confidence<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">0.5/0.8/1.0</span></th>
+                <th style="width:76px">Effort<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">months</span></th>
+                <th style="width:68px">RICE<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">Score</span></th>
+                <th style="width:56px">Rank</th>
+                <th style="width:32px"></th>
+              </tr>
+            </thead>
+            <tbody id="rice-body"></tbody>
+          </table>
+        </div>
+        <button class="rice-add-btn" onclick="addRiceRow()">+ Add pain point</button>
+        <div class="rice-save-row">
+          <span class="cs-save-badge" id="rice-badge"></span>
+        </div>
+        <div class="cs-hint">Tip: problems with the same root cause may score identically — focus on <em>why</em> a score came out the way it did, not just the number.</div>
       </div>
     </div>
   </div>
 
-  <!-- BPR learning note -->
-  <div class="learning-note">
-    <div class="learning-note-title">📖 Learning Note — Business Process Re-engineering (CARE Framework)</div>
-    <div class="learning-note-body">BPR Opportunities will be covered as a facilitator-led discussion. The CARE framework (Consolidate · Automate · Reduce · Eliminate) will be introduced before Phase 3. <em>No action needed from your team here.</em></div>
+  <!-- 2.2 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-22')">
+      <span class="acc-num">2.2</span>
+      <div style="flex:1"><div class="acc-title">Craft the Problem Statements</div>
+      <div class="acc-sub">Frame the core problems in structured, evidence-based statements.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-body collapsed" id="acc-body-22" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="cs-label">Your agreed problem statement(s)</div>
+        <div id="ps-list" class="ps-list-wrap"></div>
+        <button class="ps-add-btn" onclick="addPsRow()">+ Add problem statement</button>
+        <span class="cs-save-badge" id="ps-badge"></span>
+        <div class="cs-hint">Add one or more candidate problem statements. Use the <a href="#" onclick="openEditor('phase2-problem.html');return false;" style="color:var(--amber);font-weight:700;">full editor ↗</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
+        <div style="margin-top:14px;">
+          <a href="#" class="del-card-btn" onclick="openEditor('phase2-problem.html');return false;" style="font-size:12px;padding:7px 14px;">Open full Problem Statement editor ↗</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- Phase gate -->
-  <div class="phase-gate" id="phase-gate-2">
-    <div class="phase-gate-title">Phase 2 Declaration</div>
-    <div class="gate-checks">
-      <div class="gate-check"><input type="checkbox" id="gc2-1" onchange="checkGate2()"><label for="gc2-1">We have prioritised our pain points</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc2-2" onchange="checkGate2()"><label for="gc2-2">We have finalised our problem statement</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc2-3" onchange="checkGate2()"><label for="gc2-3">We have finalised our product vision</label></div>
+  <!-- 2.3 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-23')">
+      <span class="acc-num">2.3</span>
+      <div style="flex:1"><div class="acc-title">Craft the Product Vision</div>
+      <div class="acc-sub">Define the North Star for Tea Fellas — vision, outcome pillars, and OKRs.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <button class="gate-declare-btn" id="gate2-btn" disabled onclick="declarePhase2()">Proceed to Phase 3 — Ideate →</button>
-    <div class="gate-done-banner" id="gate2-done">✓ Phase 2 complete</div>
-    <a href="phase3.html" class="proceed-btn" id="proceed3-btn">Proceed to Phase 3 — Ideate →</a>
+    <div class="acc-body collapsed" id="acc-body-23" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="cs-label">Your product vision for Tea Fellas</div>
+        <textarea class="cs-ta" id="vis-ta" rows="5"
+          placeholder="Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — [what it looks like, feels like, and stands for]."
+          oninput="scheduleVis()"></textarea>
+        <span class="cs-save-badge" id="vis-badge"></span>
+        <div class="cs-hint">Write your North Star vision here. Use the <a href="#" onclick="openEditor('phase2-vision.html');return false;" style="color:var(--amber);font-weight:700;">full editor ↗</a> to define outcome pillars and generate OKRs.</div>
+        <div id="okr-display" style="display:none;margin-top:16px;">
+          <div class="okr-display-label">Objectives &amp; Key Results</div>
+          <div id="okr-disp-list"></div>
+        </div>
+        <div style="margin-top:14px;">
+          <a href="#" class="del-card-btn" onclick="openEditor('phase2-vision.html');return false;" style="font-size:12px;padding:7px 14px;">Open full Product Vision editor ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.4 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-24')">
+      <span class="acc-num">2.4</span>
+      <div style="flex:1"><div class="acc-title">Phase 2 Declaration</div>
+      <div class="acc-sub">Confirm your team is ready to move to Phase 3 — Ideate.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-body collapsed" id="acc-body-24" style="max-height:0;">
+      <div class="acc-body-inner" style="padding-top:20px;">
+        <div class="gate-checks">
+          <div class="gate-check"><input type="checkbox" id="gc2-1" onchange="checkGate2()"><label for="gc2-1">We have prioritised our pain points</label></div>
+          <div class="gate-check"><input type="checkbox" id="gc2-2" onchange="checkGate2()"><label for="gc2-2">We have finalised our problem statement</label></div>
+          <div class="gate-check"><input type="checkbox" id="gc2-3" onchange="checkGate2()"><label for="gc2-3">We have finalised our product vision</label></div>
+        </div>
+        <button class="gate-declare-btn" id="gate2-btn" disabled onclick="declarePhase2()">Proceed to Phase 3 — Ideate →</button>
+        <div class="gate-done-banner" id="gate2-done">✓ Phase 2 complete</div>
+        <a href="phase3.html" class="proceed-btn" id="proceed3-btn">Proceed to Phase 3 — Ideate →</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -727,6 +762,26 @@ async function init() {
     ['gc2-1','gc2-2','gc2-3'].forEach(id => {
       const el = document.getElementById(id);
       if (el) { el.checked = true; el.disabled = true; }
+    });
+  }
+}
+
+function toggleSection(bodyId) {
+  const body = document.getElementById(bodyId);
+  const num = bodyId.replace('acc-body-', '');
+  const chev = document.getElementById('acc-chev-' + num);
+  if (!body) return;
+  const isCollapsed = body.classList.contains('collapsed');
+  if (isCollapsed) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    chev && chev.classList.remove('collapsed');
+    setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.classList.add('collapsed');
+      chev && chev.classList.add('collapsed');
     });
   }
 }

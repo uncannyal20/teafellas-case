@@ -115,6 +115,19 @@ body{padding-left:210px;}
   padding: 14px 18px; font-size: 14px; font-weight: 700; color: #2E7D32; display: none; }
 .gate-done-banner.show { display: block; }
 
+/* ── Accordion sections ── */
+.acc-section{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.acc-hdr{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;}
+.acc-hdr:hover .acc-title{color:var(--green-l);}
+.acc-num{font-size:22px;font-weight:700;color:var(--amber);flex-shrink:0;min-width:38px;margin-top:1px;}
+.acc-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:3px;}
+.acc-sub{font-size:13px;color:var(--muted);line-height:1.5;}
+.acc-chevron{width:20px;height:20px;flex-shrink:0;color:var(--muted);margin-top:6px;transition:transform 0.2s;}
+.acc-chevron.collapsed{transform:rotate(-90deg);}
+.acc-body{overflow:hidden;transition:max-height 0.25s ease;}
+.acc-body.collapsed{max-height:0!important;}
+.acc-body-inner{padding:0 20px 20px;border-top:1px solid var(--border);}
+
 @media (max-width: 780px) {
   #phase-content { padding: 20px 14px 60px; }
   .step-grid { grid-template-columns: 1fr; }
@@ -162,92 +175,134 @@ body{padding-left:210px;}
     </div>
   </div>
 
-  <!-- Step 1: Evaluate scenarios -->
-  <div class="section-heading">Step 1 — Evaluate your options</div>
-  <div class="step-grid">
-    <div class="step-card">
-      <div class="step-card-hdr">A — Digital only</div>
-      <div class="step-card-body">
-        <div class="step-status st-active">Start here</div>
-        <div class="step-card-desc">Two options: Basic digital ($25K) or Full integrated system ($150K). No expansion — fix Toa Payoh first.</div>
-        <a href="scenario-brief.html?sc=A1" class="step-btn" target="_blank">Read A1 briefing ↗</a>&nbsp;
-        <a href="scenario-brief.html?sc=A2" class="step-btn" target="_blank">Read A2 ↗</a>
-      </div>
+  <!-- 3.1 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-31')">
+      <span class="acc-num">3.1</span>
+      <div style="flex:1"><div class="acc-title">Evaluate the Options</div>
+      <div class="acc-sub">Read all 6 scenario briefings and agree on which option best fits Tea Fellas.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <div class="step-card">
-      <div class="step-card-hdr amber">B — Expansion only</div>
-      <div class="step-card-body">
-        <div class="step-status st-todo">Compare</div>
-        <div class="step-card-desc">Two options: AMK Food Centre ($80K) or AMK Hub B1 ($150K). No digital fix at Toa Payoh.</div>
-        <a href="scenario-brief.html?sc=B1" class="step-btn" target="_blank">Read B1 briefing ↗</a>&nbsp;
-        <a href="scenario-brief.html?sc=B2" class="step-btn" target="_blank">Read B2 ↗</a>
-      </div>
-    </div>
-    <div class="step-card">
-      <div class="step-card-hdr blue">C — Both</div>
-      <div class="step-card-body">
-        <div class="step-status st-todo">Compare</div>
-        <div class="step-card-desc">Two options combining digital + expansion. C1 is sequential (conservative), C2 is simultaneous (aggressive).</div>
-        <a href="scenario-brief.html?sc=C1" class="step-btn blue" target="_blank">Read C1 briefing ↗</a>&nbsp;
-        <a href="scenario-brief.html?sc=C2" class="step-btn blue" target="_blank">Read C2 ↗</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Step 2: CBA -->
-  <div class="section-heading">Step 2 — Build your cost-benefit analysis</div>
-  <div class="cba-callout">
-    <div class="cba-callout-text">Use the <strong>CBA Calculator</strong> to model your chosen scenario. Select your option from the dropdown, click "Auto-populate", then review the discounted BCR, payback period, and ROI in the Results tab. Your team's CBA inputs are saved automatically.</div>
-    <a href="cba-vcr.html" class="cba-callout-btn" target="_blank">Open CBA Calculator ↗</a>
-  </div>
-
-  <!-- Step 3: Design deliverables -->
-  <div class="section-heading">Step 3 — Design your solution</div>
-  <div class="step-grid">
-    <div class="step-card">
-      <div class="step-card-hdr">3.1 — Solution Concept Canvas</div>
-      <div class="step-card-body">
-        <div class="step-status st-todo">Not started</div>
-        <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
-        <a href="#" class="step-btn green" onclick="openEditor('phase3-canvas.html');return false;">Open →</a>
-      </div>
-    </div>
-    <div class="step-card">
-      <div class="step-card-hdr">3.2 — To-Be Process Map</div>
-      <div class="step-card-body">
-        <div class="step-status st-todo">Not started</div>
-        <div class="step-card-desc">Map the future-state process flow for Scenario C1 across 5 swim lanes: Customer, Cashier, System/Digital, Kitchen, and Collection.</div>
-        <a href="#" class="step-btn green" onclick="openEditor('phase3-tobe.html');return false;">Open →</a>
-      </div>
-    </div>
-    <div class="step-card">
-      <div class="step-card-hdr">3.3 — Product Roadmap</div>
-      <div class="step-card-body">
-        <div class="step-status st-todo">Not started</div>
-        <div class="step-card-desc">Build an 18-month delivery roadmap for your recommended scenario. When does what happen, and in what order?</div>
-        <a href="#" class="step-btn green" onclick="openEditor('phase3-roadmap.html');return false;">Open →</a>
-      </div>
-    </div>
-    <div class="step-card">
-      <div class="step-card-hdr">3.4 — Risk Assessment</div>
-      <div class="step-card-body">
-        <div class="step-status st-todo">Not started</div>
-        <div class="step-card-desc">Assess the key risks of your recommended scenario using a Probability × Impact matrix.</div>
-        <a href="#" class="step-btn green" onclick="openEditor('phase3-risk.html');return false;">Open →</a>
+    <div class="acc-body collapsed" id="acc-body-31" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="step-grid" style="margin-top:16px;">
+          <div class="step-card">
+            <div class="step-card-hdr">A — Digital only</div>
+            <div class="step-card-body">
+              <div class="step-status st-active">Start here</div>
+              <div class="step-card-desc">Two options: Basic digital ($25K) or Full integrated system ($150K). No expansion — fix Toa Payoh first.</div>
+              <a href="scenario-brief.html?sc=A1" class="step-btn" target="_blank">Read A1 briefing ↗</a>&nbsp;
+              <a href="scenario-brief.html?sc=A2" class="step-btn" target="_blank">Read A2 ↗</a>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-hdr amber">B — Expansion only</div>
+            <div class="step-card-body">
+              <div class="step-status st-todo">Compare</div>
+              <div class="step-card-desc">Two options: AMK Food Centre ($80K) or AMK Hub B1 ($150K). No digital fix at Toa Payoh.</div>
+              <a href="scenario-brief.html?sc=B1" class="step-btn" target="_blank">Read B1 briefing ↗</a>&nbsp;
+              <a href="scenario-brief.html?sc=B2" class="step-btn" target="_blank">Read B2 ↗</a>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-hdr blue">C — Both</div>
+            <div class="step-card-body">
+              <div class="step-status st-todo">Compare</div>
+              <div class="step-card-desc">Two options combining digital + expansion. C1 is sequential (conservative), C2 is simultaneous (aggressive).</div>
+              <a href="scenario-brief.html?sc=C1" class="step-btn blue" target="_blank">Read C1 briefing ↗</a>&nbsp;
+              <a href="scenario-brief.html?sc=C2" class="step-btn blue" target="_blank">Read C2 ↗</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Phase gate -->
-  <div class="phase-gate">
-    <div class="phase-gate-title">Declare Phase 3 — Ideate complete</div>
-    <div class="gate-checks">
-      <div class="gate-check"><input type="checkbox" id="gc3-1" onchange="checkGate3()"><label for="gc3-1">We have reviewed all 6 scenario briefings and selected our recommended option</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc3-2" onchange="checkGate3()"><label for="gc3-2">We have completed the CBA analysis for our chosen scenario</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc3-3" onchange="checkGate3()"><label for="gc3-3">We have produced a To-Be Process Map, Risk Assessment, Product Roadmap, and Solution Canvas</label></div>
+  <!-- 3.2 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-32')">
+      <span class="acc-num">3.2</span>
+      <div style="flex:1"><div class="acc-title">Build the Cost Benefit Analysis</div>
+      <div class="acc-sub">Model your chosen scenario in the CBA Calculator — BCR, payback period, and ROI.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <button class="gate-declare-btn" id="gate3-btn" disabled onclick="declarePhase3()">Complete Phase 3 — Move to Validate →</button>
-    <div class="gate-done-banner" id="gate3-done">✓ Phase 3 complete — <a href="phase4.html" style="color:inherit;font-weight:800;">Open Phase 4: Validate →</a></div>
+    <div class="acc-body collapsed" id="acc-body-32" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="cba-callout" style="margin-top:16px;">
+          <div class="cba-callout-text">Use the <strong>CBA Calculator</strong> to model your chosen scenario. Select your option from the dropdown, click "Auto-populate", then review the discounted BCR, payback period, and ROI in the Results tab. Your team's CBA inputs are saved automatically.</div>
+          <a href="cba-vcr.html" class="cba-callout-btn" target="_blank">Open CBA Calculator ↗</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.3 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-33')">
+      <span class="acc-num">3.3</span>
+      <div style="flex:1"><div class="acc-title">Design the Solution</div>
+      <div class="acc-sub">Produce the four deliverables that anchor your Phase 4 presentation.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-33" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-body collapsed" id="acc-body-33" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="step-grid" style="margin-top:16px;">
+          <div class="step-card">
+            <div class="step-card-hdr">3.1 — Solution Concept Canvas</div>
+            <div class="step-card-body">
+              <div class="step-status st-todo">Not started</div>
+              <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
+              <a href="#" class="step-btn green" onclick="openEditor('phase3-canvas.html');return false;">Open →</a>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-hdr">3.2 — To-Be Process Map</div>
+            <div class="step-card-body">
+              <div class="step-status st-todo">Not started</div>
+              <div class="step-card-desc">Map the future-state process flow for Scenario C1 across 5 swim lanes: Customer, Cashier, System/Digital, Kitchen, and Collection.</div>
+              <a href="#" class="step-btn" onclick="openEditor('phase3-tobe.html');return false;">Open →</a>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-hdr amber">3.3 — Product Roadmap</div>
+            <div class="step-card-body">
+              <div class="step-status st-todo">Not started</div>
+              <div class="step-card-desc">Plan the 18-month delivery roadmap across three phases: Foundation, Scale, and Optimise. Download the template and build it in PowerPoint.</div>
+              <a href="#" class="step-btn" style="background:var(--amber);" onclick="openEditor('phase3-roadmap.html');return false;">Open →</a>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-hdr amber">3.4 — Risk Assessment</div>
+            <div class="step-card-body">
+              <div class="step-status st-todo">Not started</div>
+              <div class="step-card-desc">Identify, score, and plan mitigations for the key risks of your recommended scenario. Saved directly to your team's record.</div>
+              <a href="#" class="step-btn" style="background:var(--amber);" onclick="openEditor('phase3-risk.html');return false;">Open →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.4 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-34')">
+      <span class="acc-num">3.4</span>
+      <div style="flex:1"><div class="acc-title">Phase 3 Declaration</div>
+      <div class="acc-sub">Confirm your team is ready to present — unlock Phase 4 Validate.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-body collapsed" id="acc-body-34" style="max-height:0;">
+      <div class="acc-body-inner" style="padding-top:20px;">
+        <div class="gate-checks">
+          <div class="gate-check"><input type="checkbox" id="gc3-1" onchange="checkGate3()"><label for="gc3-1">We have reviewed all 6 scenario briefings and selected our recommended option</label></div>
+          <div class="gate-check"><input type="checkbox" id="gc3-2" onchange="checkGate3()"><label for="gc3-2">We have completed the CBA analysis for our chosen scenario</label></div>
+          <div class="gate-check"><input type="checkbox" id="gc3-3" onchange="checkGate3()"><label for="gc3-3">We have produced a To-Be Process Map, Risk Assessment, Product Roadmap, and Solution Canvas</label></div>
+        </div>
+        <button class="gate-declare-btn" id="gate3-btn" disabled onclick="declarePhase3()">Complete Phase 3 — Move to Validate →</button>
+        <div class="gate-done-banner" id="gate3-done">✓ Phase 3 complete — <a href="phase4.html" style="color:inherit;font-weight:800;">Open Phase 4: Validate →</a></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -347,6 +402,26 @@ async function init() {
     document.getElementById('gate3-btn').disabled = true;
     document.getElementById('gate3-done').classList.add('show');
     ['gc3-1','gc3-2','gc3-3'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
+  }
+}
+
+function toggleSection(bodyId) {
+  const body = document.getElementById(bodyId);
+  const num = bodyId.replace('acc-body-', '');
+  const chev = document.getElementById('acc-chev-' + num);
+  if (!body) return;
+  const isCollapsed = body.classList.contains('collapsed');
+  if (isCollapsed) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    chev && chev.classList.remove('collapsed');
+    setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.classList.add('collapsed');
+      chev && chev.classList.add('collapsed');
+    });
   }
 }
 
