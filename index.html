@@ -661,7 +661,7 @@
         <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-14')">
           <span class="ps-num">1.4</span>
           <div style="flex:1"><div class="ps-title">Prepare the Research Findings Report</div>
-          <div class="ps-sub">Consolidate your stakeholder interview insights into a structured research brief — persona insights, pain points, and opportunity areas.</div></div>
+          <div class="ps-sub">Structure your research evidence — the approach taken, a snapshot of the current state, and the four key themes that emerged from your interviews.</div></div>
           <svg class="ps-chevron collapsed" id="ps-chev-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="ps-body collapsed" id="ps-body-14" style="max-height:0;">
@@ -672,31 +672,67 @@
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tea-muted);margin-bottom:10px;">Template Preview — structure of the brief</div>
             <div class="rfb-preview">
               <div class="rfb-p-header">
-                <div class="rfb-p-header-title">Research Findings Brief — Tea Fellas</div>
-                <div class="rfb-p-header-sub">Phase 1 Research · Participant Template</div>
+                <div class="rfb-p-header-title">Research Findings Report — Tea Fellas</div>
+                <div class="rfb-p-header-sub">Research approach &amp; themes — how the evidence was gathered, what the journey looks like today, and the four themes everything else hangs off</div>
               </div>
               <div class="rfb-p-body">
-                <div class="rfb-section">
-                  <div class="rfb-section-title">Section 1 — Stakeholder Insights</div>
-                  <div class="rfb-persona-grid">
-                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👵</div><div class="rfb-persona-name">Aunty Mary</div><div class="rfb-persona-role">Cashier</div></div>
-                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👴</div><div class="rfb-persona-name">Uncle John</div><div class="rfb-persona-role">Owner</div></div>
-                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👨‍🍳</div><div class="rfb-persona-name">Darren</div><div class="rfb-persona-role">Barista</div></div>
-                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">🧑‍🦳</div><div class="rfb-persona-name">Mrs Selva</div><div class="rfb-persona-role">Customer</div></div>
-                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👨‍💼</div><div class="rfb-persona-name">Jacky</div><div class="rfb-persona-role">HDB Staff</div></div>
+                <!-- Row 1: Research Approach + Journey Snapshot -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div class="rfb-section">
+                    <div class="rfb-section-title">Research Approach</div>
+                    <div style="font-size:12px;color:var(--tea-text);line-height:1.65;margin-top:4px;">Semi-structured stakeholder interviews of approximately 15 minutes each. Every session covered the same three questions: the pain point they experience, the workaround they currently use, and what good would look like.</div>
+                  </div>
+                  <div class="rfb-section">
+                    <div class="rfb-section-title">Journey Snapshot — Current State</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+                      <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:17px;font-weight:800;color:var(--tea-green);line-height:1;">~240</div>
+                        <div style="font-size:9px;color:var(--tea-muted);margin-top:2px;">orders per day</div>
+                      </div>
+                      <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:17px;font-weight:800;color:var(--tea-amber);line-height:1;">25 min</div>
+                        <div style="font-size:9px;color:var(--tea-muted);margin-top:2px;">peak wait time</div>
+                      </div>
+                      <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:17px;font-weight:800;color:var(--tea-green);line-height:1;">$4,900</div>
+                        <div style="font-size:9px;color:var(--tea-muted);margin-top:2px;">net monthly surplus</div>
+                      </div>
+                      <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:17px;font-weight:800;color:var(--tea-amber);line-height:1;">100%</div>
+                        <div style="font-size:9px;color:var(--tea-muted);margin-top:2px;">manual processes</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="rfb-section">
-                  <div class="rfb-section-title">Section 2 — Consolidated Pain Points</div>
-                  <div class="rfb-field">List the top pain points that emerged across all interviews…</div>
-                </div>
-                <div class="rfb-section">
-                  <div class="rfb-section-title">Section 3 — Opportunity Areas</div>
-                  <div class="rfb-field">Describe 2–3 opportunity areas worth exploring in Phase 2…</div>
+                <!-- Row 2: Key Themes -->
+                <div class="rfb-section" style="margin-top:4px;">
+                  <div class="rfb-section-title" style="margin-bottom:8px;">Key Themes</div>
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+                    <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:10px;">
+                      <div style="font-size:16px;font-weight:900;color:var(--tea-green);line-height:1;margin-bottom:5px;">01</div>
+                      <div style="font-size:10px;font-weight:700;color:var(--tea-text);margin-bottom:4px;">Bottlenecks at peak hours</div>
+                      <div style="font-size:9px;color:var(--tea-muted);line-height:1.5;">Manual order-taking creates queues that frustrate customers and overwhelm staff.</div>
+                    </div>
+                    <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:10px;">
+                      <div style="font-size:16px;font-weight:900;color:var(--tea-green);line-height:1;margin-bottom:5px;">02</div>
+                      <div style="font-size:10px;font-weight:700;color:var(--tea-text);margin-bottom:4px;">Order errors &amp; communication</div>
+                      <div style="font-size:9px;color:var(--tea-muted);line-height:1.5;">Handwritten chits and verbal handoffs lead to frequent mistakes and remakes.</div>
+                    </div>
+                    <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:10px;">
+                      <div style="font-size:16px;font-weight:900;color:var(--tea-green);line-height:1;margin-bottom:5px;">03</div>
+                      <div style="font-size:10px;font-weight:700;color:var(--tea-text);margin-bottom:4px;">No data or visibility</div>
+                      <div style="font-size:9px;color:var(--tea-muted);line-height:1.5;">Decisions on stock, staffing, and pricing rely on guesswork rather than real information.</div>
+                    </div>
+                    <div style="background:white;border:1px solid var(--tea-border);border-radius:6px;padding:10px;">
+                      <div style="font-size:16px;font-weight:900;color:var(--tea-green);line-height:1;margin-bottom:5px;">04</div>
+                      <div style="font-size:10px;font-weight:700;color:var(--tea-text);margin-bottom:4px;">Sustainability pressures</div>
+                      <div style="font-size:9px;color:var(--tea-muted);line-height:1.5;">Thin margins and rising costs limit the family's ability to invest or grow the business.</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div style="font-size:12px;color:var(--tea-muted);line-height:1.6;">Tip: Complete this brief as a group after finishing all 5 interviews. Use the overall synthesis tool above to help generate consolidated insights.</div>
+            <div style="font-size:12px;color:var(--tea-muted);line-height:1.6;">Tip: Complete this brief as a group after finishing all 5 interviews. Use your interview notes to populate each section — research approach, key metrics, and the themes that came up most often.</div>
           </div>
         </div>
       </div>
