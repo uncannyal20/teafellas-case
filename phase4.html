@@ -110,6 +110,8 @@ body { padding-left: 210px; }
 
 /* ── 4.2 validation matrix ── */
 .val-empty-msg{font-size:13px;color:var(--muted);font-style:italic;padding:16px 0;}
+.val-expand-btn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;float:right;}
+.val-expand-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-xl);}
 .val-matrix{border-collapse:collapse;min-width:900px;font-size:12px;width:100%;}
 .val-matrix th{background:var(--green);color:white;padding:10px 8px;font-size:11px;font-weight:700;text-align:center;white-space:nowrap;}
 .val-matrix th.assump-col{text-align:left;min-width:220px;}
@@ -122,6 +124,18 @@ body { padding-left: 210px; }
 .val-finalise-btn:hover{opacity:.88;}
 .val-done-banner{background:#E8F5E9;border:2px solid #4CAF50;border-radius:10px;padding:14px 18px;margin-top:16px;display:flex;align-items:center;gap:12px;}
 .val-done-text{font-size:13px;font-weight:700;color:#2E7D32;}
+/* ── Val matrix modal ── */
+.val-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.val-modal-overlay.open{display:flex;}
+.val-modal{background:white;border-radius:14px;width:95vw;max-width:1300px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.val-modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--green);flex-shrink:0;}
+.val-modal-title{font-size:14px;font-weight:800;color:white;}
+.val-modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:28px;height:28px;border-radius:6px;font-size:20px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;}
+.val-modal-close:hover{background:rgba(255,255,255,.35);}
+.val-modal-body{padding:20px;overflow-y:auto;flex:1;}
+.val-modal-body .val-matrix{min-width:0;width:100%;}
+.val-modal-body .val-matrix th.assump-col{min-width:260px;}
+.val-modal-body .val-finalise-btn{width:auto;}
 .methods-ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px;}
 .methods-ref-table th{background:var(--green);color:white;padding:8px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;}
 .methods-ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);}
@@ -247,7 +261,10 @@ body { padding-left: 210px; }
     </div>
     <div class="acc-body collapsed" id="acc-body-42" style="max-height:0;">
       <div class="acc-body-inner">
-        <div id="val-matrix-wrap" style="margin-top:14px;"></div>
+        <div style="margin-top:14px;margin-bottom:4px;overflow:hidden;">
+          <button class="val-expand-btn" onclick="openValModal()" id="val-expand-btn">&#x26F6; Open full view</button>
+        </div>
+        <div id="val-matrix-wrap"></div>
         <div id="val-42-done-banner" class="val-done-banner" style="display:none;">
           <span style="font-size:22px;">&#x2705;</span>
           <div>
@@ -296,6 +313,16 @@ body { padding-left: 210px; }
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="val-modal-overlay" id="val-modal-overlay" onclick="if(event.target===this)closeValModal()">
+  <div class="val-modal">
+    <div class="val-modal-hdr">
+      <span class="val-modal-title">4.2 — Select Validation Methods</span>
+      <button class="val-modal-close" onclick="closeValModal()">&#x00D7;</button>
+    </div>
+    <div class="val-modal-body" id="val-modal-body"></div>
   </div>
 </div>
 
@@ -414,39 +441,53 @@ function onCheckMethod(assumpId, methodIdx, checked) {
   methodsData[assumpId][METHODS[methodIdx]] = checked;
 }
 
-function buildValMatrix() {
-  const wrap = document.getElementById('val-matrix-wrap');
-  if (!wrap) return;
+function renderMatrixInto(container, readOnly) {
   const filled = assumptions.filter(a => a.text.trim());
-  if (methods42Done) {
-    renderValMatrixReadOnly(wrap, filled);
+  const hdrCells = METHOD_SHORT.map(s => `<th>${escHtml(s)}</th>`).join('');
+  if (readOnly) {
+    if (filled.length === 0) { container.innerHTML = ''; return; }
+    const rows = filled.map(a => {
+      const mdata = methodsData[a.id] || {};
+      const cells = METHODS.map(m => `<td class="check-cell" style="color:var(--green);font-size:15px;">${mdata[m] ? '&#x2713;' : ''}</td>`).join('');
+      return `<tr><td class="assump-cell">${escHtml(a.text)}</td>${cells}</tr>`;
+    }).join('');
+    container.innerHTML = `<div style="overflow-x:auto;"><table class="val-matrix"><thead><tr><th class="assump-col">Assumption</th>${hdrCells}</tr></thead><tbody>${rows}</tbody></table></div>`;
     return;
   }
   if (filled.length === 0) {
-    wrap.innerHTML = '<div class="val-empty-msg">Fill in your assumptions in 4.1 first — they will appear here as rows.</div>';
+    container.innerHTML = '<div class="val-empty-msg">Fill in your assumptions in 4.1 first — they will appear here as rows.</div>';
     return;
   }
-  const hdrCells = METHOD_SHORT.map(s => `<th>${escHtml(s)}</th>`).join('');
   const rows = filled.map(a => {
     const mdata = methodsData[a.id] || {};
     const cells = METHODS.map((m, mi) => {
-      const checked = mdata[m] ? 'checked' : '';
-      return `<td class="check-cell"><input type="checkbox" ${checked} onchange="onCheckMethod(${a.id},${mi},this.checked)"></td>`;
+      const chk = mdata[m] ? 'checked' : '';
+      return `<td class="check-cell"><input type="checkbox" ${chk} onchange="onCheckMethod(${a.id},${mi},this.checked)"></td>`;
     }).join('');
     return `<tr><td class="assump-cell">${escHtml(a.text)}</td>${cells}</tr>`;
   }).join('');
-  wrap.innerHTML = `<div style="overflow-x:auto;"><table class="val-matrix"><thead><tr><th class="assump-col">Assumption</th>${hdrCells}</tr></thead><tbody>${rows}</tbody></table></div><button class="val-finalise-btn" onclick="finaliseValMethods()">Finalise my validation methods plan</button>`;
+  container.innerHTML = `<div style="overflow-x:auto;"><table class="val-matrix"><thead><tr><th class="assump-col">Assumption</th>${hdrCells}</tr></thead><tbody>${rows}</tbody></table></div><button class="val-finalise-btn" onclick="finaliseValMethods()">Finalise my validation methods plan</button>`;
 }
 
-function renderValMatrixReadOnly(wrap, filled) {
-  if (filled.length === 0) { wrap.innerHTML = ''; return; }
-  const hdrCells = METHOD_SHORT.map(s => `<th>${escHtml(s)}</th>`).join('');
-  const rows = filled.map(a => {
-    const mdata = methodsData[a.id] || {};
-    const cells = METHODS.map(m => `<td class="check-cell" style="color:var(--green);font-size:15px;">${mdata[m] ? '&#x2713;' : ''}</td>`).join('');
-    return `<tr><td class="assump-cell">${escHtml(a.text)}</td>${cells}</tr>`;
-  }).join('');
-  wrap.innerHTML = `<div style="overflow-x:auto;"><table class="val-matrix"><thead><tr><th class="assump-col">Assumption</th>${hdrCells}</tr></thead><tbody>${rows}</tbody></table></div>`;
+function buildValMatrix() {
+  const wrap = document.getElementById('val-matrix-wrap');
+  if (wrap) renderMatrixInto(wrap, methods42Done);
+}
+
+function openValModal() {
+  const overlay = document.getElementById('val-modal-overlay');
+  const body = document.getElementById('val-modal-body');
+  if (!overlay || !body) return;
+  renderMatrixInto(body, methods42Done);
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeValModal() {
+  const overlay = document.getElementById('val-modal-overlay');
+  if (overlay) overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  buildValMatrix();
 }
 
 async function finaliseValMethods() {
@@ -454,6 +495,8 @@ async function finaliseValMethods() {
   const banner = document.getElementById('val-42-done-banner');
   if (banner) banner.style.display = 'flex';
   buildValMatrix();
+  const modalBody = document.getElementById('val-modal-body');
+  if (modalBody) renderMatrixInto(modalBody, true);
   await saveAssumptions();
 }
 
