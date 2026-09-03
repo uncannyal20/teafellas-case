@@ -29,35 +29,6 @@
   html, body { height: 100%; overflow: hidden; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--tea-bg); color: var(--tea-text); }
 
-  /* ── Instruction overlay ── */
-  #overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-    display: flex; align-items: center; justify-content: center; z-index: 100;
-  }
-  #overlay.hidden { display: none; }
-  .ov-box {
-    background: var(--tea-card); border-radius: 14px; padding: 28px 32px;
-    max-width: 520px; width: 90%; border: 1px solid var(--tea-border);
-  }
-  .ov-logo { font-size: 32px; margin-bottom: 6px; }
-  .ov-title { font-size: 20px; font-weight: 600; color: var(--tea-green); margin-bottom: 4px; }
-  .ov-sub { font-size: 13px; color: var(--tea-muted); margin-bottom: 20px; }
-  .ov-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
-  .ov-step { display: flex; gap: 12px; align-items: flex-start; }
-  .ov-num { width: 24px; height: 24px; border-radius: 50%; background: var(--tea-green); color: #fff;
-    font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-  .ov-step-text { font-size: 13px; color: var(--tea-text); line-height: 1.55; }
-  .ov-step-text strong { color: var(--tea-green); font-weight: 600; }
-  .ov-personas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 22px; }
-  .ov-persona { background: var(--tea-cream); border-radius: 8px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; }
-  .ov-p-emoji { font-size: 22px; }
-  .ov-p-info { }
-  .ov-p-name { font-size: 13px; font-weight: 600; color: var(--tea-text); }
-  .ov-p-role { font-size: 11px; color: var(--tea-muted); }
-  .ov-start { width: 100%; background: var(--tea-green); color: #fff; border: none; border-radius: 8px;
-    padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
-  .ov-start:hover { background: var(--tea-green-light); }
-
   /* ── Layout ── */
   html, body { height: 100%; overflow: hidden; }
   body { padding-left: 210px; }
@@ -439,36 +410,6 @@
   </div>
 </div>
 
-<!-- Instruction overlay -->
-<div id="overlay">
-  <div class="ov-box">
-    <div class="ov-logo">🍵</div>
-    <div class="ov-title">Tea Fellas — Discovery Simulation</div>
-    <div class="ov-sub">A product discovery exercise for HDB TPO Workshop</div>
-    <div class="ov-steps">
-      <div class="ov-step">
-        <div class="ov-num">1</div>
-        <div class="ov-step-text"><strong>Interview the personas.</strong> Select a person from the sidebar and ask them questions about their experience at Tea Fellas. You have <strong>15 minutes per interview</strong> — the timer starts on your first question.</div>
-      </div>
-      <div class="ov-step">
-        <div class="ov-num">2</div>
-        <div class="ov-step-text"><strong>Summarise each interview.</strong> After each session, click "Summarise →" to auto-generate key pain points and aspirations. Review and edit as a group, then confirm.</div>
-      </div>
-      <div class="ov-step">
-        <div class="ov-num">3</div>
-        <div class="ov-step-text"><strong>Synthesise your findings.</strong> Go to "Overall synthesis" to generate consolidated pain points, a problem statement, and a vision for Tea Fellas. Use this as the foundation for your product strategy.</div>
-      </div>
-    </div>
-    <div class="ov-personas">
-      <div class="ov-persona"><div class="ov-p-emoji">👵</div><div class="ov-p-info"><div class="ov-p-name">Aunty Mary</div><div class="ov-p-role">Cashier</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">👴</div><div class="ov-p-info"><div class="ov-p-name">Uncle John</div><div class="ov-p-role">Server / Collection</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">🧑‍🦳</div><div class="ov-p-info"><div class="ov-p-name">Mrs Selva</div><div class="ov-p-role">Loyal Customer</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">👨‍💼</div><div class="ov-p-info"><div class="ov-p-name">Jacky</div><div class="ov-p-role">HDB Staff / Regular</div></div></div>
-      <div class="ov-persona"><div class="ov-p-emoji">👨‍🍳</div><div class="ov-p-info"><div class="ov-p-name">Darren</div><div class="ov-p-role">Barista</div></div></div>
-    </div>
-    <button class="ov-start" onclick="closeOverlay()">Let's begin →</button>
-  </div>
-</div>
 
 <div id="app">
   <!-- Sidebar -->
@@ -478,6 +419,9 @@
       <span class="sb-team-badge" id="sb-team-badge">—</span>
     </div>
     <nav id="sb-nav">
+      <span class="sb-nav-label">Overview</span>
+      <a href="case-brief.html" class="pnav-btn"><span class="pnav-badge">📋</span>Case Briefing</a>
+      <a href="asis.html" class="pnav-btn"><span class="pnav-badge">📊</span>Where We Are Today</a>
       <span class="sb-nav-label">Phases</span>
       <div id="phase-nav-list"></div>
     </nav>
@@ -499,8 +443,8 @@
         <div class="phase-desc">Get to know the Tea Fellas team and customers. Interview each stakeholder, map the current process, and document your findings before moving to Define.</div>
       </div>
 
-      <!-- Case Briefing -->
-      <div class="case-brief-section">
+      <!-- Case Briefing (moved to case-brief.html) -->
+      <div class="case-brief-section" style="display:none;">
         <!-- Header bar -->
         <div style="display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--tea-border);margin-bottom:18px;">
           <div style="font-size:32px;line-height:1;">🍵</div>
@@ -569,23 +513,10 @@
         </div>
       </div>
 
-      <!-- 1.1 As-Is Document -->
-      <div class="phase-section phase-section-alt">
-        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-1')">
-          <span class="ps-num">1.1</span>
-          <div style="flex:1"><div class="ps-title">Where We Are Today</div>
-          <div class="ps-sub">Tea Fellas Toa Payoh — Current State Reference. Use this as your baseline during research.</div></div>
-          <svg class="ps-chevron collapsed" id="ps-chev-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="ps-body collapsed" id="ps-body-1" style="max-height:0;">
-          <div class="ps-body-inner"><div id="asis-doc"></div></div>
-        </div>
-      </div>
-
-      <!-- 1.2 Interviews -->
+      <!-- 1.1 Interviews -->
       <div class="phase-section">
         <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-2')">
-          <span class="ps-num">1.2</span>
+          <span class="ps-num">1.1</span>
           <div style="flex:1"><div class="ps-title">Stakeholder Interviews</div>
           <div class="ps-sub">Click a card to open an interview. Completed interviews show a ✓ — click them to review the confirmed summary.</div></div>
           <svg class="ps-chevron collapsed" id="ps-chev-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -595,10 +526,10 @@
         </div>
       </div>
 
-      <!-- 1.3 As-Is Process Map -->
+      <!-- 1.2 As-Is Process Map -->
       <div class="phase-section phase-section-alt">
         <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-13')">
-          <span class="ps-num">1.3</span>
+          <span class="ps-num">1.2</span>
           <div style="flex:1"><div class="ps-title">Develop the As-Is Process Map</div>
           <div class="ps-sub">Map the current Tea Fellas order fulfilment process across all stakeholders. Use your interviews to plot each step in the correct swimlane.</div></div>
           <svg class="ps-chevron collapsed" id="ps-chev-13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -654,10 +585,10 @@
         </div>
       </div>
 
-      <!-- 1.4 Research Findings Brief -->
+      <!-- 1.3 Research Findings Brief -->
       <div class="phase-section">
         <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-14')">
-          <span class="ps-num">1.4</span>
+          <span class="ps-num">1.3</span>
           <div style="flex:1"><div class="ps-title">Prepare the Research Findings Report</div>
           <div class="ps-sub">Structure your research evidence — the approach taken, a snapshot of the current state, and the four key themes that emerged from your interviews.</div></div>
           <svg class="ps-chevron collapsed" id="ps-chev-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -735,10 +666,10 @@
         </div>
       </div>
 
-      <!-- 1.5 Declaration -->
+      <!-- 1.4 Declaration -->
       <div class="phase-section" id="p1-decl-section">
         <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-5')">
-          <span class="ps-num">1.5</span>
+          <span class="ps-num">1.4</span>
           <div style="flex:1"><div class="ps-title">Phase 1 Declaration</div>
           <div class="ps-sub">Tick all three boxes as a group to unlock Phase 2 — Define.</div></div>
           <svg class="ps-chevron collapsed" id="ps-chev-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1030,9 +961,6 @@ PERSONAS.forEach(p => {
   state.summaries[p.id] = null;
 });
 
-// ── Overlay ────────────────────────────────────────────────────
-function closeOverlay() { document.getElementById('overlay').classList.add('hidden'); }
-function showOverlay() { document.getElementById('overlay').classList.remove('hidden'); }
 
 // ── Reset ──────────────────────────────────────────────────────
 function confirmReset() {

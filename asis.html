@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where We Are Today — Tea Fellas</title>
+<style>
+  :root {
+    --tea-green:#2D5A27; --tea-green-light:#3D7A35; --tea-amber:#C17A2A;
+    --tea-cream:#F5F0E8; --tea-card:#FDFAF4; --tea-border:#D4C4A0;
+    --tea-text:#2C2416; --tea-muted:#8A7560;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--tea-cream); padding-left: 210px; }
+
+  /* ── Sidebar ── */
+  #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 210px; background: #2D5A27; display: flex; flex-direction: column; z-index: 100; }
+  .sb-brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .sb-brand-name { font-size: 15px; font-weight: 900; color: white; letter-spacing: -.01em; display: block; }
+  #sb-nav { padding: 10px 8px; flex: 1; overflow-y: auto; }
+  .sb-nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.4); padding: 0 8px; margin-bottom: 6px; margin-top: 10px; display: block; }
+  .pnav-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: none; background: none; border-radius: 7px; cursor: pointer; color: rgba(255,255,255,.5); font-size: 12px; font-weight: 600; text-align: left; text-decoration: none; margin-bottom: 2px; transition: background .15s; box-sizing: border-box; }
+  .pnav-btn:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.85); }
+  .pnav-btn.p-active { background: rgba(255,255,255,.18); color: white; }
+  .pnav-badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; background: rgba(255,255,255,.12); color: rgba(255,255,255,.5); }
+  .pnav-btn.p-active .pnav-badge { background: #C17A2A; color: white; }
+  #sb-footer { border-top: 1px solid rgba(255,255,255,.12); padding: 12px 8px 20px; }
+  .sb-footer-btn { display: block; width: 100%; padding: 8px 10px; border: none; background: none; border-radius: 6px; color: rgba(255,255,255,.55); font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; text-decoration: none; }
+  .sb-footer-btn:hover { background: rgba(255,255,255,.08); color: white; }
+
+  /* ── Page content ── */
+  .page-content { max-width: 900px; margin: 0 auto; padding: 40px 36px 80px; }
+  .page-header { margin-bottom: 28px; }
+  .page-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--tea-amber); margin-bottom: 6px; }
+  .page-title { font-size: 28px; font-weight: 900; color: var(--tea-green); letter-spacing: -.5px; margin-bottom: 8px; }
+  .page-desc { font-size: 14px; color: var(--tea-muted); line-height: 1.6; }
+
+  /* ── As-Is doc styles ── */
+  .asis-doc { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; overflow: hidden; }
+  .asis-doc-header { background: var(--tea-green); color: #fff; padding: 14px 18px; }
+  .asis-doc-title { font-size: 15px; font-weight: 700; }
+  .asis-doc-sub { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .asis-doc-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 18px; }
+  .asis-metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .asis-metric { background: var(--tea-cream); border-radius: 8px; padding: 12px 14px; border: 1px solid var(--tea-border); }
+  .asis-metric-val { font-size: 22px; font-weight: 700; color: var(--tea-green); }
+  .asis-metric-label { font-size: 11px; color: var(--tea-muted); margin-top: 2px; }
+  .asis-section-title { font-size: 11px; font-weight: 700; color: var(--tea-green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .asis-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .asis-table th { background: var(--tea-cream); padding: 7px 10px; text-align: left; font-weight: 600; color: var(--tea-green); border-bottom: 1px solid var(--tea-border); font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .asis-table td { padding: 7px 10px; border-bottom: 1px solid var(--tea-border); color: var(--tea-text); line-height: 1.5; }
+  .asis-table tr:last-child td { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="sb-brand">
+    <span class="sb-brand-name">Tea Fellas</span>
+  </div>
+  <nav id="sb-nav">
+    <span class="sb-nav-label">Overview</span>
+    <a href="case-brief.html" class="pnav-btn"><span class="pnav-badge">📋</span>Case Briefing</a>
+    <a href="asis.html" class="pnav-btn p-active"><span class="pnav-badge">📊</span>Where We Are Today</a>
+    <span class="sb-nav-label">Phases</span>
+    <a href="index.html" class="pnav-btn"><span class="pnav-badge">1</span>Phase 1 — Research</a>
+    <a href="phase2.html" class="pnav-btn"><span class="pnav-badge">2</span>Phase 2 — Define</a>
+    <a href="phase3.html" class="pnav-btn"><span class="pnav-badge">3</span>Phase 3 — Ideate</a>
+    <a href="phase4.html" class="pnav-btn"><span class="pnav-badge">4</span>Phase 4 — Validate</a>
+  </nav>
+  <div id="sb-footer">
+    <a href="index.html" class="sb-footer-btn">← Back to Phase 1</a>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="page-header">
+    <div class="page-tag">Overview</div>
+    <div class="page-title">Where We Are Today</div>
+    <div class="page-desc">Tea Fellas, Toa Payoh — current state of the business as at 2025. Use this as your baseline during research and throughout the workshop.</div>
+  </div>
+
+  <div class="asis-doc">
+    <div class="asis-doc-header">
+      <div class="asis-doc-title">Tea Fellas, Toa Payoh — Current State of Business</div>
+      <div class="asis-doc-sub">As at 2025. Reference document for your research phase.</div>
+    </div>
+    <div class="asis-doc-body">
+      <div>
+        <div class="asis-section-title">At a Glance</div>
+        <div class="asis-metric-grid">
+          <div class="asis-metric"><div class="asis-metric-val">~250</div><div class="asis-metric-label">Orders per day</div></div>
+          <div class="asis-metric"><div class="asis-metric-val">15–30 min</div><div class="asis-metric-label">Peak wait time</div></div>
+          <div class="asis-metric"><div class="asis-metric-val">5</div><div class="asis-metric-label">Total staff</div></div>
+          <div class="asis-metric"><div class="asis-metric-val">1</div><div class="asis-metric-label">Outlet (Toa Payoh)</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="asis-section-title">Monthly Financials (Estimated)</div>
+        <table class="asis-table">
+          <thead><tr><th>Item</th><th>Monthly (SGD)</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Revenue</strong></td><td>~$30,000</td><td>~250 orders/day × avg $4.80 × 25 operating days</td></tr>
+            <tr><td>Ingredients &amp; supplies</td><td>~$9,000</td><td>~30% of revenue; rising due to fuel pass-throughs from supplier</td></tr>
+            <tr><td>Staff wages</td><td>~$11,500</td><td>John &amp; Mary (owner drawings) + Darren ($3,000) + Salmiah &amp; Chew (part-time)</td></tr>
+            <tr><td>Rental (HDB commercial)</td><td>~$3,200</td><td>Subsidised HDB rate; below market</td></tr>
+            <tr><td>Utilities</td><td>~$800</td><td>Electricity (fridges, equipment), water</td></tr>
+            <tr><td>Misc (packaging, maintenance)</td><td>~$600</td><td>Cups, straws, serviettes, small repairs</td></tr>
+            <tr><td><strong>Total Operating Costs</strong></td><td><strong>~$25,100</strong></td><td></td></tr>
+            <tr><td><strong>Estimated Net Profit</strong></td><td><strong>~$4,900</strong></td><td>~16% margin — thinning with rising costs and Darren now on payroll</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="asis-section-title">Supply Chain</div>
+        <table class="asis-table">
+          <thead><tr><th>Activity</th><th>Current Approach</th></tr></thead>
+          <tbody>
+            <tr><td>Ordering</td><td>Uncle John calls one trusted supplier (Chinatown) every Monday</td></tr>
+            <tr><td>Delivery</td><td>Fixed weekly delivery on Wednesday — same items, same quantities</td></tr>
+            <tr><td>Inventory</td><td>No system. John estimates by eye. No stockout issues at current scale</td></tr>
+            <tr><td>Supplier relationship</td><td>Over 15-year relationship. John will not switch even if cheaper alternatives exist</td></tr>
+            <tr><td>Cost pressure</td><td>Ingredient costs rising (fuel pass-through). John absorbs quietly; has not raised prices to customers</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
