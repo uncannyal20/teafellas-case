@@ -479,8 +479,6 @@
     <nav id="sb-nav">
       <span class="sb-nav-label">Phases</span>
       <div id="phase-nav-list"></div>
-      <span class="sb-nav-label">Interviews</span>
-      <div id="persona-list"></div>
     </nav>
     <div id="sb-footer">
       <button class="sb-footer-btn" onclick="logOut()">Log out</button>
@@ -1126,25 +1124,6 @@ function renderPhaseNavList() {
   p4.onclick = () => { if (p4unlocked) window.location.href = 'phase4.html'; };
   el.appendChild(p4);
 
-  // Persona quick-access buttons
-  const pl = document.getElementById('persona-list');
-  if (pl) {
-    pl.innerHTML = '';
-    PERSONAS.forEach(p => {
-      const done = !!state.summaries[p.id]?.confirmed;
-      const t = state.timers[p.id];
-      const mins = Math.floor(t.seconds / 60);
-      const secs = String(t.seconds % 60).padStart(2, '0');
-      const timerClass = t.seconds === 0 ? 'expired' : t.running ? (t.seconds < 120 ? 'warn' : 'running') : (done ? 'done' : '');
-      const timerTxt = done ? '✓ Complete' : t.running ? `${mins}:${secs}` : (t.seconds < 15*60 ? `${mins}:${secs}` : '');
-      const isActive = state.currentPersona === p.id && ['chat','summary'].includes(state.view);
-      const btn = document.createElement('button');
-      btn.className = 'persona-btn' + (isActive ? ' active' : '');
-      btn.innerHTML = `<span class="pb-emoji">${p.emoji}</span><div class="pb-info"><div class="pb-name">${p.name}</div><div class="pb-role">${p.role}</div>${timerTxt ? `<div class="pb-timer ${timerClass}">${timerTxt}</div>` : ''}</div>`;
-      btn.onclick = () => switchToPersona(p.id);
-      pl.appendChild(btn);
-    });
-  }
 }
 
 // ── Profile card data ─────────────────────────────────────────
