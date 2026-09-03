@@ -473,18 +473,17 @@
   <!-- Sidebar -->
   <div id="sidebar">
     <div class="sb-brand">
-      <span class="sb-brand-name">🍵 teafellas</span>
-      <span class="sb-team-badge" id="sb-team-badge" style="display:none;"></span>
+      <span class="sb-brand-name">Tea Fellas</span>
+      <span class="sb-team-badge" id="sb-team-badge">—</span>
     </div>
-    <div id="sb-nav">
-      <!-- Phase navigation -->
+    <nav id="sb-nav">
+      <span class="sb-nav-label">Phases</span>
       <div id="phase-nav-list"></div>
-      <!-- Persona list -->
+      <span class="sb-nav-label">Interviews</span>
       <div id="persona-list"></div>
-    </div>
+    </nav>
     <div id="sb-footer">
-      <button class="sb-footer-btn" id="nav-reset" onclick="confirmReset()">↩ Reset session</button>
-      <button class="sb-footer-btn" id="nav-logout" onclick="logOut()">← Log out</button>
+      <button class="sb-footer-btn" onclick="logOut()">Log out</button>
     </div>
   </div>
 
@@ -1086,13 +1085,14 @@ function renderPhaseNavList() {
   if (!el) return;
   const doneCount = PERSONAS.filter(p => state.summaries[p.id]?.confirmed).length;
   const inPhase1 = ['phase1', 'chat', 'summary'].includes(state.view);
-  el.innerHTML = '<div class="sb-nav-label" style="margin-top:2px;">Phases</div>';
+  el.innerHTML = '';
 
   // Phase 1 — always accessible
   const p1 = document.createElement('button');
-  p1.className = 'pnav-btn' + (inPhase1 ? ' active' : (state.phaseGates[1] ? ' done' : ''));
-  p1.innerHTML = `<span class="pnav-icon">${state.phaseGates[1] && !inPhase1 ? '✓' : '🔍'}</span> Phase 1 — Research` +
-    (doneCount > 0 ? `<span class="pnav-badge" style="margin-left:auto;">${doneCount}/5</span>` : '');
+  const p1done = state.phaseGates[1];
+  p1.className = 'pnav-btn' + (inPhase1 ? ' p-active' : (p1done ? ' p-done' : ''));
+  p1.innerHTML = `<span class="pnav-badge">${p1done && !inPhase1 ? '✓' : '1'}</span>Phase 1 — Research` +
+    (doneCount > 0 ? `<span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,.5);">${doneCount}/5</span>` : '');
   p1.onclick = () => showPhase1();
   el.appendChild(p1);
 
@@ -1100,9 +1100,9 @@ function renderPhaseNavList() {
   const p2 = document.createElement('button');
   const p2done = state.phaseGates[2];
   const p2unlocked = state.declarationDone;
-  p2.className = 'pnav-btn' + (p2done ? ' done' : p2unlocked ? '' : ' locked');
+  p2.className = 'pnav-btn' + (p2done ? ' p-done' : p2unlocked ? '' : ' p-locked');
   p2.title = !p2unlocked ? 'Complete Phase 1 declaration to unlock' : '';
-  p2.innerHTML = `<span class="pnav-icon">${p2done ? '✓' : '📋'}</span> Phase 2 — Define`;
+  p2.innerHTML = `<span class="pnav-badge">${p2done ? '✓' : p2unlocked ? '2' : '🔒'}</span>Phase 2 — Define`;
   p2.onclick = () => { if (p2unlocked) window.location.href = 'phase2.html'; };
   el.appendChild(p2);
 
@@ -1110,9 +1110,9 @@ function renderPhaseNavList() {
   const p3 = document.createElement('button');
   const p3done = state.phaseGates[3];
   const p3unlocked = state.phaseGates[2];
-  p3.className = 'pnav-btn' + (p3done ? ' done' : p3unlocked ? '' : ' locked');
+  p3.className = 'pnav-btn' + (p3done ? ' p-done' : p3unlocked ? '' : ' p-locked');
   p3.title = !p3unlocked ? 'Complete Phase 2 to unlock' : '';
-  p3.innerHTML = `<span class="pnav-icon">${p3done ? '✓' : '💡'}</span> Phase 3 — Ideate`;
+  p3.innerHTML = `<span class="pnav-badge">${p3done ? '✓' : p3unlocked ? '3' : '🔒'}</span>Phase 3 — Ideate`;
   p3.onclick = () => { if (p3unlocked) window.location.href = 'phase3.html'; };
   el.appendChild(p3);
 
@@ -1120,16 +1120,16 @@ function renderPhaseNavList() {
   const p4 = document.createElement('button');
   const p4done = state.phaseGates[4];
   const p4unlocked = state.phaseGates[3];
-  p4.className = 'pnav-btn' + (p4done ? ' done' : p4unlocked ? '' : ' locked');
+  p4.className = 'pnav-btn' + (p4done ? ' p-done' : p4unlocked ? '' : ' p-locked');
   p4.title = !p4unlocked ? 'Complete Phase 3 to unlock' : '';
-  p4.innerHTML = `<span class="pnav-icon">${p4done ? '✓' : '🚀'}</span> Phase 4 — Validate`;
+  p4.innerHTML = `<span class="pnav-badge">${p4done ? '✓' : p4unlocked ? '4' : '🔒'}</span>Phase 4 — Validate`;
   p4.onclick = () => { if (p4unlocked) window.location.href = 'phase4.html'; };
   el.appendChild(p4);
 
   // Persona quick-access buttons
   const pl = document.getElementById('persona-list');
   if (pl) {
-    pl.innerHTML = '<div class="sb-nav-label">Interviews</div>';
+    pl.innerHTML = '';
     PERSONAS.forEach(p => {
       const done = !!state.summaries[p.id]?.confirmed;
       const t = state.timers[p.id];
@@ -1591,7 +1591,7 @@ function selectTeam(code) {
   sessionStorage.setItem('teafellas_team_code', code);
   document.getElementById('team-code-overlay').classList.add('hidden');
   const badge = document.getElementById('sb-team-badge');
-  if (badge) { badge.textContent = code; badge.style.display = 'inline-block'; }
+  if (badge) badge.textContent = code;
   fetch(`${API_URL}/register-team`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ team_code: code })
@@ -2081,7 +2081,7 @@ showPhase1();
     state.teamCode = saved;
     document.getElementById('team-code-overlay').classList.add('hidden');
     const badge = document.getElementById('sb-team-badge');
-    if (badge) { badge.textContent = saved; badge.style.display = 'inline-block'; }
+    if (badge) badge.textContent = saved;
     await loadTeamSession();
     showPhase1();
   }
