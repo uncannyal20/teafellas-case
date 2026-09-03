@@ -389,8 +389,10 @@ function buildAssumpTable() {
 function onAssumpChange(id, field, value) {
   const a = assumptions.find(x => x.id === id);
   if (a) a[field] = value;
-  buildAssumpTable();
-  buildValMatrix();
+  if (field !== 'text') {
+    buildAssumpTable();
+    buildValMatrix();
+  }
 }
 
 function addAssumption() {
