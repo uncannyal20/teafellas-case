@@ -209,7 +209,7 @@ body{padding-left:210px;}
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
         <div class="step-card-desc">Summarise your solution in a 1-page canvas: vision, OKRs, key features, and risks. This anchors your Phase 4 presentation.</div>
-        <a href="phase3-canvas.html" class="step-btn green" target="_blank">Open →</a>
+        <a href="#" class="step-btn green" onclick="openEditor('phase3-canvas.html');return false;">Open →</a>
       </div>
     </div>
     <div class="step-card">
@@ -217,7 +217,7 @@ body{padding-left:210px;}
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
         <div class="step-card-desc">Map the future-state process flow for Scenario C1 across 5 swim lanes: Customer, Cashier, System/Digital, Kitchen, and Collection.</div>
-        <a href="phase3-tobe.html" class="step-btn green" target="_blank">Open →</a>
+        <a href="#" class="step-btn green" onclick="openEditor('phase3-tobe.html');return false;">Open →</a>
       </div>
     </div>
     <div class="step-card">
@@ -225,7 +225,7 @@ body{padding-left:210px;}
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
         <div class="step-card-desc">Build an 18-month delivery roadmap for your recommended scenario. When does what happen, and in what order?</div>
-        <a href="phase3-roadmap.html" class="step-btn green" target="_blank">Open →</a>
+        <a href="#" class="step-btn green" onclick="openEditor('phase3-roadmap.html');return false;">Open →</a>
       </div>
     </div>
     <div class="step-card">
@@ -233,7 +233,7 @@ body{padding-left:210px;}
       <div class="step-card-body">
         <div class="step-status st-todo">Not started</div>
         <div class="step-card-desc">Assess the key risks of your recommended scenario using a Probability × Impact matrix.</div>
-        <a href="phase3-risk.html" class="step-btn green" target="_blank">Open →</a>
+        <a href="#" class="step-btn green" onclick="openEditor('phase3-risk.html');return false;">Open →</a>
       </div>
     </div>
   </div>
@@ -259,6 +259,11 @@ const PHASE_LABELS = { 1: 'Research', 2: 'Define', 3: 'Ideate', 4: 'Validate' };
 
 let teamCode  = sessionStorage.getItem('teafellas_team_code') || null;
 let phaseGates = { 1: false, 2: false, 3: false, 4: false };
+
+function openEditor(url) {
+  const tc = sessionStorage.getItem('teafellas_team_code');
+  window.open(tc ? `${url}?team=${encodeURIComponent(tc)}` : url, '_blank');
+}
 
 function renderPhaseNav() {
   const badge = document.getElementById('sb-team-code');

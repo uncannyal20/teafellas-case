@@ -271,14 +271,14 @@ body { padding-left: 210px; }
   <div class="content-section">
     <div class="cs-hdr">
       <span class="cs-hdr-title">2.2 — Problem Statement</span>
-      <a href="phase2-problem.html" class="cs-hdr-link" target="_blank">Full UX template editor ↗</a>
+      <a href="#" class="cs-hdr-link" onclick="openEditor('phase2-problem.html');return false;">Full UX template editor ↗</a>
     </div>
     <div class="cs-body">
       <div class="cs-label">Your agreed problem statement(s)</div>
       <div id="ps-list" class="ps-list-wrap"></div>
       <button class="ps-add-btn" onclick="addPsRow()">+ Add problem statement</button>
       <span class="cs-save-badge" id="ps-badge"></span>
-      <div class="cs-hint">Add one or more candidate problem statements. Use the <a href="phase2-problem.html" target="_blank" style="color:var(--amber);font-weight:700;">full editor ↗</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
+      <div class="cs-hint">Add one or more candidate problem statements. Use the <a href="#" onclick="openEditor('phase2-problem.html');return false;" style="color:var(--amber);font-weight:700;">full editor ↗</a> for the structured UX format (user role, emotion, situation, goal, barrier, impact).</div>
     </div>
   </div>
 
@@ -286,7 +286,7 @@ body { padding-left: 210px; }
   <div class="content-section">
     <div class="cs-hdr">
       <span class="cs-hdr-title">2.3 — Product Vision</span>
-      <a href="phase2-vision.html" class="cs-hdr-link" target="_blank">Full vision editor ↗</a>
+      <a href="#" class="cs-hdr-link" onclick="openEditor('phase2-vision.html');return false;">Full vision editor ↗</a>
     </div>
     <div class="cs-body">
       <div class="cs-label">Your product vision for Tea Fellas</div>
@@ -294,7 +294,7 @@ body { padding-left: 210px; }
         placeholder="Tea Fellas becomes the neighbourhood bubble tea brand that Singaporeans trust — [what it looks like, feels like, and stands for]."
         oninput="scheduleVis()"></textarea>
       <span class="cs-save-badge" id="vis-badge"></span>
-      <div class="cs-hint">Write your North Star vision here. Use the <a href="phase2-vision.html" target="_blank" style="color:var(--amber);font-weight:700;">full editor ↗</a> to define outcome pillars and generate OKRs.</div>
+      <div class="cs-hint">Write your North Star vision here. Use the <a href="#" onclick="openEditor('phase2-vision.html');return false;" style="color:var(--amber);font-weight:700;">full editor ↗</a> to define outcome pillars and generate OKRs.</div>
       <div id="okr-display" style="display:none;margin-top:16px;">
         <div class="okr-display-label">Objectives &amp; Key Results</div>
         <div id="okr-disp-list"></div>
@@ -330,6 +330,11 @@ const PHASE_LABELS = { 1: 'Research', 2: 'Define', 3: 'Ideate', 4: 'Validate' };
 
 let teamCode  = sessionStorage.getItem('teafellas_team_code') || null;
 let phaseGates = { 1: false, 2: false, 3: false, 4: false };
+
+function openEditor(url) {
+  const tc = sessionStorage.getItem('teafellas_team_code');
+  window.open(tc ? `${url}?team=${encodeURIComponent(tc)}` : url, '_blank');
+}
 
 function renderPhaseNav() {
   const badge = document.getElementById('sb-team-code');
