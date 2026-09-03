@@ -18,6 +18,11 @@
     --tea-muted: #6B5A3E;
     --tea-danger: #C0392B;
     --tea-warn: #E67E22;
+    /* Phase 2/3 aliases */
+    --green: #2D5A27; --green-l: #4A7C42; --green-xl: #EEF5ED;
+    --amber: #C17A2A; --amber-l: #E8A94A; --amber-xl: #FFF8E6;
+    --cream: #F5F0E8; --card: #FDFAF4; --border: #D4C4A0;
+    --text: #2C2416; --muted: #6B5A3E;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; }
@@ -53,36 +58,48 @@
   .ov-start:hover { background: var(--tea-green-light); }
 
   /* ── Layout ── */
-  #app { display: flex; height: 100vh; overflow: hidden; }
+  html, body { height: 100%; overflow: hidden; }
+  body { padding-left: 210px; }
+  #app { height: 100vh; overflow: hidden; }
 
   /* ── Sidebar ── */
-  #sidebar { width: 210px; min-width: 210px; background: var(--tea-green); display: flex; flex-direction: column; }
-  #sidebar-header { padding: 16px 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.15); }
-  #sidebar-logo { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
-  #sidebar-tagline { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; letter-spacing: 0.8px; text-transform: uppercase; }
-  #persona-list { flex: 1; padding: 8px 0; overflow-y: auto; }
-  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 10px 14px;
-    text-align: left; display: flex; flex-direction: column; gap: 3px;
-    border-left: 3px solid transparent; transition: background 0.15s; }
-  .persona-btn:hover { background: rgba(255,255,255,0.1); }
-  .persona-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); }
-  .pb-name { font-size: 13px; font-weight: 600; color: #fff; }
-  .pb-role { font-size: 10px; color: rgba(255,255,255,0.6); }
-  .pb-timer { font-size: 11px; font-weight: 500; margin-top: 2px; }
+  #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 210px; background: #2D5A27; display: flex; flex-direction: column; z-index: 100; }
+  .sb-brand { padding: 18px 16px 14px; border-bottom: 1px solid rgba(255,255,255,.12); }
+  .sb-brand-name { font-size: 15px; font-weight: 900; color: white; letter-spacing: -.01em; display: block; }
+  .sb-team-badge { font-size: 10px; font-weight: 700; color: #E8A94A; background: rgba(193,122,42,.3); border-radius: 4px; padding: 2px 7px; display: inline-block; margin-top: 5px; }
+  #sb-nav { padding: 10px 8px; flex: 1; overflow-y: auto; }
+  .sb-nav-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.4); padding: 0 8px; margin-bottom: 6px; margin-top: 10px; display: block; }
+  .pnav-btn { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: none; background: none; border-radius: 7px; cursor: pointer; color: rgba(255,255,255,.5); font-size: 12px; font-weight: 600; text-align: left; text-decoration: none; margin-bottom: 2px; transition: background .15s; box-sizing: border-box; }
+  .pnav-btn:hover { background: rgba(255,255,255,.08); }
+  .pnav-btn.active, .pnav-btn.p-active { background: rgba(255,255,255,.18); color: white; }
+  .pnav-btn.done, .pnav-btn.p-done { color: rgba(255,255,255,.82); }
+  .pnav-btn.locked, .pnav-btn.p-locked { cursor: default; pointer-events: none; opacity: .5; }
+  .pnav-badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; background: rgba(255,255,255,.12); color: rgba(255,255,255,.5); }
+  .pnav-btn.active .pnav-badge, .pnav-btn.p-active .pnav-badge { background: #C17A2A; color: white; }
+  .pnav-btn.done .pnav-badge, .pnav-btn.p-done .pnav-badge { background: #4CAF50; color: white; }
+  .pnav-icon { font-size: 14px; flex-shrink: 0; }
+  /* Persona buttons inside sidebar */
+  #persona-list { padding: 0 8px 8px; }
+  .persona-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 9px 10px;
+    text-align: left; display: flex; align-items: center; gap: 10px; border-radius: 7px;
+    color: rgba(255,255,255,.6); font-size: 12px; font-weight: 600; margin-bottom: 2px; transition: background 0.15s; box-sizing: border-box; }
+  .persona-btn:hover { background: rgba(255,255,255,.08); color: white; }
+  .persona-btn.active { background: rgba(255,255,255,.18); color: white; }
+  .pb-emoji { font-size: 18px; flex-shrink: 0; }
+  .pb-info { flex: 1; min-width: 0; }
+  .pb-name { font-size: 12px; font-weight: 700; color: inherit; }
+  .pb-role { font-size: 10px; color: rgba(255,255,255,.5); }
+  .pb-timer { font-size: 10px; font-weight: 600; margin-top: 1px; }
   .pb-timer.running { color: var(--tea-amber-light); }
   .pb-timer.warn { color: #F39C12; }
   .pb-timer.expired { color: #E74C3C; }
-  .pb-timer.done { color: rgba(255,255,255,0.4); }
-  #sidebar-footer { border-top: 1px solid rgba(255,255,255,0.15); padding: 6px 0; }
-  .sidebar-nav-btn { width: 100%; background: none; border: none; cursor: pointer;
-    padding: 9px 14px; text-align: left; display: flex; align-items: center; gap: 8px;
-    color: rgba(255,255,255,0.75); font-size: 13px; border-left: 3px solid transparent; transition: background 0.15s; }
-  .sidebar-nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-  .sidebar-nav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
-  .sidebar-nav-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .pb-timer.done { color: rgba(255,255,255,.35); }
+  #sb-footer { border-top: 1px solid rgba(255,255,255,.12); padding: 12px 8px 20px; }
+  .sb-footer-btn { display: block; width: 100%; padding: 8px 10px; border: none; background: none; border-radius: 6px; color: rgba(255,255,255,.55); font-size: 12px; font-weight: 600; text-align: left; cursor: pointer; }
+  .sb-footer-btn:hover { background: rgba(255,255,255,.08); color: white; }
 
   /* ── Main area ── */
-  #main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+  #main { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
   /* ── Landing ── */
   #landing { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; }
@@ -272,33 +289,31 @@
     font-size: 12px; cursor: pointer; font-weight: 600; transition: background 0.15s, color 0.15s; }
   .pc-pdf-btn:hover { background: var(--tea-green); color: #fff; }
 
-  /* ── Phase 1 sections ── */
+  /* ── Phase 1 hub layout ── */
   #phase1-view { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-  .phase-section { padding: 28px 32px; border-bottom: 1px solid var(--tea-border); }
-  .phase-section-alt { background: var(--tea-cream); }
-  .ps-hdr-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
-  .ps-hdr-toggle { cursor: pointer; user-select: none; margin-bottom: 0; }
-  .ps-hdr-toggle:hover .ps-title { color: var(--tea-green-light); }
-  .ps-chevron { width: 20px; height: 20px; flex-shrink: 0; color: var(--tea-muted); margin-top: 3px; transition: transform 0.2s; }
+  .phase1-hub-content { max-width: 900px; margin: 0 auto; padding: 32px 36px 80px; width: 100%; }
+  .phase-header { margin-bottom: 24px; }
+  .phase-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--amber); margin-bottom: 6px; }
+  .phase-title { font-size: 28px; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+  .phase-desc { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 680px; }
+
+  /* ── Phase 1 sections — accordion style matching Phase 2/3 ── */
+  .phase-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+  .phase-section-alt { }
+  .ps-hdr-row { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; }
+  .ps-hdr-toggle { cursor: pointer; user-select: none; }
+  .ps-hdr-toggle:hover .ps-title { color: var(--green-l); }
+  .ps-chevron { width: 20px; height: 20px; flex-shrink: 0; color: var(--muted); margin-top: 6px; transition: transform 0.2s; }
   .ps-chevron.collapsed { transform: rotate(-90deg); }
   .ps-body { overflow: hidden; transition: max-height 0.25s ease; }
   .ps-body.collapsed { max-height: 0 !important; }
-  .ps-num { font-size: 24px; font-weight: 700; color: var(--tea-amber); flex-shrink: 0; min-width: 36px; margin-top: 2px; }
-  .ps-title { font-size: 17px; font-weight: 700; color: var(--tea-green); margin-bottom: 4px; }
-  .ps-sub { font-size: 13px; color: var(--tea-muted); line-height: 1.5; }
+  .ps-body-inner { padding: 0 20px 24px; border-top: 1px solid var(--border); }
+  .ps-num { font-size: 22px; font-weight: 700; color: var(--amber); flex-shrink: 0; min-width: 38px; margin-top: 1px; }
+  .ps-title { font-size: 16px; font-weight: 700; color: var(--green); margin-bottom: 3px; }
+  .ps-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
   /* ── Phase nav (sidebar) ── */
-  #phase-nav-list { flex: 1; padding: 10px 0 6px; overflow-y: auto; }
-  .pnav-section-hdr { padding: 8px 14px 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 0.8px; text-transform: uppercase; }
-  .pnav-btn { width: 100%; background: none; border: none; cursor: pointer; padding: 9px 14px;
-    text-align: left; display: flex; align-items: center; gap: 8px;
-    color: rgba(255,255,255,0.75); font-size: 13px; border-left: 3px solid transparent; transition: background 0.15s; }
-  .pnav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-  .pnav-btn.active { background: rgba(255,255,255,0.15); border-left-color: var(--tea-amber-light); color: #fff; }
-  .pnav-btn.locked { opacity: 0.4; cursor: not-allowed; }
-  .pnav-btn.done { color: rgba(255,255,255,0.9); border-left-color: #4CAF50; }
-  .pnav-icon { font-size: 14px; flex-shrink: 0; }
-  .pnav-badge { margin-left: auto; font-size: 10px; font-weight: 700; background: var(--tea-amber); color: #fff; border-radius: 10px; padding: 1px 6px; flex-shrink: 0; }
+  #phase-nav-list { padding: 0; }
 
   /* ── As-Is doc ── */
   .asis-doc { background: var(--tea-card); border: 1px solid var(--tea-border); border-radius: 10px; overflow: hidden; max-width: 820px; }
@@ -334,11 +349,49 @@
   .decl-go-btn { display: inline-block; background: var(--tea-green); color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
   .decl-go-btn:hover { background: var(--tea-green-light); }
 
+  /* ── Artefact download + swimlane preview ── */
+  .art-dl-btn { display:inline-flex; align-items:center; gap:8px; background:var(--tea-green); color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; margin-bottom:20px; }
+  .art-dl-btn:hover { background:var(--tea-green-light); }
+  .swimlane-wrap { overflow-x:auto; margin-bottom:12px; }
+  .swimlane-preview { min-width:560px; border:2px solid var(--tea-green); border-radius:10px; overflow:hidden; background:white; box-shadow:0 2px 10px rgba(0,0,0,.07); }
+  .sl-p-title { background:var(--tea-green); padding:10px 16px; display:flex; align-items:center; justify-content:space-between; }
+  .sl-p-title-main { color:white; font-size:13px; font-weight:800; }
+  .sl-p-title-sub { color:rgba(255,255,255,.6); font-size:11px; }
+  .sl-p-col-hdr { display:flex; border-bottom:2px solid var(--tea-border); background:#f9f6f0; }
+  .sl-p-lbl-hdr { width:130px; flex-shrink:0; padding:6px 10px; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--tea-muted); border-right:2px solid var(--tea-border); }
+  .sl-p-steps-hdr { flex:1; display:flex; }
+  .sl-p-step-hdr { flex:1; padding:6px 4px; text-align:center; font-size:9px; font-weight:700; text-transform:uppercase; color:var(--tea-muted); border-right:1px solid var(--tea-border); }
+  .sl-p-step-hdr:last-child { border-right:none; }
+  .sl-p-row { display:flex; border-bottom:1px solid var(--tea-border); min-height:70px; }
+  .sl-p-row:last-child { border-bottom:none; }
+  .sl-p-lane { width:130px; flex-shrink:0; padding:10px; border-right:2px solid var(--tea-border); display:flex; flex-direction:column; justify-content:center; gap:2px; }
+  .sl-p-lane-icon { font-size:15px; }
+  .sl-p-lane-name { font-size:11px; font-weight:800; color:white; }
+  .sl-p-lane-role { font-size:9px; color:rgba(255,255,255,.7); line-height:1.3; }
+  .sl-p-cells { flex:1; display:flex; }
+  .sl-p-cell { flex:1; border-right:1px solid #EDE3D0; display:flex; align-items:center; justify-content:center; padding:6px; }
+  .sl-p-cell:last-child { border-right:none; }
+  .sl-p-cell-box { width:100%; height:44px; border:1.5px dashed #C8B898; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#D4C4A0; font-size:16px; }
+  /* Research brief preview */
+  .rfb-preview { border:1.5px solid var(--tea-border); border-radius:10px; overflow:hidden; background:white; max-width:640px; margin-bottom:12px; }
+  .rfb-p-header { background:var(--tea-green); padding:10px 16px; }
+  .rfb-p-header-title { color:white; font-size:13px; font-weight:800; }
+  .rfb-p-header-sub { color:rgba(255,255,255,.6); font-size:11px; margin-top:2px; }
+  .rfb-p-body { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .rfb-section { background:var(--tea-cream); border:1px solid var(--tea-border); border-radius:7px; padding:10px 14px; }
+  .rfb-section-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--tea-green); margin-bottom:6px; }
+  .rfb-persona-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+  .rfb-persona-card { background:white; border:1px solid var(--tea-border); border-radius:6px; padding:8px 6px; text-align:center; }
+  .rfb-persona-emoji { font-size:18px; }
+  .rfb-persona-name { font-size:10px; font-weight:700; color:var(--tea-text); margin-top:3px; }
+  .rfb-persona-role { font-size:9px; color:var(--tea-muted); margin-top:1px; }
+  .rfb-field { background:white; border:1px dashed var(--tea-border); border-radius:5px; padding:8px 10px; font-size:12px; color:var(--tea-muted); font-style:italic; min-height:44px; display:flex; align-items:center; }
+
   /* ── Read-only confirmed summary ── */
   .sp-readonly { background: var(--tea-cream); border-radius: 6px; padding: 10px 12px; font-size: 13px; color: var(--tea-text); line-height: 1.7; white-space: pre-wrap; }
 
   /* ── Case Briefing ── */
-  .case-brief-section { padding: 22px 32px 24px; background: var(--tea-card); border-bottom: 1px solid var(--tea-border); flex-shrink: 0; }
+  .case-brief-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 18px; padding: 22px 24px 24px; }
   .case-brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 14px; }
   .case-brief-col-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--tea-green); margin-bottom: 8px; }
   .case-brief-body { font-size: 13px; color: var(--tea-text); line-height: 1.65; }
@@ -419,28 +472,34 @@
 <div id="app">
   <!-- Sidebar -->
   <div id="sidebar">
-    <div id="sidebar-header">
-      <div id="sidebar-logo">teafellas</div>
-      <div id="sidebar-tagline">Discovery Sim</div>
+    <div class="sb-brand">
+      <span class="sb-brand-name">🍵 teafellas</span>
+      <span class="sb-team-badge" id="sb-team-badge" style="display:none;"></span>
     </div>
-    <!-- Phase navigation -->
-    <div id="phase-nav-list"></div>
-    <div id="sidebar-footer">
-      <button class="sidebar-nav-btn" id="nav-reset" onclick="confirmReset()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-        Reset session
-      </button>
-      <button class="sidebar-nav-btn" id="nav-logout" onclick="logOut()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Log out
-      </button>
+    <div id="sb-nav">
+      <!-- Phase navigation -->
+      <div id="phase-nav-list"></div>
+      <!-- Persona list -->
+      <div id="persona-list"></div>
+    </div>
+    <div id="sb-footer">
+      <button class="sb-footer-btn" id="nav-reset" onclick="confirmReset()">↩ Reset session</button>
+      <button class="sb-footer-btn" id="nav-logout" onclick="logOut()">← Log out</button>
     </div>
   </div>
 
   <!-- Main -->
   <div id="main">
-    <!-- Phase 1 — Research (3 sections) -->
+    <!-- Phase 1 — Research -->
     <div id="phase1-view" style="display:none;flex:1;overflow-y:auto;flex-direction:column;">
+      <div class="phase1-hub-content">
+
+      <!-- Phase header -->
+      <div class="phase-header">
+        <div class="phase-tag">Phase 1 — Research</div>
+        <div class="phase-title">Research</div>
+        <div class="phase-desc">Get to know the Tea Fellas team and customers. Interview each stakeholder, map the current process, and document your findings before moving to Define.</div>
+      </div>
 
       <!-- Case Briefing -->
       <div class="case-brief-section">
@@ -521,7 +580,7 @@
           <svg class="ps-chevron collapsed" id="ps-chev-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="ps-body collapsed" id="ps-body-1" style="max-height:0;">
-          <div id="asis-doc"></div>
+          <div class="ps-body-inner"><div id="asis-doc"></div></div>
         </div>
       </div>
 
@@ -534,22 +593,128 @@
           <svg class="ps-chevron collapsed" id="ps-chev-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
         <div class="ps-body collapsed" id="ps-body-2" style="max-height:0;">
-          <div class="profile-grid" id="profile-cards"></div>
+          <div class="ps-body-inner"><div class="profile-grid" id="profile-cards"></div></div>
         </div>
       </div>
 
-      <!-- 1.3 Declaration -->
-      <div class="phase-section" id="p1-decl-section">
-        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-3')">
+      <!-- 1.3 As-Is Process Map -->
+      <div class="phase-section phase-section-alt">
+        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-13')">
           <span class="ps-num">1.3</span>
-          <div style="flex:1"><div class="ps-title">Phase 1 Declaration</div>
-          <div class="ps-sub">Tick all three boxes as a group to unlock Phase 2 — Define.</div></div>
-          <svg class="ps-chevron collapsed" id="ps-chev-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          <div style="flex:1"><div class="ps-title">Develop the As-Is Process Map</div>
+          <div class="ps-sub">Map the current Tea Fellas order fulfilment process across all stakeholders. Use your interviews to plot each step in the correct swimlane.</div></div>
+          <svg class="ps-chevron collapsed" id="ps-chev-13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
-        <div class="ps-body collapsed" id="ps-body-3" style="max-height:0;">
-          <div id="declaration-area"></div>
+        <div class="ps-body collapsed" id="ps-body-13" style="max-height:0;">
+          <div class="ps-body-inner">
+            <a class="art-dl-btn" href="teafellas-artefacts/updated/1.1a_asis_process_map_participant.pdf" download>
+              ⬇ &nbsp;Download As-Is Process Map Template
+            </a>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tea-muted);margin-bottom:10px;">Template Preview — fill in during your group session</div>
+            <div class="swimlane-wrap">
+              <div class="swimlane-preview">
+                <div class="sl-p-title">
+                  <span class="sl-p-title-main">As-Is Order Fulfilment Process — Tea Fellas</span>
+                  <span class="sl-p-title-sub">Current State (Paper-based) · 13 steps</span>
+                </div>
+                <div class="sl-p-col-hdr">
+                  <div class="sl-p-lbl-hdr">Stakeholder</div>
+                  <div class="sl-p-steps-hdr">
+                    <div class="sl-p-step-hdr">Step 1</div>
+                    <div class="sl-p-step-hdr">Step 2</div>
+                    <div class="sl-p-step-hdr">Step 3</div>
+                    <div class="sl-p-step-hdr">Step 4</div>
+                    <div class="sl-p-step-hdr">Step 5</div>
+                    <div class="sl-p-step-hdr">Step 6</div>
+                    <div class="sl-p-step-hdr">Step 7+</div>
+                  </div>
+                </div>
+                <div class="sl-p-row">
+                  <div class="sl-p-lane" style="background:#3D7AB5;"><div class="sl-p-lane-icon">🧑‍🤝‍🧑</div><div class="sl-p-lane-name">Customer</div><div class="sl-p-lane-role">End user</div></div>
+                  <div class="sl-p-cells"><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div></div>
+                </div>
+                <div class="sl-p-row">
+                  <div class="sl-p-lane" style="background:#C17A2A;"><div class="sl-p-lane-icon">👵</div><div class="sl-p-lane-name">Aunty Mary</div><div class="sl-p-lane-role">Cashier</div></div>
+                  <div class="sl-p-cells"><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div></div>
+                </div>
+                <div class="sl-p-row">
+                  <div class="sl-p-lane" style="background:#6B5A3E;"><div class="sl-p-lane-icon">👥</div><div class="sl-p-lane-name">Barista A</div><div class="sl-p-lane-role">Sticker / Print</div></div>
+                  <div class="sl-p-cells"><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div></div>
+                </div>
+                <div class="sl-p-row">
+                  <div class="sl-p-lane" style="background:#2D5A27;"><div class="sl-p-lane-icon">👨‍🍳</div><div class="sl-p-lane-name">Darren</div><div class="sl-p-lane-role">Main Barista</div></div>
+                  <div class="sl-p-cells"><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div></div>
+                </div>
+                <div class="sl-p-row">
+                  <div class="sl-p-lane" style="background:#7A5C9A;"><div class="sl-p-lane-icon">👴</div><div class="sl-p-lane-name">Uncle John</div><div class="sl-p-lane-role">Collection</div></div>
+                  <div class="sl-p-cells"><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div><div class="sl-p-cell"><div class="sl-p-cell-box">+</div></div></div>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--tea-muted);line-height:1.6;">Tip: Use the downloaded template on paper or slides. Map each process step across the swimlanes and mark pain points with a ⚡ symbol.</div>
+          </div>
         </div>
       </div>
+
+      <!-- 1.4 Research Findings Brief -->
+      <div class="phase-section">
+        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-14')">
+          <span class="ps-num">1.4</span>
+          <div style="flex:1"><div class="ps-title">Prepare the Research Findings Report</div>
+          <div class="ps-sub">Consolidate your stakeholder interview insights into a structured research brief — persona insights, pain points, and opportunity areas.</div></div>
+          <svg class="ps-chevron collapsed" id="ps-chev-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="ps-body collapsed" id="ps-body-14" style="max-height:0;">
+          <div class="ps-body-inner">
+            <a class="art-dl-btn" href="teafellas-artefacts/updated/1.2a_research_findings_participant.pdf" download>
+              ⬇ &nbsp;Download Research Findings Brief Template
+            </a>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tea-muted);margin-bottom:10px;">Template Preview — structure of the brief</div>
+            <div class="rfb-preview">
+              <div class="rfb-p-header">
+                <div class="rfb-p-header-title">Research Findings Brief — Tea Fellas</div>
+                <div class="rfb-p-header-sub">Phase 1 Research · Participant Template</div>
+              </div>
+              <div class="rfb-p-body">
+                <div class="rfb-section">
+                  <div class="rfb-section-title">Section 1 — Stakeholder Insights</div>
+                  <div class="rfb-persona-grid">
+                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👵</div><div class="rfb-persona-name">Aunty Mary</div><div class="rfb-persona-role">Cashier</div></div>
+                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👴</div><div class="rfb-persona-name">Uncle John</div><div class="rfb-persona-role">Owner</div></div>
+                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👨‍🍳</div><div class="rfb-persona-name">Darren</div><div class="rfb-persona-role">Barista</div></div>
+                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">🧑‍🦳</div><div class="rfb-persona-name">Mrs Selva</div><div class="rfb-persona-role">Customer</div></div>
+                    <div class="rfb-persona-card"><div class="rfb-persona-emoji">👨‍💼</div><div class="rfb-persona-name">Jacky</div><div class="rfb-persona-role">HDB Staff</div></div>
+                  </div>
+                </div>
+                <div class="rfb-section">
+                  <div class="rfb-section-title">Section 2 — Consolidated Pain Points</div>
+                  <div class="rfb-field">List the top pain points that emerged across all interviews…</div>
+                </div>
+                <div class="rfb-section">
+                  <div class="rfb-section-title">Section 3 — Opportunity Areas</div>
+                  <div class="rfb-field">Describe 2–3 opportunity areas worth exploring in Phase 2…</div>
+                </div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--tea-muted);line-height:1.6;">Tip: Complete this brief as a group after finishing all 5 interviews. Use the overall synthesis tool above to help generate consolidated insights.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1.5 Declaration -->
+      <div class="phase-section" id="p1-decl-section">
+        <div class="ps-hdr-row ps-hdr-toggle" onclick="toggleSection('ps-body-5')">
+          <span class="ps-num">1.5</span>
+          <div style="flex:1"><div class="ps-title">Phase 1 Declaration</div>
+          <div class="ps-sub">Tick all three boxes as a group to unlock Phase 2 — Define.</div></div>
+          <svg class="ps-chevron collapsed" id="ps-chev-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="ps-body collapsed" id="ps-body-5" style="max-height:0;">
+          <div class="ps-body-inner"><div id="declaration-area"></div></div>
+        </div>
+      </div>
+
+      </div><!-- end phase1-hub-content -->
     </div>
 
     <!-- Chat -->
@@ -885,13 +1050,13 @@ function renderPhaseNavList() {
   if (!el) return;
   const doneCount = PERSONAS.filter(p => state.summaries[p.id]?.confirmed).length;
   const inPhase1 = ['phase1', 'chat', 'summary'].includes(state.view);
-  el.innerHTML = '';
+  el.innerHTML = '<div class="sb-nav-label" style="margin-top:2px;">Phases</div>';
 
   // Phase 1 — always accessible
   const p1 = document.createElement('button');
   p1.className = 'pnav-btn' + (inPhase1 ? ' active' : (state.phaseGates[1] ? ' done' : ''));
   p1.innerHTML = `<span class="pnav-icon">${state.phaseGates[1] && !inPhase1 ? '✓' : '🔍'}</span> Phase 1 — Research` +
-    (doneCount > 0 ? `<span class="pnav-badge">${doneCount}/5</span>` : '');
+    (doneCount > 0 ? `<span class="pnav-badge" style="margin-left:auto;">${doneCount}/5</span>` : '');
   p1.onclick = () => showPhase1();
   el.appendChild(p1);
 
@@ -924,6 +1089,26 @@ function renderPhaseNavList() {
   p4.innerHTML = `<span class="pnav-icon">${p4done ? '✓' : '🚀'}</span> Phase 4 — Validate`;
   p4.onclick = () => { if (p4unlocked) window.location.href = 'phase4.html'; };
   el.appendChild(p4);
+
+  // Persona quick-access buttons
+  const pl = document.getElementById('persona-list');
+  if (pl) {
+    pl.innerHTML = '<div class="sb-nav-label">Interviews</div>';
+    PERSONAS.forEach(p => {
+      const done = !!state.summaries[p.id]?.confirmed;
+      const t = state.timers[p.id];
+      const mins = Math.floor(t.seconds / 60);
+      const secs = String(t.seconds % 60).padStart(2, '0');
+      const timerClass = t.seconds === 0 ? 'expired' : t.running ? (t.seconds < 120 ? 'warn' : 'running') : (done ? 'done' : '');
+      const timerTxt = done ? '✓ Complete' : t.running ? `${mins}:${secs}` : (t.seconds < 15*60 ? `${mins}:${secs}` : '');
+      const isActive = state.currentPersona === p.id && ['chat','summary'].includes(state.view);
+      const btn = document.createElement('button');
+      btn.className = 'persona-btn' + (isActive ? ' active' : '');
+      btn.innerHTML = `<span class="pb-emoji">${p.emoji}</span><div class="pb-info"><div class="pb-name">${p.name}</div><div class="pb-role">${p.role}</div>${timerTxt ? `<div class="pb-timer ${timerClass}">${timerTxt}</div>` : ''}</div>`;
+      btn.onclick = () => switchToPersona(p.id);
+      pl.appendChild(btn);
+    });
+  }
 }
 
 // ── Profile card data ─────────────────────────────────────────
@@ -1369,6 +1554,8 @@ function selectTeam(code) {
   state.teamCode = code;
   sessionStorage.setItem('teafellas_team_code', code);
   document.getElementById('team-code-overlay').classList.add('hidden');
+  const badge = document.getElementById('sb-team-badge');
+  if (badge) { badge.textContent = code; badge.style.display = 'inline-block'; }
   fetch(`${API_URL}/register-team`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ team_code: code })
@@ -1857,6 +2044,8 @@ showPhase1();
   if (saved) {
     state.teamCode = saved;
     document.getElementById('team-code-overlay').classList.add('hidden');
+    const badge = document.getElementById('sb-team-badge');
+    if (badge) { badge.textContent = saved; badge.style.display = 'inline-block'; }
     await loadTeamSession();
     showPhase1();
   }

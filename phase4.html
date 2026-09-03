@@ -16,7 +16,7 @@ html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Sego
   background: var(--cream); color: var(--text); }
 body.has-phase-nav { padding-top: 46px; }
 
-/* ── Phase nav bar (shared) ── */
+/* ── Phase nav bar ── */
 #phase-nav-bar { position: fixed; top: 0; left: 0; right: 0; height: 46px; z-index: 150;
   background: #1E3D1A; display: flex; align-items: center;
   padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
@@ -61,44 +61,93 @@ body.has-phase-nav { padding-top: 46px; }
 .phase-title { font-size: 32px; font-weight: 900; color: var(--green); margin-bottom: 10px; }
 .phase-desc  { font-size: 15px; color: var(--muted); line-height: 1.7; max-width: 600px; margin: 0 auto; }
 
-/* ── Presentation prep card ── */
-.prep-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-  padding: 28px; margin-bottom: 24px; }
-.prep-title { font-size: 17px; font-weight: 800; color: var(--green); margin-bottom: 6px; }
-.prep-desc  { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 18px; }
-.prep-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-.prep-sec { background: var(--green-xl); border-radius: 8px; padding: 12px 14px; }
-.prep-sec-title { font-size: 12px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
-.prep-sec-desc  { font-size: 12px; color: var(--muted); line-height: 1.55; }
-.prep-btn { background: var(--green); color: white; border: none; border-radius: 8px;
-  padding: 11px 22px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
-  display: inline-block; }
-.prep-btn:hover { opacity: .88; }
+/* ── Accordion ── */
+.acc-section{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.acc-hdr{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;cursor:pointer;user-select:none;}
+.acc-hdr:hover .acc-title{color:var(--green-l);}
+.acc-num{font-size:22px;font-weight:700;color:var(--amber);flex-shrink:0;min-width:38px;margin-top:1px;}
+.acc-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:3px;}
+.acc-sub{font-size:13px;color:var(--muted);line-height:1.5;}
+.acc-chevron{width:20px;height:20px;flex-shrink:0;color:var(--muted);margin-top:6px;transition:transform 0.2s;}
+.acc-chevron.collapsed{transform:rotate(-90deg);}
+.acc-body{overflow:hidden;transition:max-height 0.25s ease;}
+.acc-body.collapsed{max-height:0!important;}
+.acc-body-inner{padding:0 20px 24px;border-top:1px solid var(--border);}
 
-/* ── Journey complete ── */
-.complete-banner { background: #E8F5E9; border: 2px solid #4CAF50; border-radius: 14px;
-  padding: 32px; text-align: center; margin-top: 32px; }
-.complete-icon  { font-size: 48px; margin-bottom: 12px; }
-.complete-title { font-size: 22px; font-weight: 900; color: #2E7D32; margin-bottom: 8px; }
-.complete-desc  { font-size: 14px; color: #388E3C; line-height: 1.7; }
+/* ── Assumption table ── */
+.assump-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:14px;}
+.assump-table th{background:var(--green);color:white;padding:8px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.assump-table td{padding:8px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
+.assump-table tr:last-child td{border-bottom:none;}
+.assump-table tr:hover td{background:var(--cream);}
+.assump-ta{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-size:12px;font-family:inherit;resize:none;min-height:56px;background:white;}
+.assump-ta:focus{border-color:var(--green);outline:none;}
+.assump-sel{width:100%;border:1px solid var(--border);border-radius:5px;padding:5px 6px;font-size:12px;font-family:inherit;background:white;}
+.assump-sel:focus{border-color:var(--green);outline:none;}
+.assump-del-btn{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px;padding:2px 6px;}
+.assump-del-btn:hover{color:#C0392B;}
+.assump-add-btn{background:none;border:1px dashed var(--border);border-radius:7px;color:var(--muted);font-size:12px;font-weight:700;padding:7px 14px;cursor:pointer;margin-top:10px;}
+.assump-add-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-xl);}
 
-/* ── Phase gate ── */
-.phase-gate { background: var(--green-xl); border: 2px solid var(--green-l); border-radius: 12px;
-  padding: 24px 28px; margin-top: 32px; }
-.phase-gate-title { font-size: 15px; font-weight: 800; color: var(--green); margin-bottom: 12px; }
-.gate-checks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.gate-check { display: flex; align-items: flex-start; gap: 10px; }
-.gate-check input { margin-top: 3px; accent-color: var(--green); width: 16px; height: 16px; flex-shrink: 0; }
-.gate-check label { font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer; }
-.gate-declare-btn { background: var(--green); color: white; border: none; border-radius: 8px;
-  padding: 12px 24px; font-size: 14px; font-weight: 700; cursor: pointer; }
-.gate-declare-btn:disabled { background: #aaa; cursor: not-allowed; }
-.gate-done-banner { display: none; }
-.gate-done-banner.show { display: block; }
+/* ── Priority badge ── */
+.prio-badge{display:inline-block;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap;}
+.prio-validate-first{background:#FFEBEE;color:#C2185B;border:1px solid #F48FB1;}
+.prio-validate-if{background:#E3F2FD;color:#1565C0;}
+.prio-monitor{background:#E8F5E9;color:#2E7D32;}
+.prio-deprioritise{background:#F5F5F5;color:#9E9E9E;}
+.prio-empty{color:#ccc;font-style:italic;font-size:11px;}
+
+/* ── 2×2 matrix ── */
+.matrix-wrap{margin-top:18px;margin-bottom:6px;}
+.matrix-hint{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.matrix-grid{display:grid;grid-template-columns:80px 1fr 1fr;grid-template-rows:32px 80px 80px;gap:4px;max-width:480px;}
+.matrix-corner{background:none;}
+.matrix-col-hdr{background:var(--green);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:5px;padding:4px;}
+.matrix-row-hdr{background:var(--green);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border-radius:5px;padding:4px;text-align:center;line-height:1.3;}
+.matrix-cell{border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;text-align:center;padding:8px;}
+.matrix-cell.validate-first{background:#FFEBEE;color:#C2185B;border:2px solid #F48FB1;}
+.matrix-cell.validate-if{background:#E3F2FD;color:#1565C0;}
+.matrix-cell.monitor{background:#E8F5E9;color:#2E7D32;}
+.matrix-cell.deprioritise{background:#F5F5F5;color:#9E9E9E;}
+
+/* ── 4.2 validation method rows ── */
+.val-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+.val-row-assump{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;padding:8px 12px;background:#FFEBEE;border-radius:6px;border-left:3px solid #C2185B;}
+.val-method-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px;}
+.val-method-sel{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;background:white;margin-bottom:6px;}
+.val-method-sel:focus{border-color:var(--green);outline:none;}
+.val-method-hint{font-size:12px;color:var(--muted);font-style:italic;}
+.val-empty-msg{font-size:13px;color:var(--muted);font-style:italic;padding:16px 0;}
+.methods-ref-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:16px;}
+.methods-ref-table th{background:var(--green);color:white;padding:8px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;}
+.methods-ref-table td{padding:8px 12px;border-bottom:1px solid var(--border);}
+.methods-ref-table tr:last-child td{border-bottom:none;}
+.methods-ref-table tr:nth-child(even) td{background:#FAF7F2;}
+.methods-ref-table td:first-child{font-weight:700;white-space:nowrap;color:var(--green);}
+
+/* ── Save badge ── */
+.save-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;opacity:0;transition:opacity .3s;display:inline-block;margin-top:6px;}
+.save-badge.show{opacity:1;}
+.save-badge.saved{background:#E8F5E9;color:#2E7D32;}
+.save-badge.saving{background:#E3F2FD;color:#1565C0;}
+.save-badge.error{background:#FFEBEE;color:#C0392B;}
+
+/* ── Gate / declaration ── */
+.gate-checks{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;margin-top:16px;}
+.gate-check{display:flex;align-items:flex-start;gap:10px;}
+.gate-check input{margin-top:3px;accent-color:var(--green);width:16px;height:16px;flex-shrink:0;}
+.gate-check label{font-size:14px;color:var(--text);line-height:1.5;cursor:pointer;}
+.complete-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:800;cursor:pointer;width:100%;margin-top:4px;}
+.complete-btn:disabled{background:#aaa;cursor:not-allowed;}
+.complete-btn:not(:disabled):hover{opacity:.88;}
+.complete-banner{background:#E8F5E9;border:2px solid #4CAF50;border-radius:14px;padding:32px;text-align:center;margin-top:20px;display:none;}
+.complete-banner.show{display:block;}
+.complete-icon{font-size:48px;margin-bottom:12px;}
+.complete-title{font-size:22px;font-weight:900;color:#2E7D32;margin-bottom:8px;}
+.complete-desc{font-size:14px;color:#388E3C;line-height:1.7;}
 
 @media (max-width: 680px) {
   #phase-content { padding: 20px 14px 60px; }
-  .prep-sections { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -119,50 +168,106 @@ body.has-phase-nav { padding-top: 46px; }
   <div class="phase-header">
     <div class="phase-tag">Phase 4 — Final</div>
     <div class="phase-title">Validate</div>
-    <div class="phase-desc">You've done the research, framed the problem, and designed the solution. Now present it. Your Product Strategy Canvas is your pitch to the room — and to Tea Fellas.</div>
+    <div class="phase-desc">You've designed the solution. Now stress-test the assumptions behind it. Identify what you're betting on, prioritise the riskiest bets, and select how you'd test them.</div>
   </div>
 
-  <!-- Presentation prep -->
-  <div class="prep-card">
-    <div class="prep-title">Your Product Strategy Canvas</div>
-    <div class="prep-desc">Assemble everything your team produced across Phases 1–3 into a single presentation-ready canvas. This is your team's final artefact — the "pitch" for what Tea Fellas should do and why.</div>
-    <div class="prep-sections">
-      <div class="prep-sec">
-        <div class="prep-sec-title">From Phase 1</div>
-        <div class="prep-sec-desc">Key research findings · As-Is process pain points · Customer quotes</div>
-      </div>
-      <div class="prep-sec">
-        <div class="prep-sec-title">From Phase 2</div>
-        <div class="prep-sec-desc">Problem Statement · Product Vision · Top 3 prioritised problems</div>
-      </div>
-      <div class="prep-sec">
-        <div class="prep-sec-title">From Phase 3</div>
-        <div class="prep-sec-desc">Recommended scenario · CBA summary (BCR, payback) · Roadmap snapshot</div>
-      </div>
-      <div class="prep-sec">
-        <div class="prep-sec-title">Your pitch</div>
-        <div class="prep-sec-desc">Why this scenario · Key risks and how you'd address them · What success looks like</div>
+  <!-- 4.1 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-41')">
+      <span class="acc-num">4.1</span>
+      <div style="flex:1"><div class="acc-title">Define &amp; Prioritise the Assumptions</div>
+      <div class="acc-sub">Write up the key assumptions behind your solution. Rate each on certainty and impact to identify which to test first.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-41" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-body collapsed" id="acc-body-41" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="matrix-wrap">
+          <div class="matrix-hint">Reference — Prioritise assumptions where failure would have significant impact and where uncertainty is highest.</div>
+          <div class="matrix-grid">
+            <div class="matrix-corner"></div>
+            <div class="matrix-col-hdr">High Impact</div>
+            <div class="matrix-col-hdr">Low Impact</div>
+            <div class="matrix-row-hdr">High<br>Uncertainty</div>
+            <div class="matrix-cell validate-first">Validate first</div>
+            <div class="matrix-cell validate-if">Validate if needed</div>
+            <div class="matrix-row-hdr">Low<br>Uncertainty</div>
+            <div class="matrix-cell monitor">Monitor</div>
+            <div class="matrix-cell deprioritise">Deprioritise</div>
+          </div>
+        </div>
+        <table class="assump-table">
+          <thead>
+            <tr>
+              <th style="width:28px">#</th>
+              <th>Assumption</th>
+              <th style="width:110px">Certainty</th>
+              <th style="width:110px">Impact</th>
+              <th style="width:120px">Priority</th>
+              <th style="width:32px"></th>
+            </tr>
+          </thead>
+          <tbody id="assump-body"></tbody>
+        </table>
+        <button class="assump-add-btn" onclick="addAssumption()">+ Add assumption</button>
+        <div style="margin-top:6px;"><span class="save-badge" id="assump-badge"></span></div>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px;">Tip: focus on assumptions that — if wrong — would change your recommendation entirely.</div>
       </div>
     </div>
-    <a href="phase4-canvas.html" class="prep-btn">Build your Product Strategy Canvas →</a>
   </div>
 
-  <!-- Gate -->
-  <div class="phase-gate" id="phase-gate-4">
-    <div class="phase-gate-title">Declare Phase 4 — Validate complete</div>
-    <div class="gate-checks">
-      <div class="gate-check"><input type="checkbox" id="gc4-1" onchange="checkGate4()"><label for="gc4-1">We have assembled our Product Strategy Canvas</label></div>
-      <div class="gate-check"><input type="checkbox" id="gc4-2" onchange="checkGate4()"><label for="gc4-2">We have presented our recommendation to the room</label></div>
+  <!-- 4.2 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-42')">
+      <span class="acc-num">4.2</span>
+      <div style="flex:1"><div class="acc-title">Select the Validation Method</div>
+      <div class="acc-sub">For each high-uncertainty, high-impact assumption — choose how you would test it.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-    <button class="gate-declare-btn" id="gate4-btn" disabled onclick="declarePhase4()">Complete our discovery journey →</button>
-    <div class="gate-done-banner" id="gate4-done"></div>
+    <div class="acc-body collapsed" id="acc-body-42" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div id="val-rows-wrap" style="margin-top:14px;"></div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:20px;margin-bottom:8px;">Reference — Validation Methods</div>
+        <table class="methods-ref-table">
+          <thead><tr><th>Method</th><th>Best used to test…</th></tr></thead>
+          <tbody>
+            <tr><td>User interviews</td><td>Needs, motivations and pain points</td></tr>
+            <tr><td>Surveys</td><td>Preferences, behaviours and broader sentiment</td></tr>
+            <tr><td>Concept testing</td><td>Initial reaction to a proposed solution</td></tr>
+            <tr><td>Prototype testing</td><td>Usability and user experience</td></tr>
+            <tr><td>Technical POC / spike</td><td>Technical feasibility</td></tr>
+            <tr><td>Process simulation</td><td>Operational and process feasibility</td></tr>
+            <tr><td>Pilot / MVP</td><td>Real-world adoption and outcomes</td></tr>
+            <tr><td>Experiment / A/B test</td><td>Behavioural or outcome-based assumptions</td></tr>
+          </tbody>
+        </table>
+        <span class="save-badge" id="methods-badge"></span>
+      </div>
+    </div>
   </div>
 
-  <!-- Complete banner (shown after gate 4 done) -->
-  <div class="complete-banner" id="complete-banner" style="display:none;">
-    <div class="complete-icon">🎉</div>
-    <div class="complete-title">Discovery journey complete!</div>
-    <div class="complete-desc">Your team has completed all four phases of the Tea Fellas product discovery simulation.<br>Well done — Good Tea. Good Day.</div>
+  <!-- 4.3 -->
+  <div class="acc-section">
+    <div class="acc-hdr" onclick="toggleSection('acc-body-43')">
+      <span class="acc-num">4.3</span>
+      <div style="flex:1"><div class="acc-title">Phase 4 Declaration</div>
+      <div class="acc-sub">Confirm your team is ready to wrap up the discovery journey.</div></div>
+      <svg class="acc-chevron collapsed" id="acc-chev-43" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="acc-body collapsed" id="acc-body-43" style="max-height:0;">
+      <div class="acc-body-inner">
+        <div class="gate-checks">
+          <div class="gate-check"><input type="checkbox" id="gc4-1" onchange="checkGate4()"><label for="gc4-1">We have defined our key assumptions</label></div>
+          <div class="gate-check"><input type="checkbox" id="gc4-2" onchange="checkGate4()"><label for="gc4-2">We have prioritised our assumptions using the uncertainty/impact matrix</label></div>
+          <div class="gate-check"><input type="checkbox" id="gc4-3" onchange="checkGate4()"><label for="gc4-3">We have selected appropriate validation methods for our high-priority assumptions</label></div>
+        </div>
+        <button class="complete-btn" id="gate4-btn" disabled onclick="declarePhase4()">Complete our discovery journey →</button>
+        <div class="complete-banner" id="complete-banner">
+          <div class="complete-icon">🎉</div>
+          <div class="complete-title">Discovery journey complete!</div>
+          <div class="complete-desc">Your team has completed all four phases of the Tea Fellas product discovery simulation.<br>Well done — Good Tea. Good Day.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -172,9 +277,228 @@ const CURRENT_PHASE = 4;
 const PHASE_PAGES  = { 1: 'index.html', 2: 'phase2.html', 3: 'phase3.html', 4: 'phase4.html' };
 const PHASE_LABELS = { 1: 'Research', 2: 'Define', 3: 'Ideate', 4: 'Validate' };
 
-let teamCode  = sessionStorage.getItem('teafellas_team_code') || null;
+let teamCode   = sessionStorage.getItem('teafellas_team_code') || null;
 let phaseGates = { 1: false, 2: false, 3: false, 4: false };
 
+// ── Data ──
+let assumptions = [
+  {id:1,text:'',certainty:'',impact:''},
+  {id:2,text:'',certainty:'',impact:''},
+  {id:3,text:'',certainty:'',impact:''},
+];
+let nextId = 4;
+let methodsData = {};
+
+const METHOD_HINTS = {
+  'User interviews':       'Needs, motivations and pain points',
+  'Surveys':               'Preferences, behaviours and broader sentiment',
+  'Concept testing':       'Initial reaction to a proposed solution',
+  'Prototype testing':     'Usability and user experience',
+  'Technical POC / spike': 'Technical feasibility',
+  'Process simulation':    'Operational and process feasibility',
+  'Pilot / MVP':           'Real-world adoption and outcomes',
+  'Experiment / A/B test': 'Behavioural or outcome-based assumptions',
+};
+
+const METHODS = Object.keys(METHOD_HINTS);
+
+// ── Priority logic ──
+function getPriority(a) {
+  if (!a.certainty || !a.impact) return null;
+  const highUncert = a.certainty === 'low';
+  const highImpact = a.impact    === 'high';
+  if (highUncert && highImpact)  return 'validate-first';
+  if (highUncert && !highImpact) return 'validate-if';
+  if (!highUncert && highImpact) return 'monitor';
+  return 'deprioritise';
+}
+
+function priorityLabel(p) {
+  if (!p) return '<span class="prio-empty">—</span>';
+  const map = {
+    'validate-first': ['prio-badge prio-validate-first', 'Validate first'],
+    'validate-if':    ['prio-badge prio-validate-if',    'Validate if needed'],
+    'monitor':        ['prio-badge prio-monitor',        'Monitor'],
+    'deprioritise':   ['prio-badge prio-deprioritise',   'Deprioritise'],
+  };
+  const [cls, txt] = map[p];
+  return `<span class="${cls}">${txt}</span>`;
+}
+
+function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── 4.1 Assumptions table ──
+function buildAssumpTable() {
+  const tbody = document.getElementById('assump-body');
+  if (!tbody) return;
+  tbody.innerHTML = assumptions.map((a, i) => `
+    <tr>
+      <td style="color:var(--muted);font-size:11px;font-weight:700;text-align:center;padding-top:14px;">${i+1}</td>
+      <td><textarea class="assump-ta" rows="2"
+        placeholder="e.g. Customers will adopt digital ordering over counter ordering…"
+        oninput="onAssumpChange(${a.id},'text',this.value)">${escHtml(a.text)}</textarea></td>
+      <td>
+        <select class="assump-sel" onchange="onAssumpChange(${a.id},'certainty',this.value)">
+          <option value="">— Select —</option>
+          <option value="low"  ${a.certainty==='low'  ?'selected':''}>Low (Uncertain)</option>
+          <option value="high" ${a.certainty==='high' ?'selected':''}>High (Certain)</option>
+        </select>
+      </td>
+      <td>
+        <select class="assump-sel" onchange="onAssumpChange(${a.id},'impact',this.value)">
+          <option value="">— Select —</option>
+          <option value="high" ${a.impact==='high'?'selected':''}>High</option>
+          <option value="low"  ${a.impact==='low' ?'selected':''}>Low</option>
+        </select>
+      </td>
+      <td>${priorityLabel(getPriority(a))}</td>
+      <td><button class="assump-del-btn" onclick="deleteAssumption(${a.id})" title="Remove">×</button></td>
+    </tr>`).join('');
+}
+
+function onAssumpChange(id, field, value) {
+  const a = assumptions.find(x => x.id === id);
+  if (a) a[field] = value;
+  buildAssumpTable();
+  buildValRows();
+  scheduleAssumpSave();
+}
+
+function addAssumption() {
+  assumptions.push({id: nextId++, text:'', certainty:'', impact:''});
+  buildAssumpTable();
+  scheduleAssumpSave();
+}
+
+function deleteAssumption(id) {
+  if (assumptions.length <= 1) return;
+  assumptions = assumptions.filter(a => a.id !== id);
+  delete methodsData[id];
+  buildAssumpTable();
+  buildValRows();
+  scheduleAssumpSave();
+}
+
+// ── 4.2 Validation method rows ──
+function buildValRows() {
+  const wrap = document.getElementById('val-rows-wrap');
+  if (!wrap) return;
+  const priority = assumptions.filter(a => getPriority(a) === 'validate-first');
+  if (priority.length === 0) {
+    wrap.innerHTML = '<div class="val-empty-msg">No high-priority assumptions yet — score your assumptions in 4.1 first. Assumptions rated <strong>Low Certainty + High Impact</strong> will appear here.</div>';
+    return;
+  }
+  wrap.innerHTML = priority.map(a => {
+    const selected = methodsData[a.id] || '';
+    const hint = selected ? METHOD_HINTS[selected] : '';
+    return `<div class="val-row">
+      <div class="val-row-assump">${escHtml(a.text) || '<em style="opacity:.5">Assumption text not yet filled in</em>'}</div>
+      <div class="val-method-label">Validation Method</div>
+      <select class="val-method-sel" onchange="onMethodChange(${a.id},this.value)">
+        <option value="">— Select a method —</option>
+        ${METHODS.map(m=>`<option value="${escHtml(m)}" ${selected===m?'selected':''}>${escHtml(m)}</option>`).join('')}
+      </select>
+      <div class="val-method-hint" id="hint-${a.id}">${hint ? 'Best used to test: ' + escHtml(hint) : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function onMethodChange(id, value) {
+  methodsData[id] = value;
+  const hintEl = document.getElementById(`hint-${id}`);
+  if (hintEl) hintEl.textContent = value ? 'Best used to test: ' + METHOD_HINTS[value] : '';
+  scheduleAssumpSave();
+}
+
+// ── Save / Load ──
+let assumpTimer = null;
+
+function scheduleAssumpSave() {
+  clearTimeout(assumpTimer);
+  setBadge('assump-badge', 'saving');
+  assumpTimer = setTimeout(saveAssumptions, 1500);
+}
+
+async function saveAssumptions() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        team_code: teamCode,
+        deliverable_id: 'd4_assumptions',
+        content: { assumptions, methods: methodsData, nextId }
+      })
+    });
+    setBadge('assump-badge', r.ok ? 'saved' : 'error');
+    setBadge('methods-badge', r.ok ? 'saved' : 'error');
+  } catch(_) {
+    setBadge('assump-badge', 'error');
+    setBadge('methods-badge', 'error');
+  }
+}
+
+async function loadAssumptions() {
+  try {
+    const r = await fetch(`${API_URL}/deliverables?team_code=${encodeURIComponent(teamCode)}&deliverable_id=d4_assumptions`);
+    const d = await r.json();
+    const c = d.deliverables?.d4_assumptions?.content;
+    if (c?.assumptions && Array.isArray(c.assumptions) && c.assumptions.length > 0) {
+      assumptions = c.assumptions;
+      methodsData = c.methods || {};
+      nextId = c.nextId || (Math.max(...assumptions.map(a=>a.id)) + 1);
+    }
+  } catch(_) {}
+  buildAssumpTable();
+  buildValRows();
+}
+
+function setBadge(id, state) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.className = `save-badge ${state} show`;
+  b.textContent = state==='saved'?'Saved ✓':state==='saving'?'Saving…':'Could not save';
+  if (state==='saved') setTimeout(()=>b.classList.remove('show'), 2500);
+}
+
+// ── Gate ──
+function checkGate4() {
+  const all = ['gc4-1','gc4-2','gc4-3'].every(id => document.getElementById(id)?.checked);
+  const btn = document.getElementById('gate4-btn');
+  if (btn) btn.disabled = !all || phaseGates[4];
+}
+
+async function declarePhase4() {
+  await markPhaseComplete(4);
+  document.getElementById('gate4-btn').disabled = true;
+  document.getElementById('complete-banner').classList.add('show');
+  ['gc4-1','gc4-2','gc4-3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.checked = true; el.disabled = true; }
+  });
+}
+
+// ── Accordion ──
+function toggleSection(bodyId) {
+  const body = document.getElementById(bodyId);
+  const num = bodyId.replace('acc-body-', '');
+  const chev = document.getElementById('acc-chev-' + num);
+  if (!body) return;
+  const isCollapsed = body.classList.contains('collapsed');
+  if (isCollapsed) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    chev && chev.classList.remove('collapsed');
+    setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.classList.add('collapsed');
+      chev && chev.classList.add('collapsed');
+    });
+  }
+}
+
+// ── Phase nav ──
 function renderPhaseNav() {
   const bar = document.getElementById('phase-nav-bar');
   if (!teamCode) { bar.classList.add('pnb-hidden'); return; }
@@ -215,19 +539,6 @@ async function markPhaseComplete(phase) {
   } catch (_) {}
 }
 
-function checkGate4() {
-  const all = ['gc4-1','gc4-2'].every(id => document.getElementById(id).checked);
-  document.getElementById('gate4-btn').disabled = !all || phaseGates[4];
-}
-
-async function declarePhase4() {
-  if (!confirm('Declare your discovery journey complete? This is the final step.')) return;
-  await markPhaseComplete(4);
-  document.getElementById('gate4-btn').style.display = 'none';
-  document.getElementById('complete-banner').style.display = 'block';
-  ['gc4-1','gc4-2'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
-}
-
 function signOut() {
   sessionStorage.removeItem('teafellas_team_code');
   location.href = 'index.html';
@@ -244,9 +555,9 @@ async function init() {
   renderPhaseNav();
 
   if (!phaseGates[3]) {
-    const msg = !phaseGates[1] ? 'Complete Phases 1, 2, and 3 first.' :
-                !phaseGates[2] ? 'Complete Phases 2 and 3 before Validate.' :
-                                 'Complete Phase 3 — Ideate before moving to Validate.';
+    const msg  = !phaseGates[1] ? 'Complete Phases 1, 2, and 3 first.' :
+                 !phaseGates[2] ? 'Complete Phases 2 and 3 before Validate.' :
+                                  'Complete Phase 3 — Ideate before moving to Validate.';
     const href = !phaseGates[1] ? 'index.html' : !phaseGates[2] ? 'phase2.html' : 'phase3.html';
     const lbl  = !phaseGates[1] ? 'Go to Phase 1 →' : !phaseGates[2] ? 'Go to Phase 2 →' : 'Go to Phase 3 →';
     document.getElementById('lock-msg').textContent = msg;
@@ -258,10 +569,15 @@ async function init() {
   document.getElementById('lock-screen').style.display = 'none';
   document.getElementById('phase-content').style.display = 'block';
 
+  await loadAssumptions();
+
   if (phaseGates[4]) {
-    document.getElementById('gate4-btn').style.display = 'none';
-    document.getElementById('complete-banner').style.display = 'block';
-    ['gc4-1','gc4-2'].forEach(id => { const el = document.getElementById(id); if(el){el.checked=true;el.disabled=true;} });
+    document.getElementById('gate4-btn').disabled = true;
+    document.getElementById('complete-banner').classList.add('show');
+    ['gc4-1','gc4-2','gc4-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.checked = true; el.disabled = true; }
+    });
   }
 }
 
