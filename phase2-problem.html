@@ -67,20 +67,19 @@ body{padding-left:210px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ai-error{font-size:12px;color:var(--red);margin-top:8px;display:none;}
 
-/* Preview */
-.preview-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;}
-.preview-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:16px;}
-.preview-box{border-left:4px solid var(--green);padding:16px 18px;background:var(--green-xl);border-radius:0 8px 8px 0;flex:1;font-size:14px;line-height:1.85;}
-.preview-box .slot{color:var(--green);font-weight:700;}
-.preview-box .empty{color:#ccc;}
-.template-hint{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;}
+/* Generated PS column */
+.gen-col-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;display:flex;flex-direction:column;}
+.gen-col-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:10px;}
+.gen-col-hint{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
+.gen-col-empty{font-size:13px;color:#ccc;font-style:italic;padding:20px 0;}
+.template-hint{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6;}
 
-/* Secondary */
-.secondary-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:28px;}
-.secondary-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:6px;}
-.secondary-desc{font-size:13px;color:var(--muted);margin-bottom:12px;}
-textarea.secondary-ta{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--text);font-family:inherit;min-height:100px;resize:vertical;}
-textarea.secondary-ta:focus{outline:none;border-color:var(--green);}
+/* Statement field */
+.stmt-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:28px;}
+.stmt-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:6px;}
+.stmt-desc{font-size:13px;color:var(--muted);margin-bottom:12px;}
+textarea.stmt-ta{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--text);font-family:inherit;min-height:120px;resize:vertical;}
+textarea.stmt-ta:focus{outline:none;border-color:var(--green);}
 
 .proceed-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
 .proceed-btn:hover{opacity:.88;}
@@ -157,33 +156,32 @@ textarea.secondary-ta:focus{outline:none;border-color:var(--green);}
       </button>
       <button class="ai-btn" id="gen-stmt-btn" onclick="generateStatement()" style="background:var(--green);margin-top:8px;">
         <span class="spinner" id="gen-stmt-spinner"></span>
-        <span id="gen-stmt-text">✦ Generate my problem statement</span>
+        <span id="gen-stmt-text">✦ Generate problem statement</span>
       </button>
       <div class="ai-error" id="ai-error">Could not reach AI — check connection.</div>
-      <div class="gen-stmt-box" id="gen-stmt-box" style="display:none;">
-        <div class="gen-stmt-title">Generated Problem Statement</div>
-        <div class="gen-stmt-text" id="gen-stmt-output"></div>
-        <div class="gen-stmt-actions">
-          <button class="gen-accept-btn" onclick="acceptGenStmt()">Accept → Copy to statement field</button>
-        </div>
-      </div>
     </div>
 
-    <!-- Live preview -->
-    <div class="preview-card">
-      <div class="preview-title">Live Preview</div>
-      <div class="preview-box" id="preview-box">
-        <span class="empty">Fill in the fields to see your problem statement build here…</span>
+    <!-- Generated PS -->
+    <div class="gen-col-card">
+      <div class="gen-col-title">Generated Problem Statement</div>
+      <div class="gen-col-hint">Fill the builder fields, then click <strong>✦ Generate</strong>. Craft one statement per stakeholder group — e.g. operations staff, loyal customers, bulk buyers.</div>
+      <div class="gen-col-empty" id="gen-col-empty">Your generated statement will appear here…</div>
+      <div class="gen-stmt-box" id="gen-stmt-box" style="display:none;">
+        <div class="gen-stmt-title">Generated</div>
+        <div class="gen-stmt-text" id="gen-stmt-output"></div>
+        <div class="gen-stmt-actions">
+          <button class="gen-accept-btn" onclick="acceptGenStmt()">Accept → Add to statements</button>
+        </div>
       </div>
       <div class="template-hint">Format: A <em>[user]</em> feels <em>[emotion]</em> about <em>[situation]</em> and needs to <em>[goal]</em> but cannot do so because <em>[barrier]</em>, which has <em>[impact]</em>.</div>
     </div>
   </div>
 
-  <!-- Secondary statement -->
-  <div class="secondary-card">
-    <div class="secondary-title">Secondary Statement — Customer Perspective (optional)</div>
-    <div class="secondary-desc">Write a second problem statement from the customer's point of view (Mrs Selva, Jacky). Free text — no template required.</div>
-    <textarea class="secondary-ta" id="f-secondary" placeholder="e.g. Regular customers like Mrs Selva and Jacky feel resigned about Tea Fellas' queue-only model…" oninput="onFieldChange()"></textarea>
+  <!-- Statement field -->
+  <div class="stmt-card">
+    <div class="stmt-title">Your Problem Statements</div>
+    <div class="stmt-desc">Accepted statements appear here. You can also edit directly. Aim for 2–3 statements covering different stakeholder groups.</div>
+    <textarea class="stmt-ta" id="f-statements" placeholder="Accepted problem statements will be added here…" oninput="onFieldChange()"></textarea>
   </div>
 
   <a href="phase2-vision.html" class="proceed-btn">Proceed to Product Vision →</a>
@@ -204,28 +202,14 @@ if(!teamCode){location.href='index.html';}
 let phaseGates={1:false,2:false,3:false,4:false};
 let saveTimer=null;
 
-const FIELDS=['f-user','f-emotion','f-situation','f-goal','f-barrier','f-impact','f-secondary'];
+const FIELDS=['f-user','f-emotion','f-situation','f-goal','f-barrier','f-impact','f-statements'];
 
 function val(id){return document.getElementById(id)?.value||'';}
 function set(id,v){const el=document.getElementById(id);if(el)el.value=v||'';}
 
-function renderPreview(){
-  const u=val('f-user'),e=val('f-emotion'),s=val('f-situation'),g=val('f-goal'),b=val('f-barrier'),i=val('f-impact');
-  if(!u&&!e&&!s&&!g&&!b&&!i){
-    document.getElementById('preview-box').innerHTML='<span class="empty">Fill in the fields to see your problem statement build here…</span>';
-    return;
-  }
-  const ph=t=>`<span class="${t?'slot':'empty'}">${escHtml(t||'…')}</span>`;
-  document.getElementById('preview-box').innerHTML=
-    `A ${ph(u)} feels ${ph(e)} about ${ph(s)} and needs to ${ph(g)} but cannot do so because ${ph(b)}, which has ${ph(i)}.`;
-}
-
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-function onFieldChange(){
-  renderPreview();
-  scheduleSave();
-}
+function onFieldChange(){scheduleSave();}
 
 function scheduleSave(){
   clearTimeout(saveTimer);
@@ -240,8 +224,7 @@ function signOut() {
 
 async function doSave(){
   const u=val('f-user'),e=val('f-emotion'),s=val('f-situation'),g=val('f-goal'),b=val('f-barrier'),im=val('f-impact');
-  const statement=(u||e||s||g||b||im)?`A ${u||'…'} feels ${e||'…'} about ${s||'…'} and needs to ${g||'…'} but cannot do so because ${b||'…'}, which has ${im||'…'}.`:'';
-  const content={user_role:u,emotion:e,situation:s,goal:g,barrier:b,impact:im,secondary_statement:val('f-secondary'),statement};
+  const content={user_role:u,emotion:e,situation:s,goal:g,barrier:b,impact:im,statements:val('f-statements')};
   try{
     const r=await fetch(`${API_URL}/deliverables`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({team_code:teamCode,deliverable_id:'problem_statement',content})});
     if(!r.ok)throw new Error();
@@ -269,21 +252,24 @@ async function generateStatement(){
     const resp=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       model:'claude-haiku-4-5-20251001',
       max_tokens:300,
-      system:'You are helping workshop participants write a concise problem statement for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Return ONLY the problem statement text starting with "We need to find a way for" — no quotes, no labels, no explanation.',
-      messages:[{role:'user',content:`Write a problem statement using this information:\nUser: ${u||'the team'}\nEmotion: ${e}\nSituation: ${s}\nGoal: ${g}\nBarrier: ${b}\nImpact: ${im}\n\nReturn ONE sentence starting with "We need to find a way for..."`}]
+      system:'You are helping workshop participants craft a problem statement for Tea Fellas, a family-run bubble tea shop in Toa Payoh, Singapore. Write a polished, specific problem statement following this exact template structure: "A [user] feels [emotion] about [situation] and needs to [goal] but cannot do so because [barrier], which has [impact]." Use the inputs provided — do not add information not given. Return ONLY the statement text, no quotes, no labels, no explanation.',
+      messages:[{role:'user',content:`Craft a well-written problem statement using these inputs:\nUser/role: ${u||'the team'}\nEmotion: ${e}\nSituation: ${s}\nGoal: ${g}\nBarrier: ${b}\nImpact: ${im}\n\nReturn ONLY the statement, following the template format.`}]
     })});
     const data=await resp.json();
     const text=data?.content?.[0]?.text?.trim()||'';
     document.getElementById('gen-stmt-output').textContent=text;
     document.getElementById('gen-stmt-box').style.display='block';
+    document.getElementById('gen-col-empty').style.display='none';
   }catch{errEl.style.display='block';}
   finally{btn.disabled=false;spinner.style.display='none';document.getElementById('gen-stmt-text').textContent='✦ Generate my problem statement';}
 }
 
 function acceptGenStmt(){
   const text=document.getElementById('gen-stmt-output').textContent;
-  set('f-secondary',text);
+  const el=document.getElementById('f-statements');
+  if(el){const existing=el.value.trim();el.value=existing?existing+'\n\n'+text:text;}
   document.getElementById('gen-stmt-box').style.display='none';
+  document.getElementById('gen-col-empty').style.display='block';
   onFieldChange();
 }
 
@@ -352,10 +338,9 @@ async function init(){
     if(c){
       set('f-user',c.user_role);set('f-emotion',c.emotion);set('f-situation',c.situation);
       set('f-goal',c.goal);set('f-barrier',c.barrier);set('f-impact',c.impact);
-      set('f-secondary',c.secondary_statement);
+      set('f-statements',c.statements);
     }
   }catch{}
-  renderPreview();
 }
 init();
 </script>
