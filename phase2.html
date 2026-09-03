@@ -150,6 +150,11 @@ body { padding-left: 210px; }
   font-weight: 700; background: var(--green-xl); color: var(--green); white-space: nowrap; }
 .rice-rank-badge.rank-1 { background: #FFF3E0; color: #E65100; }
 .rice-save-row { padding: 10px 0 2px; display: flex; align-items: center; gap: 10px; }
+.rice-del-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 16px; padding: 2px 6px; line-height: 1; }
+.rice-del-btn:hover { color: var(--red); }
+.rice-add-btn { background: none; border: 1px dashed var(--border); border-radius: 7px; color: var(--muted);
+  font-size: 12px; font-weight: 700; padding: 7px 14px; cursor: pointer; margin-top: 8px; }
+.rice-add-btn:hover { border-color: var(--green); color: var(--green); background: var(--green-xl); }
 .rice-prob-input { width: 100%; border: 1px solid var(--border); border-radius: 5px; padding: 5px 8px;
   font-size: 12px; font-family: inherit; resize: none; background: white; color: var(--text);
   min-height: 42px; line-height: 1.45; }
@@ -255,11 +260,13 @@ body { padding-left: 210px; }
               <th style="width:76px">Effort<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">months</span></th>
               <th style="width:68px">RICE<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">Score</span></th>
               <th style="width:56px">Rank</th>
+              <th style="width:32px"></th>
             </tr>
           </thead>
           <tbody id="rice-body"></tbody>
         </table>
       </div>
+      <button class="rice-add-btn" onclick="addRiceRow()">+ Add pain point</button>
       <div class="rice-save-row">
         <span class="cs-save-badge" id="rice-badge"></span>
       </div>
@@ -475,13 +482,13 @@ async function loadDeliverables() {
 
     // RICE data
     const rice = dels.d2_1_rice?.content;
-    if (rice?.rows && Array.isArray(rice.rows)) {
-      riceData = Array.from({length: RICE_ROWS}, (_, i) => ({
-        problem:    rice.rows[i]?.problem    || '',
-        reach:      rice.rows[i]?.reach      || '',
-        impact:     rice.rows[i]?.impact     || '',
-        confidence: rice.rows[i]?.confidence || '',
-        effort:     rice.rows[i]?.effort     || '',
+    if (rice?.rows && Array.isArray(rice.rows) && rice.rows.length > 0) {
+      riceData = rice.rows.map(r => ({
+        problem:    r?.problem    || '',
+        reach:      r?.reach      || '',
+        impact:     r?.impact     || '',
+        confidence: r?.confidence || '',
+        effort:     r?.effort     || '',
       }));
     }
 
@@ -553,6 +560,7 @@ function buildRiceTable() {
         value="${d.effort || ''}" placeholder="0" oninput="onRiceInput(${i})"></td>
       <td class="rice-score empty" id="r-score-${i}">—</td>
       <td class="rice-rank" id="r-rank-${i}"></td>
+      <td style="padding:4px;text-align:center;"><button class="rice-del-btn" onclick="deleteRiceRow(${i})" title="Remove row">×</button></td>
     </tr>`).join('');
   riceData.forEach((d, i) => {
     const impSel  = document.getElementById(`r-impact-${i}`);
@@ -629,6 +637,19 @@ function recalcRice() {
       rankEl.innerHTML = `<span class="rice-rank-badge${rk === 1 ? ' rank-1' : ''}">${rk}${sfx}</span>`;
     }
   });
+}
+
+function addRiceRow() {
+  riceData.push({problem:'', reach:'', impact:'', confidence:'', effort:''});
+  buildRiceTable();
+  scheduleRice();
+}
+
+function deleteRiceRow(i) {
+  if (riceData.length <= 1) return;
+  riceData.splice(i, 1);
+  buildRiceTable();
+  scheduleRice();
 }
 
 function scheduleRice() {
