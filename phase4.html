@@ -149,15 +149,15 @@ body { padding-left: 210px; }
 
 <div id="sidebar">
   <div class="sb-brand">
-    <span class="sb-brand-name">🍵 teafellas</span>
-    <span class="sb-team-badge" id="sb-team-badge" style="display:none;"></span>
+    <span class="sb-brand-name">Tea Fellas</span>
+    <span class="sb-team-badge" id="sb-team-code">—</span>
   </div>
-  <div id="sb-nav">
+  <nav id="sb-nav">
     <span class="sb-nav-label">Phases</span>
     <div id="phase-nav-list"></div>
-  </div>
+  </nav>
   <div id="sb-footer">
-    <button class="sb-footer-btn" onclick="signOut()">← Sign out</button>
+    <button class="sb-footer-btn" onclick="signOut()">Log out</button>
   </div>
 </div>
 
@@ -508,8 +508,8 @@ function toggleSection(bodyId) {
 function renderPhaseNavList() {
   const list = document.getElementById('phase-nav-list');
   if (!list) return;
-  const badge = document.getElementById('sb-team-badge');
-  if (badge && teamCode) { badge.textContent = teamCode; badge.style.display = 'inline-block'; }
+  const badge = document.getElementById('sb-team-code');
+  if (badge && teamCode) badge.textContent = teamCode;
   list.innerHTML = [1,2,3,4].map(p => {
     const done   = phaseGates[p];
     const active = p === CURRENT_PHASE;
