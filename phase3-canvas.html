@@ -75,6 +75,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .proceed-btn:hover{opacity:.88;}
 .proceed-btn.secondary{background:var(--amber);}
 
+/* Generate button */
+.gen-btn{display:inline-flex;align-items:center;gap:8px;background:var(--amber);color:white;
+  border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;
+  transition:opacity .15s;white-space:nowrap;}
+.gen-btn:hover:not(:disabled){opacity:.88;}
+.gen-btn:disabled{opacity:.55;cursor:not-allowed;}
+.gen-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:white;
+  border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.gen-btn.loading .gen-spinner{display:block;}
+.gen-btn.loading .gen-icon{display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
 @media print{
   #sidebar,.back-link,.top-row,.proceed-wrap{display:none!important;}
   body{padding-left:0!important;}
@@ -124,6 +136,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <option value="C1">C1 — Conservative</option>
         <option value="C2">C2 — Aggressive</option>
       </select>
+    </div>
+    <div class="top-field" style="justify-content:flex-end;">
+      <label style="visibility:hidden;">Generate</label>
+      <button class="gen-btn" id="gen-btn" onclick="generateCanvas()">
+        <span class="gen-icon">✦ Auto-fill canvas</span>
+        <span class="gen-spinner"></span>
+      </button>
     </div>
   </div>
 
@@ -351,6 +370,71 @@ function renderPhaseNav() {
     }
     return `<span class="pnav-btn ${cls}"><span class="pnav-badge">🔒</span>${lbl}</span>`;
   }).join('');
+}
+
+const SCENARIO_DESC = {
+  A1: 'A1 ($25K): Basic digital ordering — QR web-ordering, tablet POS at counter, kitchen display screen. Fixes Toa Payoh operations only. No expansion.',
+  A2: 'A2 ($150K): Full integrated system — all A1 features plus digital loyalty app, advanced analytics, and inventory management. Toa Payoh only.',
+  B1: 'B1 ($80K): New outlet at AMK Food Centre. No digital fix at Toa Payoh. Expansion-first approach.',
+  B2: 'B2 ($150K): New outlet at AMK Hub B1 (higher footfall, higher rent ~$8K/month). No digital fix at Toa Payoh.',
+  C1: 'C1 (~$105K total, RECOMMENDED): Sequential — implement A1 basic digital ($25K) at Toa Payoh first over months 1–6, then expand to a new AMK outlet ($80K) in months 7–18. Conservative, lower risk, builds operational maturity before scaling.',
+  C2: 'C2 (~$300K): Simultaneous — implement full digital system plus AMK Hub B1 expansion at the same time. Aggressive, high capital outlay, high risk for a family-run SME.',
+};
+
+async function generateCanvas() {
+  const scenario = document.getElementById('sc-sel').value;
+  if (!scenario) { alert('Please select a recommended scenario first.'); return; }
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true; btn.classList.add('loading');
+  const prompt = `You are a business process re-engineering consultant helping a workshop team complete their Solution Concept Canvas for Tea Fellas — a Singaporean hawker-style drinks stall at Block 190 Toa Payoh Lorong 6 (#01-08), run by Uncle John (61) and Aunty Mary (59), with nephew Darren (25, SMU Business grad) as barista/kitchen staff, and two part-time staff Salmiah and Chew.
+
+Current pain points: paper chit ordering causing errors and long queues (~25–30 min peak), no digital loyalty (paper stamp cards half the customers forget), manual collection process, limited payment options, no pre-ordering.
+
+Monthly financials: ~$30,000 revenue, ~$25,100 costs, ~$4,900 net profit. ~250 daily customers.
+
+The team has selected: ${SCENARIO_DESC[scenario]}
+
+Generate a complete Solution Concept Canvas for this scenario. Return ONLY a valid JSON object with exactly these 18 keys — no markdown, no explanation, just the JSON:
+{
+  "p1_problem": "The core customer problem (2-3 sentences)",
+  "p1_evidence": "Research evidence supporting this need (2-3 sentences referencing observations/interviews)",
+  "p1_who": "Primary persona(s) most affected (1-2 sentences)",
+  "p2_get": "What customers gain from this solution (2-3 sentences)",
+  "p2_answer": "How the solution directly addresses the need (2 sentences)",
+  "p2_switch": "Why they would prefer this over the current state (2 sentences)",
+  "p3_proposing": "High-level description of what we are building (2-3 sentences)",
+  "p3_meets": "Mechanism by which the solution addresses the need (2 sentences)",
+  "p3_out": "What is explicitly out of scope for this solution (2 sentences)",
+  "p4_must": "Must-have Day 1 features (bullet list format, 3-4 items)",
+  "p4_nice": "Nice-to-have Phase 2+ features (bullet list format, 3 items)",
+  "p4_release": "Go-live criteria / definition of done (2-3 sentences)",
+  "p5_them": "What changes for the customer (2-3 sentences)",
+  "p5_us": "What changes for the business — operational, financial, strategic (2-3 sentences)",
+  "p5_vision": "How this connects to Tea Fellas long-term vision (2 sentences)",
+  "p6_measures": "KPIs to measure success (bullet list, 3-4 items)",
+  "p6_targets": "Specific time-bound targets for each KPI (2-3 sentences)",
+  "p6_check": "Review cadence and accountability (2 sentences)"
+}`;
+  try {
+    const r = await fetch(`${API_URL}/generate`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001', messages:[{role:'user',content:prompt}], max_tokens:3000})
+    });
+    const data = await r.json();
+    const raw = data?.content?.[0]?.text || data?.text || '';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+    const filled = JSON.parse(jsonMatch[0]);
+    FIELDS.forEach(id => {
+      const key = id.replace(/-/g,'_');
+      if (filled[key]) { document.getElementById(id).value = filled[key]; }
+    });
+    scheduleSave();
+  } catch(e) {
+    alert('Could not generate canvas. Please try again.');
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
 }
 
 loadPhaseGates().then(()=>{ renderPhaseNav(); loadData(); });
