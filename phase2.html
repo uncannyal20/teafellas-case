@@ -333,6 +333,7 @@ let phaseGates = { 1: false, 2: false, 3: false, 4: false };
 
 function openEditor(url) {
   const tc = sessionStorage.getItem('teafellas_team_code');
+  if (tc) localStorage.setItem('tff_tc', tc);
   window.open(tc ? `${url}?team=${encodeURIComponent(tc)}` : url, '_blank');
 }
 

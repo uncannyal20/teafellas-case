@@ -171,7 +171,8 @@ const PHASE_LABELS = {1:'Research',2:'Define',3:'Ideate',4:'Validate'};
 const DEL_ID = 'risk_assessment';
 
 let teamCode = sessionStorage.getItem('teafellas_team_code')
-  || new URLSearchParams(location.search).get('team');
+  || new URLSearchParams(location.search).get('team')
+  || localStorage.getItem('tff_tc');
 if (teamCode) sessionStorage.setItem('teafellas_team_code', teamCode);
 if (!teamCode) location.href = 'index.html';
 
